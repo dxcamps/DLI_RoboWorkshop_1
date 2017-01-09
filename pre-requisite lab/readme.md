@@ -34,7 +34,6 @@ ___
 
 ## Creating your Azure Subscription
 
-
 1. Create your azure Subscription
 
 ___
@@ -45,14 +44,14 @@ ___
 
 The Azure-CLI is a cross platform command line interface that you can use to manage resources in your Azure Subscription from your local workstation.  The Azure-CLI is a Nodejs application and as such runs on Windows, Linux and Mac OS X. It's for that reason specifically that we have chosen it as the toolset for this lab.
 
-1. Ensure that you have Nodejs v6.9.4 or later installed.  If you don't you can install it from [https://nodejs.org/en/download/](https://nodejs.org/en/download/).  
+1. Ensure that you have Nodejs v6.9.4 or later installed.  If you don't you can install it from [https://nodejs.org/en/download/](https://nodejs.org/en/download/).
 
 1. From your system's command prompt or terminal window, issue the following command:
 
     > **Note**: You can alternatively use an installer if you are on Windows or Mac OS X.  To find out more about using an installer, view [Option 2: Use an installer](https://docs.microsoft.com/en-us/azure/xplat-cli-install#option-2-use-an-installer) on the [Install the Azure CLI](https://docs.microsoft.com/en-us/azure/xplat-cli-install) page in the Azure documentation.
 
     ```bash
-    npm i -g azure-cli 
+    npm i -g azure-cli
     ```
     On OS X and Linux systems, you may need to use `sudo` before the command.
 
@@ -65,8 +64,6 @@ ___
 <a name="task3"></a>
 
 ## Logging into your Azure Subscription via the Azure-CLI
-
-
 
 ___
 
@@ -97,7 +94,3 @@ ___
 <a name="task8"></a>
 
 ## Connecting to your Virtual Machine using SSH
-
-
-
-
