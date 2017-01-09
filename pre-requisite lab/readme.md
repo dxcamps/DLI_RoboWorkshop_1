@@ -58,12 +58,15 @@ The Azure-CLI is a cross platform command line interface that you can use to man
     ```bash
     sudo npm i -g azure-cli
     ```
-
 ___
 
 <a name="task3"></a>
 
 ## Logging into your Azure Subscription via the Azure-CLI
+
+In this steps, you'll login to your Azure subscription from your workstations command line.  There are multiple ways to login to the Azure-CLI
+
+1.
 
 ___
 
@@ -94,3 +97,4 @@ ___
 <a name="task8"></a>
 
 ## Connecting to your Virtual Machine using SSH
+
