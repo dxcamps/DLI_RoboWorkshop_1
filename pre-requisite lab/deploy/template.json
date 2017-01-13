@@ -56,7 +56,7 @@
                     },
                     "osDisk": {
                         "name": "[parameters('virtualMachines_dlirwxxxvm_name')]",
-                        "createOption": "FromImage",
+                        "createOption": "Attach",
                         "vhd": {
                             "uri": "[concat('https', '://', parameters('storageAccounts_dlirwxxxstorage_name'), '.blob.core.windows.net/vhds/nvidiavm20170104130104.vhd')]"
                         },
