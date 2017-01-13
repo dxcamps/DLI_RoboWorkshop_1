@@ -48,12 +48,6 @@
                     "vmSize": "Standard_DS1_v2"
                 },
                 "storageProfile": {
-                    "imageReference": {
-                        "publisher": "Canonical",
-                        "offer": "UbuntuServer",
-                        "sku": "14.04.5-LTS",
-                        "version": "latest"
-                    },
                     "osDisk": {
                         "name": "[parameters('virtualMachines_dlirwxxxvm_name')]",
                         "createOption": "Attach",
