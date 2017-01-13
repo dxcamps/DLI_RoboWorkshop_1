@@ -342,14 +342,37 @@ ___
 
 ## Creating the Virtual Machine using the VHD
 
-azure group deployment create --name vmdeployment --resource-group dlirwxxxgroup --template-file template.json --parameters-file parameters.json
+We are almost ready, the final step is to deploy a new Virtual Machne (VM) to the resource group we created above that uses the VHD we just copied as it's OS Disk.  Turns out that VMs need a bunch of other things as well including Network Interfaces, Virtual Networks, IP Addresses, Firewall Rules, etc.  Rather than have you create each one of these by hand and risk doing something wrong, we will use a pre-configured Azure Resource Manager (ARM) template.  The template file is in the same github repo as the other workshop content so first, we'll need to clone the repo, then we can change into the folder with the deployment script and run the azure-cli command to deploy the vm based on the template. 
 
-___
+1. From your system's command prompt or terminal, change to the folder where under which you want to clone the github repo, then use the git command line tool to clone the github repo:
 
-<a name="task8"></a>
+    ```bash
+    git clone http://github.com/dxcamps/DLI_RoboWorkshop_1
+    ```
 
-## Configuring your Virtual Machine Firewall
+1. Once the github repo has been cloned, change into the `./DLI_RoboWorkshop_1/pre-requisite lab/deploy` folder
 
+    ```bash
+    cd ./DLI_RoboWorkshop_1/pre-requisite lab/deploy
+    ```
+
+1. You can list the contents of the folder with an `ls` (Mac or Linux) or `dir` (windows) command, and see the files in the folder:
+
+    ```bash
+    $ ls
+    deployer.rb  DeploymentHelper.cs  deploy-preview.sh  deploy.ps1  deploy.sh  parameters.json  template.json
+    ```
+1. The last two files, `parameters.json` and `template.json` are the ones we'll use:
+
+    - `template.json` contains the actual ARM template that defines all the resources that will be createad, e.g. The VM, Virtual Network, NIC, IP Address, Firewall Rules, etc.
+    - `parameters.json` contains the values that are needed for the deployment, like the actual name of the VM, the location where it should be deployed, etc.
+
+1. Use the azure-cli to deploy the vm using the template:
+
+
+    ```bash
+    azure group deployment create --name vmdeployment --resource-group dlirwxxxgroup --template-file template.json --parameters-file parameters.json
+    ```
 ___
 
 <a name="task9"></a>
