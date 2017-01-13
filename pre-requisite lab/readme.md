@@ -2,6 +2,8 @@
 
 In this lab, we'll walk workshop attendees through the required pre-requisite steps.  At the completion of this lab, attendees should have a properly prepared Virtual Machine running in Azure that has the NVidia GPUs, and lab assets needed for successful completion of the workshop.
 
+---
+
 <a name="prereqs"></a>
 
 ## Pre-Requisites
@@ -9,7 +11,10 @@ In this lab, we'll walk workshop attendees through the required pre-requisite st
 To complete this lab, you will need to have the following items:
 
 1. An active azure subscription that you are willing to use for the lab.  ***BE AWARE** the lab has you create N-Series VMs in Azure.  These VMs are special because they include NVidia GPU support and provide an extremely powerful environment for deep learning projects.  However, they are expensive when compared to other less capable VMs.  It is recommended that you use a trial subscription, or a subscription provided to you at a live event for the lab steps.  This will help to ensure that you are not billed for excessive VM utilization.
+
 1. Nodejs v6.9.4 or later. You can download the current version of Nodejs from [https://nodejs.org/en/download/](https://nodejs.org/en/download/)
+
+1. Git installed.  If you don't have git on your system, you can install it from [https://git-scm.com/downloads](https://git-scm.com/downloads)
 
 ___
 
@@ -28,6 +33,8 @@ In this lab, you will complete the following tasks:
 1. [Creating the Virtual Machine using the VHD](#task7)
 1. [Configuring your Virtual Machine Firewall](#task8)
 1. [Connecting to your Virtual Machine using SSH](#task9)
+
+---
 
 <a name="task1"></a>
 
@@ -334,6 +341,8 @@ ___
 <a name="task7"></a>
 
 ## Creating the Virtual Machine using the VHD
+
+azure group deployment create --name vmdeployment --resource-group dlirwxxxgroup --template-file template.json --parameters-file parameters.json
 
 ___
 
