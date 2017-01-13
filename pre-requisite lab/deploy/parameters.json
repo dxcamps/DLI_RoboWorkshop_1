@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "southcentralus"
+        },
+        "virtualMachines_dlirwxxxvm_adminPassword": {
+            "value": "dlirwP@ssw1rd"
+        },
+        "virtualMachines_dlirwxxxvm_name": {
+            "value": "dlirwxxxvm"
+        },
+        "networkInterfaces_dlirwxxx-nic_name": {
+            "value": "dlirwxxx-nic"
+        },
+        "networkSecurityGroups_dlirwxxxvm_nsg_name": {
+            "value": "dlirwxxxvm-nsg"
+        },
+        "publicIPAddresses_dlirwxxxvm_ip_name": {
+            "value": "dlirwxxxvm-ip"
+        },
+        "virtualNetworks_dlirwxxxgroup_vnet_name": {
+            "value": "dlirwxxxgroup-vnet"
+        },
+        "storageAccounts_dlirwxxxstorage_name": {
+            "value": "dlirwxxxstorage"
+        }
+    }
+}

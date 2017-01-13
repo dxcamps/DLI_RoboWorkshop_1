@@ -1,0 +1,249 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "defaultValue": "southcentralus",
+            "type": "string"
+        },
+        "virtualMachines_dlirwxxxvm_adminPassword": {
+            "defaultValue": "dlirwP@ssw1rd",
+            "type": "secureString"
+        },
+        "virtualMachines_dlirwxxxvm_name": {
+            "defaultValue": "dlirwxxxvm",
+            "type": "string"
+        },
+        "networkInterfaces_dlirwxxx-nic_name": {
+            "defaultValue": "dlirwxxx-nic",
+            "type": "string"
+        },
+        "networkSecurityGroups_dlirwxxxvm_nsg_name": {
+            "defaultValue": "dlirwxxxvm-nsg",
+            "type": "string"
+        },
+        "publicIPAddresses_dlirwxxxvm_ip_name": {
+            "defaultValue": "dlirwxxxvm-ip",
+            "type": "string"
+        },
+        "virtualNetworks_dlirwxxxgroup_vnet_name": {
+            "defaultValue": "dlirwxxxgroup-vnet",
+            "type": "string"
+        },
+        "storageAccounts_dlirwxxxstorage_name": {
+            "defaultValue": "dlirwxxxstorage",
+            "type": "string"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "comments": "Generalized from resource: '/subscriptions/ed2f73c5-c021-4b86-9afb-aa7998d16085/resourceGroups/dlirwxxxgroup/providers/Microsoft.Compute/virtualMachines/dlirwxxxvm'.",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('virtualMachines_dlirwxxxvm_name')]",
+            "apiVersion": "2015-06-15",
+            "location": "[parameters('location')]",
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_DS1_v2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "Canonical",
+                        "offer": "UbuntuServer",
+                        "sku": "14.04.5-LTS",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "[parameters('virtualMachines_dlirwxxxvm_name')]",
+                        "createOption": "FromImage",
+                        "vhd": {
+                            "uri": "[concat('https', '://', parameters('storageAccounts_dlirwxxxstorage_name'), '.blob.core.windows.net/vhds/nvidiavm20170104130104.vhd')]"
+                        },
+                        "caching": "ReadWrite"
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_dlirwxxxvm_name')]",
+                    "adminUsername": "devadmin",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": false
+                    },
+                    "secrets": [],
+                    "adminPassword": "[parameters('virtualMachines_dlirwxxxvm_adminPassword')]"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_dlirwxxx-nic_name'))]"
+                        }
+                    ]
+                }
+            },
+            "resources": [],
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_dlirwxxxstorage_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_dlirwxxx-nic_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/ed2f73c5-c021-4b86-9afb-aa7998d16085/resourceGroups/dlirwxxxgroup/providers/Microsoft.Network/networkInterfaces/dlirwxxx-nic'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_dlirwxxx-nic_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "[parameters('location')]",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAddress": "10.1.0.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_dlirwxxxvm_ip_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_dlirwxxxgroup_vnet_name')), '/subnets/default')]"
+                            }
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableIPForwarding": false,
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_dlirwxxxvm_nsg_name'))]"
+                }
+            },
+            "resources": [],
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_dlirwxxxvm_ip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_dlirwxxxgroup_vnet_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_dlirwxxxvm_nsg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/ed2f73c5-c021-4b86-9afb-aa7998d16085/resourceGroups/dlirwxxxgroup/providers/Microsoft.Network/networkSecurityGroups/dlirwxxxvm-nsg'.",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('networkSecurityGroups_dlirwxxxvm_nsg_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "[parameters('location')]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "AllowSSH",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "AllowHTTPOn80",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "80",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 110,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "AllowHTTPOn8888",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "8888",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 120,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+            },
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/ed2f73c5-c021-4b86-9afb-aa7998d16085/resourceGroups/dlirwxxxgroup/providers/Microsoft.Network/publicIPAddresses/dlirwxxxvm-ip'.",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('publicIPAddresses_dlirwxxxvm_ip_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "[parameters('location')]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4
+            },
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/ed2f73c5-c021-4b86-9afb-aa7998d16085/resourceGroups/dlirwxxxgroup/providers/Microsoft.Network/virtualNetworks/dlirwxxxgroup-vnet'.",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('virtualNetworks_dlirwxxxgroup_vnet_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "[parameters('location')]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.1.0.0/24"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "properties": {
+                            "addressPrefix": "10.1.0.0/24"
+                        }
+                    }
+                ]
+            },
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/ed2f73c5-c021-4b86-9afb-aa7998d16085/resourceGroups/dlirwxxxgroup/providers/Microsoft.Storage/storageAccounts/dlirwxxxdiagstorage'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_dlirwxxxstorage_name')]",
+            "apiVersion": "2016-01-01",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "properties": {},
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/ed2f73c5-c021-4b86-9afb-aa7998d16085/resourceGroups/dlirwxxxgroup/providers/Microsoft.Storage/storageAccounts/dlirwxxxvmstorage'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Premium_LRS",
+                "tier": "Premium"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_dlirwxxxstorage_name')]",
+            "apiVersion": "2016-01-01",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "properties": {},
+            "resources": [],
+            "dependsOn": []
+        }
+    ]
+}
