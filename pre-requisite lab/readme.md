@@ -329,8 +329,6 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
     data:    a8d4752a-b2e2-4510-9f55-3b11805d44ea  31457280512/31457280512  success
     info:    storage blob copy show command OK
     ```
-
-
 ___
 
 <a name="task7"></a>
