@@ -6,10 +6,6 @@
             "defaultValue": "southcentralus",
             "type": "string"
         },
-        "virtualMachines_dlirwxxxvm_adminPassword": {
-            "defaultValue": "dlirwP@ssw1rd",
-            "type": "secureString"
-        },
         "virtualMachines_dlirwxxxvm_name": {
             "defaultValue": "dlirwxxxvm",
             "type": "string"
@@ -58,15 +54,6 @@
                         "caching": "ReadWrite"
                     },
                     "dataDisks": []
-                },
-                "osProfile": {
-                    "computerName": "[parameters('virtualMachines_dlirwxxxvm_name')]",
-                    "adminUsername": "devadmin",
-                    "linuxConfiguration": {
-                        "disablePasswordAuthentication": false
-                    },
-                    "secrets": [],
-                    "adminPassword": "[parameters('virtualMachines_dlirwxxxvm_adminPassword')]"
                 },
                 "networkProfile": {
                     "networkInterfaces": [

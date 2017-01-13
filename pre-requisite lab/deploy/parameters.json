@@ -5,9 +5,6 @@
         "location": {
             "value": "southcentralus"
         },
-        "virtualMachines_dlirwxxxvm_adminPassword": {
-            "value": "dlirwP@ssw1rd"
-        },
         "virtualMachines_dlirwxxxvm_name": {
             "value": "dlirwxxxvm"
         },
