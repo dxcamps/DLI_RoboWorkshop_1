@@ -31,8 +31,7 @@ In this lab, you will complete the following tasks:
 1. [Creating an Azure Storage Account, and Container](#task5)
 1. [Copying the Virtual Hard Disk (VHD) for the Virtual Machine](#task6)
 1. [Creating the Virtual Machine using the VHD](#task7)
-1. [Configuring your Virtual Machine Firewall](#task8)
-1. [Connecting to your Virtual Machine using SSH](#task9)
+1. [Connecting to your Virtual Machine using SSH](#task8)
 
 ---
 
@@ -369,13 +368,12 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
 
 1. Use the azure-cli to deploy the vm using the template:
 
-
     ```bash
     azure group deployment create --name vmdeployment --resource-group dlirwxxxgroup --template-file template.json --parameters-file parameters.json
     ```
 ___
 
-<a name="task9"></a>
+<a name="task8"></a>
 
 ## Connecting to your Virtual Machine using SSH
 
