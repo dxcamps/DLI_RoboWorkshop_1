@@ -31,7 +31,8 @@ In this lab, you will complete the following tasks:
 1. [Creating an Azure Storage Account, and Container](#task5)
 1. [Copying the Virtual Hard Disk (VHD) for the Virtual Machine](#task6)
 1. [Creating the Virtual Machine using the Copied VHD](#task7)
-1. [Connecting to your Virtual Machine using SSH](#task8)
+1. [Configuring Auto-shutdown on the new VM](#task8)
+1. [Connecting to your Virtual Machine using SSH](#task9)
 
 ---
 
@@ -240,11 +241,13 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
 
 1. Next, we'll create the container to store the vhd for our virtual machine:
 
+    > **Note**: This is a SINGLE command wrapped across multiple lines for readability. You need to copy, or type the syntax below as a single line, with the appropriate values for the `--account-name dlirwxxxstorage`  and  `--account-key xxx...xxx==` values.
+
     ```bash
-    azure storage container create \
-    --account-name dlirwxxxstorage \
-    --account-key xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx== \
-    --container vhds
+    azure storage container create 
+    --container vhds 
+    --account-name dlirwxxxstorage 
+    --account-key xxx...xxx==
     ```
 
 1.  The output should resemble the following:
@@ -284,15 +287,15 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
 
 1. To copy the pre-existing VHD from the hosted storage account into the container you just created, use the `azure storage blob copy start` command with the values from the table above:
 
-    > **Note**: This is ONE command.  It is shown here wrapped across multiple lines but you will need to copy and paste this command into a text editor, replace the `dest-account-key` and `dest-account-name` place holders with your actual values, then copy and paste that completed single line syntax into your command prompt or terminal:
+    > **Note**: This is ONE command.  It is shown here wrapped across multiple lines but you will need to copy and paste this command into a text editor, replace the `--dest-account-name dlirwxxxstorage` and `--dest-account-key xxx...xxx==` place holders with your actual values, then copy and paste that completed single line syntax into your command prompt or terminal:
 
     ```bash
-    azure storage blob copy start \
-        --source-uri "https://nvidiavmstorage.blob.core.windows.net/vhds/nvidiavm20170104130104.vhd" \
-        --source-sas "sv=2015-12-11&ss=b&srt=sco&sp=rl&se=2050-01-13T02:18:26Z&st=2017-01-12T18:18:26Z&spr=https,http&sig=TGEmNmml7PXu90db5zIbA%2BUXHEOrY9XZ6dI7avV34ew%3D" \
-        --dest-account-name "dlirwxxxstorage" \
-        --dest-account-key "TfjYbT1Kj80bfslEi3Wvep4PoNEu6OooVghDTSB0295x2xdydk4k9FzB03UQPUSZvYATMBgaRKJSBncMKHbRtA==" \
-        --dest-container "vhds"
+    azure storage blob copy start 
+        --source-uri https://nvidiavmstorage.blob.core.windows.net/vhds/nvidiavm20170104130104.vhd
+        --source-sas sv=2015-12-11&ss=b&srt=sco&sp=rl&se=2050-01-13T02:18:26Z&st=2017-01-12T18:18:26Z&spr=https,http&sig=TGEmNmml7PXu90db5zIbA%2BUXHEOrY9XZ6dI7avV34ew%3D
+        --dest-container vhds 
+        --dest-account-name dlirwxxxstorage 
+        --dest-account-key xxx...xxx==
     ```
 
 1.  The command should return output similar to the following:
@@ -308,8 +311,10 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
     ```
 1. The copy will take up to 20 minutes or so, you can monitor the progress by repeatedly issuing the following command:
 
+    > **Note**: As before, make sure to put your actual storage account key value in for the `--account-key xxx...xxx==`  paramter value.
+
     ```bash
-    azure storage blob copy show --account-name dlirwxxxstorage --account-key "TfjYbT1Kj80bfslEi3Wvep4PoNEu6OooVghDTSB0295x2xdydk4k9FzB03UQPUSZvYATMBgaRKJSBncMKHbRtA==" --container "vhds" --blob "nvidiavm20170104130104.vhd"
+    azure storage blob copy show --account-name dlirwxxxstorage --account-key xxx...xxx== --container vhds --blob nvidiavm20170104130104.vhd
     ```
 
 1. The output of the command above shows the copy status in the `Progress` and `Status` columns.  
@@ -366,14 +371,30 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     - `template.json` contains the actual ARM template that defines all the resources that will be createad, e.g. The VM, Virtual Network, NIC, IP Address, Firewall Rules, etc.
     - `parameters.json` contains the values that are needed for the deployment, like the actual name of the VM, the location where it should be deployed, etc.
 
+1. Open the `parameters.json` file in the text editor of your choice, and replace all of the `dlirwxxx` values with your name prefix, then save your changes.
+
 1. Use the azure-cli to deploy the vm using the template:
 
     ```bash
     azure group deployment create --name vmdeployment --resource-group dlirwxxxgroup --template-file template.json --parameters-file parameters.json
     ```
+
 ___
 
 <a name="task8"></a>
+
+## Configuring Auto-shutdown on the new VM
+
+FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless you change it, your VM will shutdown automatically at 11:59pm Pacific Standard Time every night.  If you want to change that setting, or disable it, you can complete these steps.
+
+1. Open the [Azure Portal](https://portal.azure.com) and login with the credentials for your Azure Subscription
+1. Click on the "Resource Groups" icon along the left of the portal, then select the `dlixxxgroup` Resource Group you created above.  
+1. From the list of resources in the Resource Group, click on your Virtual Machine to open it's overview blade. 
+1. From the list of settings along the left, click on "**Auto-shutdown**".  
+1. Then in the "**Auto-shutdown**" blade, configure the option according to your desires.  You can read more about the feature here, [Announcing auto-shutdown for VMs using Azure Resource Manager](https://azure.microsoft.com/en-us/blog/announcing-auto-shutdown-for-vms-using-azure-resource-manager/)
+___
+
+<a name="task9"></a>
 
 ## Connecting to your Virtual Machine using SSH
 
