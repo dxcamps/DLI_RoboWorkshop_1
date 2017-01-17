@@ -196,7 +196,7 @@
             "apiVersion": "2016-05-15",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachines_dlirwxxxvm_name')]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachines_dlirwxxxvm_name'))]"
             ],
             "properties": {
                 "status": "Enabled",
