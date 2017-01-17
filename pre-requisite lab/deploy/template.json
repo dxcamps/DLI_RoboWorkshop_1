@@ -212,6 +212,21 @@
                 },
                 "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines',parameters('virtualMachines_dlirwxxxvm_name'))]"
             }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_dlirwxxxstorage_name')]",
+            "apiVersion": "2016-01-01",
+            "location": "southcentralus",
+            "tags": {},
+            "properties": {},
+            "resources": [],
+            "dependsOn": []
         }
     ]
 }
