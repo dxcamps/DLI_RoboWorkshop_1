@@ -34,7 +34,6 @@
     "variables": {},
     "resources": [
         {
-            "comments": "Generalized from resource: '/subscriptions/ed2f73c5-c021-4b86-9afb-aa7998d16085/resourceGroups/dlirwxxxgroup/providers/Microsoft.Compute/virtualMachines/dlirwxxxvm'.",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[parameters('virtualMachines_dlirwxxxvm_name')]",
             "apiVersion": "2015-06-15",
@@ -70,7 +69,6 @@
             ]
         },
         {
-            "comments": "Generalized from resource: '/subscriptions/ed2f73c5-c021-4b86-9afb-aa7998d16085/resourceGroups/dlirwxxxgroup/providers/Microsoft.Network/networkInterfaces/dlirwxxx-nic'.",
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[parameters('networkInterfaces_dlirwxxx-nic_name')]",
             "apiVersion": "2016-03-30",
@@ -107,7 +105,6 @@
             ]
         },
         {
-            "comments": "Generalized from resource: '/subscriptions/ed2f73c5-c021-4b86-9afb-aa7998d16085/resourceGroups/dlirwxxxgroup/providers/Microsoft.Network/networkSecurityGroups/dlirwxxxvm-nsg'.",
             "type": "Microsoft.Network/networkSecurityGroups",
             "name": "[parameters('networkSecurityGroups_dlirwxxxvm_nsg_name')]",
             "apiVersion": "2016-03-30",
@@ -159,7 +156,6 @@
             "dependsOn": []
         },
         {
-            "comments": "Generalized from resource: '/subscriptions/ed2f73c5-c021-4b86-9afb-aa7998d16085/resourceGroups/dlirwxxxgroup/providers/Microsoft.Network/publicIPAddresses/dlirwxxxvm-ip'.",
             "type": "Microsoft.Network/publicIPAddresses",
             "name": "[parameters('publicIPAddresses_dlirwxxxvm_ip_name')]",
             "apiVersion": "2016-03-30",
@@ -172,7 +168,6 @@
             "dependsOn": []
         },
         {
-            "comments": "Generalized from resource: '/subscriptions/ed2f73c5-c021-4b86-9afb-aa7998d16085/resourceGroups/dlirwxxxgroup/providers/Microsoft.Network/virtualNetworks/dlirwxxxgroup-vnet'.",
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[parameters('virtualNetworks_dlirwxxxgroup_vnet_name')]",
             "apiVersion": "2016-03-30",
@@ -192,22 +187,6 @@
                     }
                 ]
             },
-            "resources": [],
-            "dependsOn": []
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/ed2f73c5-c021-4b86-9afb-aa7998d16085/resourceGroups/dlirwxxxgroup/providers/Microsoft.Storage/storageAccounts/dlirwxxxvmstorage'.",
-            "type": "Microsoft.Storage/storageAccounts",
-            "sku": {
-                "name": "Premium_LRS",
-                "tier": "Premium"
-            },
-            "kind": "Storage",
-            "name": "[parameters('storageAccounts_dlirwxxxstorage_name')]",
-            "apiVersion": "2016-01-01",
-            "location": "[parameters('location')]",
-            "tags": {},
-            "properties": {},
             "resources": [],
             "dependsOn": []
         }
