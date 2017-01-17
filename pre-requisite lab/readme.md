@@ -30,7 +30,7 @@ In this lab, you will complete the following tasks:
 1. [Logging into your Azure Subscription via the Azure-CLI](#task4)
 1. [Creating an Azure Storage Account, and Container](#task5)
 1. [Copying the Virtual Hard Disk (VHD) for the Virtual Machine](#task6)
-1. [Creating the Virtual Machine using the VHD](#task7)
+1. [Creating the Virtual Machine using the Copied VHD](#task7)
 1. [Connecting to your Virtual Machine using SSH](#task8)
 
 ---
@@ -339,7 +339,7 @@ ___
 
 <a name="task7"></a>
 
-## Creating the Virtual Machine using the VHD
+## Creating the Virtual Machine using the Copied VHD
 
 We are almost ready, the final step is to deploy a new Virtual Machne (VM) to the resource group we created above that uses the VHD we just copied as it's OS Disk.  Turns out that VMs need a bunch of other things as well including Network Interfaces, Virtual Networks, IP Addresses, Firewall Rules, etc.  Rather than have you create each one of these by hand and risk doing something wrong, we will use a pre-configured Azure Resource Manager (ARM) template.  The template file is in the same github repo as the other workshop content so first, we'll need to clone the repo, then we can change into the folder with the deployment script and run the azure-cli command to deploy the vm based on the template. 
 
