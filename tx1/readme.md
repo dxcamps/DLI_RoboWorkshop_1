@@ -105,19 +105,45 @@ ___
 1. Next, make the appropriate symlinks for key libraries:
 
     ```bash
-    sudo ln -s /usr/lib/libsnappy.so.1 /usr/lib/libsnappy.so
-    ```
-
-    ```bash
     cd /usr/lib/aarch64-linux-gnu
     sudo ln -s libhdf5_serial.so.*.*.* libhdf5.so
     sudo ln -s libhdf5_serial_hl.so.*.*.* libhdf5_hl.so
-    ```
-
-    ```bash
+    sudo ln -s libsnappy.so.*.*.* libsnappy.so
     sudo ldconfig
     ```
+
+1. You can verify the symlinks you just created, by running the following commands, and verify that the symlinks are pointing to a specific version of their corresponding libraries:
+
+    ```bash
+    readlink -f /usr/lib/aarch64-linux-gnu/libhdf5.so
+    readlink -f /usr/lib/aarch64-linux-gnu/libhdf5_hl.so
+    readlink -f /usr/lib/aarch64-linux-gnu/libsnappy.so
+    ```
+
+    Example executions and outputs (your versions may be different as time goes on):
+
+    ```bash
+    ~$ readlink -f /usr/lib/aarch64-linux-gnu/libhdf5.so
+    /usr/lib/aarch64-linux-gnu/libhdf5_serial.so.10.1.0
+
+    ~$ readlink -f /usr/lib/aarch64-linux-gnu/libhdf5_hl.so
+    /usr/lib/aarch64-linux-gnu/libhdf5_serial_hl.so.10.0.2
+
+    ~$ readlink -f /usr/lib/aarch64-linux-gnu/libsnappy.so
+    /usr/lib/aarch64-linux-gnu/libsnappy.so.1.3.0
+    ```
+
+1. You can set the clocks on the Jetson TX1 to max speed to help decrease compiliation time by running the following command:
+
+    > **Note**: After you run the script, you should notice that the CPU fan on the TX1 is turned on if it wasn't already running. 
+
+    ```bash
+    sudo ~/jetson_clocks.sh
+    ```
+
 1. Compile caffe fp16:
+
+    > **Note**: This could take 10 minutes or longer to complete.  Running jetson_clocks.sh ahead of time can reduce that time down to 8 minutes.  You will also likey see a number of `nvcc warning:` messages.  These can be safely ignored.
 
     ```bash
     cd /home/ubuntu/Code/fp16/caffe
@@ -126,6 +152,8 @@ ___
     ```
 
 1. Compile caffe fp32
+
+    > **Note**: This could take 12 minutes or longer to complete.  Running jetson_clocks.sh ahead of time can reduce that time down to 8 minutes.  You will also likey see a number of `nvcc warning:` messages.  These can be safely ignored.
 
     ```bash
     cd /home/ubuntu/Code/fp32/caffe
@@ -139,7 +167,7 @@ ___
 
 ## Downloading the AlexNet and GoogLeNet caffe models
 
-1. On the TX1, in a Terminal Window (Ctrl-Alt-T), change into the `deploy_files1` folder:
+1. On the TX1, in a Terminal Window (Ctrl-Alt-T), change into the `deploy_files` folder:
 
     ```bash
     cd /home/ubuntu/deploy_files
