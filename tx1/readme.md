@@ -82,10 +82,12 @@ ___
 
 1. From a terminal prompt on the TX1 (Ctrl-Alt-T), run the following command to install the caffe pre-requisites:
 
+    > **Note**: Make sure to press `y` to allow the installs to occur.
+
     ```bash
-    sudo apt-get install
+    sudo apt-get install \
       cmake \
-      git \ 
+      git \
       libboost-all-dev \
       libgflags-dev \
       libgoogle-glog-dev \
@@ -114,6 +116,21 @@ ___
 
     ```bash
     sudo ldconfig
+    ```
+1. Compile caffe fp16:
+
+    ```bash
+    cd /home/ubuntu/Code/fp16/caffe
+    make clean
+    make -j4 all
+    ```
+
+1. Compile caffe fp32
+
+    ```bash
+    cd /home/ubuntu/Code/fp32/caffe
+    make clean
+    make -j4 all
     ```
 
 ___
