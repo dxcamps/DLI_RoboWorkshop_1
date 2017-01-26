@@ -38,6 +38,11 @@ You can learn more about the JetPack [here](http://docs.nvidia.com/jetpack-l4t/i
 
 1. Install the JetPack for L4T 2.3.1 by following the instructions in the [Installation Guide](http://docs.nvidia.com/jetpack-l4t/index.html#developertools/mobile/jetpack/l4t/2.3/jetpack_l4t_install.htm) .  _Make sure to include the all of the steps under "**For Jetson TX1 64Bit**"_
 
+1. Once the JetPack installation is complete, you can login to the Jetson TX1 with the following credentials:
+
+    - Login:    `ubuntu`
+    - Password: `ubuntu`
+
 ___
 
 <a name="task2"></a>
@@ -352,6 +357,110 @@ In addition to  a breadboard and jumpers wires, for each LED you will need one e
 - NPN Transistor.  BC547 or 2N3904 or equivilant will work.
 - 2.3V LED.  Red is used here, but you can choose your color(s).
 
-Assemble the circuit to match the following diagram, and connect it to the appropriate pins on the J21 header of the TX1:
+To complete the setup, follow these steps:
 
-![Azure Credentials](fritzing/Safe5LED_bb.png)
+1. ***Turn off the JetsonTX1 and disconnect the AC power adapter.***  No reason to risk shorting something out while you are connecting the circuit to the TX1 and damaging the device.
+
+1. Assemble the circuit to match the following diagram, and connect it to the appropriate pins on the J21 header of the TX1:
+
+    ![Azure Credentials](fritzing/Safe5LED_bb.png)
+
+    The end end result should look similar to the following:
+
+    ![Circuit and TX1](fritzing/CircuitAndTX1.jpg)
+
+    Here's a closeup of the breadboard:
+
+    ![Breadboard closeup](fritzing/CircuitCloseup.jpg)
+
+    And of the J21 Connections:
+
+    ![TX1 J21 Closeup](fritzing/TX1J21Closeup.jpg)
+
+1. Reconnect the AC power adapter to the Jetson TX1 and turn on the Power on the TX1.  Once it is booted, login as the ubuntu user. 
+
+1. Change into the `deploy_files` folder.  To test the LEDs, we'll use the `turnOn5GPIO` program.  When you run this, all five LEDs should flash five times:
+
+    ```bash
+    sudo ./turnOn5GPIO
+    ```
+
+    ![turnOn5GPIO Test](fritzing/turnOn5GPIO.gif)
+
+___
+
+<a name="task8"></a>
+
+## Testing the models with the LEDs
+
+Now that the LEDs are connected and working, we'll test them out.
+
+We'll use the `/home/ubuntu/deploy_files/rundemo.sh` shell script to identify an item, and light the corresponding LED based on the item detected.  
+
+The current version of the script only recognizes three items.  It will light one of the first three LEDs according to what it sees:
+
+- LED 0: Granny Smith
+- LED 1: Lemon
+- LED 2: Banana
+
+The example could be extended to recognize additional, or different items.
+
+***ALL OF THE COMMANDS IN THIS STEP ARE RUN FROM THE `deploy_files` FOLDER***
+
+1. Make sure that you have run `turnOn5GPIO` to enable the GPIO pins for the LEDs:
+
+    ```bash
+    sudo ./turnOn5GPIO
+    ```
+
+1. Next, we'll use the `rundemo.sh` shell script and pass the `grannysmith.jpg` file in as an argument.  The script will run the same classification sample we ran above, but then will use the output to determine which LED to light.
+
+    ```bash
+    sudo ./rundemo.sh grannysmith.jpg
+    ```
+
+    The output should match the following:
+
+    ```bash
+    This is a gsmith. LED 0 should light.
+    Script complete.
+    ```
+
+    And the first LED (LED 0) should light:
+
+    ![LED 0 Lit](fritzing/LED0Lit.jpg)
+
+1. Run the `rundemo.sh` shell script again, but with `lemon.jpg`.
+
+    ```bash
+    sudo ./rundemo.sh lemon.jpg
+    ```
+
+    The output should match the following:
+
+    ```bash
+    This is a lemon. LED 1 should light.
+    Script complete.
+    ```
+
+    And the first LED (LED 0) should light:
+
+    ![LED 0 Lit](fritzing/LED1Lit.jpg)
+
+1. Run the `rundemo.sh` shell script again, but with `banana.jpg`.
+
+    ```bash
+    sudo ./rundemo.sh banana.jpg
+    ```
+
+    The output should match the following:
+
+    ```bash
+    This is a banana. LED 2 should light.
+    Script complete.
+    ```
+
+    And the first LED (LED 0) should light:
+
+    ![LED 0 Lit](fritzing/LED2Lit.jpg)
+
