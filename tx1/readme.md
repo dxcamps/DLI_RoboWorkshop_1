@@ -363,19 +363,19 @@ To complete the setup, follow these steps:
 
 1. Assemble the circuit to match the following diagram, and connect it to the appropriate pins on the J21 header of the TX1:
 
-    ![Azure Credentials](fritzing/Safe5LED_bb.png)
+    ![Azure Credentials](images/Safe5LED_bb.png)
 
     The end end result should look similar to the following:
 
-    ![Circuit and TX1](fritzing/CircuitAndTX1.jpg)
+    ![Circuit and TX1](images/CircuitAndTX1.jpg)
 
     Here's a closeup of the breadboard:
 
-    ![Breadboard closeup](fritzing/CircuitCloseup.jpg)
+    ![Breadboard closeup](images/CircuitCloseup.jpg)
 
     And of the J21 Connections:
 
-    ![TX1 J21 Closeup](fritzing/TX1J21Closeup.jpg)
+    ![TX1 J21 Closeup](images/TX1J21Closeup.jpg)
 
 1. Reconnect the AC power adapter to the Jetson TX1 and turn on the Power on the TX1.  Once it is booted, login as the ubuntu user. 
 
@@ -385,7 +385,7 @@ To complete the setup, follow these steps:
     sudo ./turnOn5GPIO
     ```
 
-    ![turnOn5GPIO Test](fritzing/turnOn5GPIO.gif)
+    ![turnOn5GPIO Test](images/turnOn5GPIO.gif)
 
 ___
 
@@ -428,7 +428,7 @@ The example could be extended to recognize additional, or different items.
 
     And the first LED (LED 0) should light:
 
-    ![LED 0 Lit](fritzing/LED0Lit.jpg)
+    ![LED 0 Lit](images/LED0Lit.jpg)
 
 1. Run the `rundemo.sh` shell script again, but with `lemon.jpg`.
 
@@ -445,7 +445,7 @@ The example could be extended to recognize additional, or different items.
 
     And the first LED (LED 0) should light:
 
-    ![LED 0 Lit](fritzing/LED1Lit.jpg)
+    ![LED 0 Lit](images/LED1Lit.jpg)
 
 1. Run the `rundemo.sh` shell script again, but with `banana.jpg`.
 
@@ -462,5 +462,7 @@ The example could be extended to recognize additional, or different items.
 
     And the first LED (LED 0) should light:
 
-    ![LED 0 Lit](fritzing/LED2Lit.jpg)
+    ![LED 0 Lit](images/LED2Lit.jpg)
+
+
 
