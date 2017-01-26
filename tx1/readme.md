@@ -207,9 +207,15 @@ ___
           /home/ubuntu/deploy_files/banana.jpg
         ```
 
-        sample output:
+        Sample output (notice that banana was the top guess, with a .9996 confidence level):
 
         ```bash
+        ---------- Prediction for /home/ubuntu/deploy_files/banana.jpg ----------
+        0.9996 - "n07753592 banana"
+        0.0002 - "n03786901 mortar"
+        0.0000 - "n07749582 lemon"
+        0.0000 - "n03775546 mixing bowl"
+        0.0000 - "n01945685 slug"
         ```
 
     - Next, test a lemonfrom the static lemon.jpg image:
@@ -223,6 +229,17 @@ ___
           /home/ubuntu/deploy_files/lemon.jpg
         ```
 
+        Sample output (notice that lemon was the top guess, with a .9642 confidence level):
+
+        ```bash
+        ---------- Prediction for /home/ubuntu/deploy_files/lemon.jpg ----------
+        0.9642 - "n07749582 lemon"
+        0.0321 - "n07747607 orange"
+        0.0023 - "n07716906 spaghetti squash"
+        0.0005 - "n03134739 croquet ball"
+        0.0002 - "n04409515 tennis ball"
+        ```
+
     - Finally, test to see if it can identify a granny smith apple from the static grannysmith.jpg image:
 
         ```bash
@@ -232,6 +249,17 @@ ___
           /home/ubuntu/deploy_files/imagenet_mean.binaryproto \
           /home/ubuntu/deploy_files/synset_words.txt \
           /home/ubuntu/deploy_files/grannysmith.jpg
+        ```
+
+        Sample output (notice that "Granny Smith" was the top guess, with a .9998 confidence level):
+
+        ```bash
+        ---------- Prediction for /home/ubuntu/deploy_files/grannysmith.jpg ----------
+        0.9998 - "n07742313 Granny Smith"
+        0.0002 - "n07753113 fig"
+        0.0000 - "n07749582 lemon"
+        0.0000 - "n12267677 acorn"
+        0.0000 - "n07716906 spaghetti squash"
         ```
 
 1. Next, test the fp32 caffe build by running the following commands:
@@ -249,9 +277,15 @@ ___
           /home/ubuntu/deploy_files/banana.jpg
         ```
 
-        sample output:
+        Sample output (notice that banana was the top guess, with a .9996 confidence level):
 
         ```bash
+        ---------- Prediction for /home/ubuntu/deploy_files/banana.jpg ----------
+        0.9996 - "n07753592 banana"
+        0.0002 - "n03786901 mortar"
+        0.0000 - "n07749582 lemon"
+        0.0000 - "n03775546 mixing bowl"
+        0.0000 - "n01945685 slug"
         ```
 
     - Next, test a lemonfrom the static lemon.jpg image:
@@ -265,6 +299,17 @@ ___
           /home/ubuntu/deploy_files/lemon.jpg
         ```
 
+        Sample output (notice that lemon was the top guess, with a .9642 confidence level):
+
+        ```bash
+        ---------- Prediction for /home/ubuntu/deploy_files/lemon.jpg ----------
+        0.9642 - "n07749582 lemon"
+        0.0321 - "n07747607 orange"
+        0.0023 - "n07716906 spaghetti squash"
+        0.0005 - "n03134739 croquet ball"
+        0.0002 - "n04409515 tennis ball"
+        ```
+
     - Finally, test to see if it can identify a granny smith apple from the static grannysmith.jpg image:
 
         ```bash
@@ -276,6 +321,13 @@ ___
           /home/ubuntu/deploy_files/grannysmith.jpg
         ```
 
+        Sample output (notice that "Granny Smith" was the top guess, with a .9998 confidence level):
 
-
-    
+        ```bash
+        ---------- Prediction for /home/ubuntu/deploy_files/grannysmith.jpg ----------
+        0.9998 - "n07742313 Granny Smith"
+        0.0002 - "n07753113 fig"
+        0.0000 - "n07749582 lemon"
+        0.0000 - "n12267677 acorn"
+        0.0000 - "n07716906 spaghetti squash"
+        ```
