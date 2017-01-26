@@ -331,3 +331,27 @@ ___
         0.0000 - "n12267677 acorn"
         0.0000 - "n07716906 spaghetti squash"
         ```
+___
+
+<a name="task7"></a>
+
+## Building the LED circuit
+
+During the workshop, attendees can test their models by holding an item (banana, lemon, granny smith apple) in front of the camera on the Jetson TX1.  The image will be evaluated, and an LED will be lit that corresponds to the item detected:
+
+- LED 0 : Granny Smith
+- LED 1 : 2emon
+- LED 2 : Banana
+
+In this step, you will build the LED circuit that will be used, and connect it to the Jetson TX1.  The circuit provides 5 LEDs, but if you only use the first three, you can skipt the extra two. 
+
+In addition to  a breadboard and jumpers wires, for each LED you will need one each of the following:
+
+- 10KΩ Resistor
+- 330Ω Resistor (Really any value between 220 and 580 should be fine.  Higher values will result in dimmer LEDs).
+- NPN Transistor.  BC547 or 2N3904 or equivilant will work.
+- 2.3V LED.  Red is used here, but you can choose your color(s).
+
+Assemble the circuit to match the following diagram, and connect it to the appropriate pins on the J21 header of the TX1:
+
+![Azure Credentials](fritzing/Safe5LED_bb.png)
