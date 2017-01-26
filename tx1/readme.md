@@ -183,7 +183,7 @@ ___
 
 1. Then download the AlexNet caffe model
 
-    > **Note**: This is a 233MB file and will take a minute or two or longer to download depending on the speed of your network.
+    > **Note**: This is a 233MB file and will five to six minutes or longer to download depending on the speed of your network.
 
     ```bash
     wget http://dl.caffe.berkeleyvision.org/bvlc_alexnet.caffemodel
