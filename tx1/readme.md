@@ -7,7 +7,7 @@ These are the steps to prepare the Jetson TX1 for the workshop.
 1. [Installing the Code and deploy_files](#task3)
 1. [Compiling caffe fp16 and fp32](#task4)
 1. [Downloading the AlexNet and GoogLeNet caffe models](#task5)
-1. [Testing the models](#task6)
+1. [Testing caffe](#task6)
 1. [Building the LED circuit](#task7)
 1. [Testing the models with the LEDs](#task8)
 
@@ -143,7 +143,7 @@ ___
 
 1. Compile caffe fp16:
 
-    > **Note**: This could take 10 minutes or longer to complete.  Running jetson_clocks.sh ahead of time can reduce that time down to 8 minutes.  You will also likey see a number of `nvcc warning:` messages.  These can be safely ignored.
+    > **Note**: This could take 10 minutes or longer to complete.  You will also likey see a number of `nvcc warning:` messages.  These can be safely ignored.
 
     ```bash
     cd /home/ubuntu/Code/fp16/caffe
@@ -153,7 +153,7 @@ ___
 
 1. Compile caffe fp32
 
-    > **Note**: This could take 12 minutes or longer to complete.  Running jetson_clocks.sh ahead of time can reduce that time down to 8 minutes.  You will also likey see a number of `nvcc warning:` messages.  These can be safely ignored.
+    > **Note**: This could take 12 minutes or longer to complete.  You will also likey see a number of `nvcc warning:` messages.  These can be safely ignored.
 
     ```bash
     cd /home/ubuntu/Code/fp32/caffe
@@ -165,7 +165,7 @@ ___
 
 <a name="task5"></a>
 
-## Downloading the AlexNet and GoogLeNet caffe models
+## Downloading the GoogLeNet and AlexNet caffe models
 
 1. On the TX1, in a Terminal Window (Ctrl-Alt-T), change into the `deploy_files` folder:
 
@@ -175,15 +175,107 @@ ___
 
 1. Download the GoogLeNet caffe model
 
+    > **Note**: This is a 51MB file and will take a minute or two or longer to download depending on the speed of your network.
+
     ```bash
     wget http://dl.caffe.berkeleyvision.org/bvlc_googlenet.caffemodel
     ```
 
 1. Then download the AlexNet caffe model
 
+    > **Note**: This is a 233MB file and will take a minute or two or longer to download depending on the speed of your network.
+
     ```bash
-    http://dl.caffe.berkeleyvision.org/bvlc_alexnet.caffemodel
+    wget http://dl.caffe.berkeleyvision.org/bvlc_alexnet.caffemodel
     ```
+___
+
+<a name="task6"></a>
+
+## Testing caffe
+
+1. On the TX1, in a Terminal Window (Ctrl-Alt-T),  test the fp16 caffe build by running the following commands:
+
+    - First test to see if it can identify a banana from a static banana.jpg image:
+
+        ```bash
+        ~/Code/fp16/caffe/build/examples/cpp_classification/classification.bin \
+          /home/ubuntu/deploy_files/deploy.prototxt \
+          /home/ubuntu/deploy_files/bvlc_alexnet.caffemodel \
+          /home/ubuntu/deploy_files/imagenet_mean.binaryproto \
+          /home/ubuntu/deploy_files/synset_words.txt \
+          /home/ubuntu/deploy_files/banana.jpg
+        ```
+
+        sample output:
+
+        ```bash
+        ```
+
+    - Next, test a lemonfrom the static lemon.jpg image:
+
+        ```bash
+        ~/Code/fp16/caffe/build/examples/cpp_classification/classification.bin \
+          /home/ubuntu/deploy_files/deploy.prototxt \
+          /home/ubuntu/deploy_files/bvlc_alexnet.caffemodel \
+          /home/ubuntu/deploy_files/imagenet_mean.binaryproto \
+          /home/ubuntu/deploy_files/synset_words.txt \
+          /home/ubuntu/deploy_files/lemon.jpg
+        ```
+
+    - Finally, test to see if it can identify a granny smith apple from the static grannysmith.jpg image:
+
+        ```bash
+        ~/Code/fp16/caffe/build/examples/cpp_classification/classification.bin \
+          /home/ubuntu/deploy_files/deploy.prototxt \
+          /home/ubuntu/deploy_files/bvlc_alexnet.caffemodel \
+          /home/ubuntu/deploy_files/imagenet_mean.binaryproto \
+          /home/ubuntu/deploy_files/synset_words.txt \
+          /home/ubuntu/deploy_files/grannysmith.jpg
+        ```
+
+1. Next, test the fp32 caffe build by running the following commands:
+
+    > **Note**: These are the same commands we ran to test the fp16 build, but simply pointed at the fp32 build instead.
+
+    - First test to see if it can identify a banana from a static banana.jpg image:
+
+        ```bash
+        ~/Code/fp32/caffe/build/examples/cpp_classification/classification.bin \
+          /home/ubuntu/deploy_files/deploy.prototxt \
+          /home/ubuntu/deploy_files/bvlc_alexnet.caffemodel \
+          /home/ubuntu/deploy_files/imagenet_mean.binaryproto \
+          /home/ubuntu/deploy_files/synset_words.txt \
+          /home/ubuntu/deploy_files/banana.jpg
+        ```
+
+        sample output:
+
+        ```bash
+        ```
+
+    - Next, test a lemonfrom the static lemon.jpg image:
+
+        ```bash
+        ~/Code/fp32/caffe/build/examples/cpp_classification/classification.bin \
+          /home/ubuntu/deploy_files/deploy.prototxt \
+          /home/ubuntu/deploy_files/bvlc_alexnet.caffemodel \
+          /home/ubuntu/deploy_files/imagenet_mean.binaryproto \
+          /home/ubuntu/deploy_files/synset_words.txt \
+          /home/ubuntu/deploy_files/lemon.jpg
+        ```
+
+    - Finally, test to see if it can identify a granny smith apple from the static grannysmith.jpg image:
+
+        ```bash
+        ~/Code/fp32/caffe/build/examples/cpp_classification/classification.bin \
+          /home/ubuntu/deploy_files/deploy.prototxt \
+          /home/ubuntu/deploy_files/bvlc_alexnet.caffemodel \
+          /home/ubuntu/deploy_files/imagenet_mean.binaryproto \
+          /home/ubuntu/deploy_files/synset_words.txt \
+          /home/ubuntu/deploy_files/grannysmith.jpg
+        ```
 
 
 
+    
