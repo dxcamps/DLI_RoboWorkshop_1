@@ -4,12 +4,13 @@ These are the steps to prepare the Jetson TX1 for the workshop.
 
 1. [Applying the JetPack for L4T 2.3.1](#task1)
 1. [Installing a Web Browser on the TX1](#task2)
-1. [Installing the Code and deploy_files](#task3)
-1. [Compiling caffe fp16 and fp32](#task4)
-1. [Downloading the AlexNet and GoogLeNet caffe models](#task5)
-1. [Testing caffe](#task6)
-1. [Building the LED circuit](#task7)
-1. [Testing the models with the LEDs](#task8)
+1. [Downloading the Code and deploy_files](#task3)
+1. [Installing Dependencies](#task4)
+1. [OPTIONAL - Compiling caffe fp16 and fp32](#task5)
+1. [OPTIONAL - Downloading the AlexNet and GoogLeNet caffe models](#task6)
+1. [Testing caffe](#task7)
+1. [Building the LED circuit](#task8)
+1. [Testing the models with the LEDs](#task9)
 
 ___
 
@@ -70,7 +71,7 @@ ___
 
 <a name="task3"></a>
 
-## Installing the Code and deploy_files
+## Downloading the Code and deploy_files
 
 There are two source code files provided by for the workshop.  
 
@@ -80,7 +81,7 @@ There are two source code files provided by for the workshop.
     - Both of the clones have been modified for this workshop.  Make sure to use the files from the `Code.zip` file rather than creating new clones of the repos.
 - `deploy_files.zip` contains:
     - Sample scripts, protobuf files, image files, etc.
-    - We will download the AlexNet and GoogLeNet caffemodel files here
+    - The AlexNet and GoogLeNet caffemodel files
 
 1. From the Terminal Window on the TX1 (Ctrl-Alt-T), make sure you are in the `/home/ubuntu` directory.
 
@@ -90,7 +91,7 @@ There are two source code files provided by for the workshop.
 
 1. Run the following statement to download the Code.zip file:
 
-    > **Note**: This is a 240MB file and will take 2 to 3 minutes or longer to download.
+    > **Note**: This is a 320MB file and will take 3 to 4 minutes or longer to download. This file is big because it includes the compiled version of both the fp16/caffe and fp32/caffe source folders.
 
     ```bash
     wget --no-check-certificate -O Code.zip http://aka.ms/codezip
@@ -102,7 +103,7 @@ There are two source code files provided by for the workshop.
     ```
 1. Next, from the `/home/ubuntu` directory, get `deploy_files.zip`
 
-    > **Note**: This file is only 19MB in size so it should download pretty quickly.  
+    > **Note**: This is a 282MB file, and will take 2 to 3 minutes or longer to download.  Why so large?  This file includes the AlexNet and GoogLeNet caffemodel files which total about 300MB unzipped together.
 
     ```bash
     wget --no-check-certificate -O deploy_files.zip http://aka.ms/deployfileszip
@@ -122,7 +123,7 @@ ___
 
 <a name="task4"></a>
 
-## Compiling caffe fp16 and fp32
+## Installing Dependencies
 
 1. From a terminal prompt on the TX1 (Ctrl-Alt-T), run the following command to install the caffe pre-requisites:
 
@@ -177,15 +178,22 @@ ___
     /usr/lib/aarch64-linux-gnu/libsnappy.so.1.3.0
     ```
 
-1. You can set the clocks on the Jetson TX1 to max speed to help decrease compiliation time by running the following command:
+1. You can set the clocks on the Jetson TX1 to max speed to help decrease compiliation and execution times by running the following command:
 
     > **Note**: After you run the script, you should notice that the CPU fan on the TX1 is turned on if it wasn't already running. 
 
     ```bash
     sudo ~/jetson_clocks.sh
     ```
+___
 
-1. Compile caffe fp16:
+<a name="task5"></a>
+
+## OPTIONAL - Compiling caffe fp16 and fp32
+
+The Code.zip file you downloaded previously should have compiled versions of both the fp16/caffe and fp32/caffe sources.  However, if there are issues with the builds, you can recompile them using these steps.
+
+1. OPTIONAL - Compile caffe fp16.
 
     > **Note**: This could take 10 minutes or longer to complete.  You will also likey see a number of `nvcc warning:` messages.  These can be safely ignored.
 
@@ -195,7 +203,7 @@ ___
     make -j4 all
     ```
 
-1. Compile caffe fp32
+1. OPTIONAL - Compile caffe fp32.
 
     > **Note**: This could take 12 minutes or longer to complete.  You will also likey see a number of `nvcc warning:` messages.  These can be safely ignored.
 
@@ -204,12 +212,13 @@ ___
     make clean
     make -j4 all
     ```
-
 ___
 
-<a name="task5"></a>
+<a name="task6"></a>
 
-## Downloading the GoogLeNet and AlexNet caffe models
+## OPTIONAL - Downloading the GoogLeNet and AlexNet caffe models
+
+The `deploy_files.zip` file you downloaded previously should already have included these files.  If you have issues with them, you can re-download them using these steps.
 
 1. On the TX1, in a Terminal Window (Ctrl-Alt-T), change into the `deploy_files` folder:
 
@@ -217,7 +226,7 @@ ___
     cd /home/ubuntu/deploy_files
     ```
 
-1. Download the GoogLeNet caffe model
+1. OPTIONAL - Download the GoogLeNet caffe model
 
     > **Note**: This is a 51MB file and will take a minute or two or longer to download depending on the speed of your network.
 
@@ -225,7 +234,7 @@ ___
     wget http://dl.caffe.berkeleyvision.org/bvlc_googlenet.caffemodel
     ```
 
-1. Then download the AlexNet caffe model
+1. OPTIONAL - Download the AlexNet caffe model
 
     > **Note**: This is a 233MB file and will five to six minutes or longer to download depending on the speed of your network.
 
@@ -234,7 +243,7 @@ ___
     ```
 ___
 
-<a name="task6"></a>
+<a name="task7"></a>
 
 ## Testing caffe
 
@@ -377,7 +386,7 @@ ___
         ```
 ___
 
-<a name="task7"></a>
+<a name="task8"></a>
 
 ## Building the LED circuit
 
@@ -387,7 +396,7 @@ During the workshop, attendees can test their models by holding an item (banana,
 - LED 1 : Lemon
 - LED 2 : Banana
 
-In this step, you will build the LED circuit that will be used, and connect it to the Jetson TX1.  The circuit provides 5 LEDs, but if you only use the first three, you can skipt the extra two. 
+In this step, you will build the LED circuit that will be used, and connect it to the Jetson TX1.  The circuit provides 5 LEDs, but if you only use the first three, you can skipt the extra two.
 
 In addition to  a breadboard and jumpers wires, for each LED you will need one each of the following:
 
@@ -428,7 +437,7 @@ To complete the setup, follow these steps:
 
 ___
 
-<a name="task8"></a>
+<a name="task9"></a>
 
 ## Testing the models with the LEDs
 
