@@ -72,7 +72,46 @@ ___
 
 ## Installing the Code and deploy_files
 
-There are two source code files provided by for the workshop.
+There are two source code files provided by for the workshop.  
+
+- `Code.zip` contains two versions of caffe from the http://github.com/nvidia/caffe repo.
+    - `/Code/fp32/caffe` is a clone of the default [caffe-0.15](https://github.com/nvidia/caffe) branch
+    - `/Code/fp16/caffe` contains a clone of the [experimental/fp16](https://github.com/nvidia/caffe/tree/experimental/fp16) branch
+    - Both of the clones have been modified for this workshop.  Make sure to use the files from the `Code.zip` file rather than creating new clones of the repos.
+- `deploy_files.zip` contains:
+    - Sample scripts, protobuf files, image files, etc.
+    - We will download the AlexNet and GoogLeNet caffemodel files here
+
+1. From the Terminal Window on the TX1 (Ctrl-Alt-T), make sure you are in the `/home/ubuntu` directory.
+
+    ```bash
+    cd /home/ubuntu
+    ```
+
+1. Run the following statement to download the Code.zip file:
+
+    > **Note**: This is a 240MB file and will take 2 to 3 minutes or longer to download.
+
+    ```bash
+    wget --no-check-certificate -O Code.zip http://aka.ms/codezip
+    ```
+1. Still in the `/home/ubuntu` directory, undzip the `Code.zip` file with:
+
+    ```bash
+    unzip Code.zip
+    ```
+1. Next, from the `/home/ubuntu` directory, get `deploy_files.zip`
+
+    > **Note**: This file is only 19MB in size so it should download pretty quickly.  
+
+    ```bash
+    wget --no-check-certificate -O deploy_files.zip http://aka.ms/deployfileszip
+    ```
+1. Once it is downloaded, unzip it:
+
+    ```bash
+    unzip deploy_files.zip
+    ```
 
 1. From the [Google Drive](https://drive.google.com/drive/u/1/folders/0B-wiicg2Oj7nZWtUMzZrZXFGdjg), download the `Code.zip` and `deploy_files.zip` files
      - We need a more publicly accessible path for these
