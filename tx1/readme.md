@@ -398,7 +398,7 @@ In addition to  a breadboard and jumpers wires, for each LED you will need one e
 
 To complete the setup, follow these steps:
 
-1. ***Turn off the JetsonTX1 and disconnect the AC power adapter.***  No reason to risk shorting something out while you are connecting the circuit to the TX1 and damaging the device.
+1. ***Turn off the Jetson TX1 and disconnect the AC power adapter.***  No reason to risk shorting something out while you are connecting the circuit to the TX1 and damaging the device.
 
 1. Assemble the circuit to match the following diagram, and connect it to the appropriate pins on the J21 header of the TX1:
 
