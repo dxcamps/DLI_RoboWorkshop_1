@@ -384,7 +384,7 @@ ___
 During the workshop, attendees can test their models by holding an item (banana, lemon, granny smith apple) in front of the camera on the Jetson TX1.  The image will be evaluated, and an LED will be lit that corresponds to the item detected:
 
 - LED 0 : Granny Smith
-- LED 1 : 2emon
+- LED 1 : Lemon
 - LED 2 : Banana
 
 In this step, you will build the LED circuit that will be used, and connect it to the Jetson TX1.  The circuit provides 5 LEDs, but if you only use the first three, you can skipt the extra two. 
