@@ -2,6 +2,14 @@
 
 This assumes that the Code.zip file has been installed on the Jetson-tx1 into /home/ubuntu/Code and deploy_files.zip has been install into /home/ubuntu/deploy_files.
 
+Other assumptions are that the following CUDA packages are installed:
+
+```
+sudo apt-get cuda-toolkit libdnn5
+sudo ln -s /usr/local/cuda-8.0 /usr/local/cuda
+```
+
+
 ### Install Python Dependencies
 
 ```
@@ -14,6 +22,7 @@ sudo apt-get install cmake git aptitude screen g++ libboost-all-dev \
 ```
 
 ### Create pycaffe interfaces (separately for fp16 and fp32)
+NOTE: Currently works for fp32 only
 
 ```
 cd /home/ubuntu/Code/fpXX/caffe
@@ -27,10 +36,10 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/aarch64-linux-gnu
 
 Then build the interface.  This may trigger a complete rebuild of caffe depending on the state of your build.
 ```
-make pycaffe
+make -j3 pycaffe
 ```
 
-### Set environment for python interface
+### Set environment for python interface, this can be either fp16 or fp32
 
 export CAFFE_HOME=/home/ubuntu/Code/fp32
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CAFFE_HOME}/caffe/build/lib

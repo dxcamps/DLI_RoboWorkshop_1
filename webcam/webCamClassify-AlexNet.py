@@ -5,8 +5,8 @@ import sys
 import argparse
 import time
 import cv2
+import re
 
-import numpy as np
 import matplotlib.pyplot as plt
 
 import caffe
@@ -24,13 +24,13 @@ def main(argv):
 	parser.add_argument(
 	    "--model_def",
 	    default=os.path.join(pycaffe_dir,
-	            "/home/ubuntu/caffe/models/bvlc_reference_caffenet/deploy.prototxt"),
+	            "/home/ubuntu/deploy_files/deploy_alexnet_b1.prototxt"),
 	    help="Model definition file."
 	)
 	parser.add_argument(
 	    "--pretrained_model",
 	    default=os.path.join(pycaffe_dir,
-	            "/home/ubuntu/caffe/models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel"),
+	            "/home/ubuntu/deploy_files/bvlc_alexnet.caffemodel"),
 	    help="Trained model weights file."
 	)
 	parser.add_argument(
@@ -42,7 +42,7 @@ def main(argv):
 	parser.add_argument(
 	    "--mean_file",
 	    default=os.path.join(pycaffe_dir,
-	                         '/home/ubuntu/caffe/data/ilsvrc12/mean.npy'),
+	                         '/home/ubuntu/deploy_files/mean.npy'),
 	    help="Data set image mean of [Channels x Height x Width] dimensions " +
 	         "(numpy array). Set to '' for no mean subtraction."
 	)
@@ -62,7 +62,7 @@ def main(argv):
 	parser.add_argument(
 	    "--labels_file",
 	    default=os.path.join(pycaffe_dir,
-	            "/home/ubuntu/caffe/data/ilsvrc12/synset_words.txt"),
+	            "/home/ubuntu/deploy_files/synset_words.txt"),
 	    help="Readable label definition file."
 	)
 	args = parser.parse_args()
@@ -93,6 +93,7 @@ def main(argv):
 
 	semaphore = False
 
+# Change the camera number here, the built in unit should be 0
 	stream = cv2.VideoCapture(1)
 
 	with open(args.labels_file) as f:
@@ -124,41 +125,22 @@ def main(argv):
 	
 		# scores = out['softmax']
 		scores = out['prob']
+	
 
-		indices = scores.argmax()
-		sl=np.argsort(scores)
-		sl=sorted(range(len(scores)),key=scores.__getitem__)
-		print sl
-		
-		#print indices
-		#print sl
-		#print labels[indices]
+		dispcount=5
 
-		print "here"
-		for i in range(0,5):
-			print sl[i]
-			print labels[sl[i]]
-			#print labels[sl[i]],scores[sl[i]]
+		maxmatch = scores.argmax()
+		sd=sorted(range(len(scores[0,:])),key=lambda x:scores[0,x],reverse=True)
 
-#		# Remove low confidence predictions
-#		indices[scores.max()<0.5] = 10
-#
-#		#indices = scores.argmax(axis=1)[0,:,:]
-#		# Remove low confidence predictions
-#		#indices[scores.max(axis=0)[0]<0.5] = 10
-#		
-#		frame_size = frame.shape[:2]
-#		step_size = (float(frame.shape[0])/indices.shape[0],
-#					 float(frame.shape[1])/indices.shape[1])
-#		
-#		for i in range(0,indices.shape[0]):
-#			for j in range(0,indices.shape[1]):
-#				pred = labels[indices[i,j]]
-#				position = (int((j + .5) * step_size[1]),
-#							int((i + .5) * step_size[0]))
-#				
-#				cv2.putText(frame,pred,
-#					position, cv2.FONT_HERSHEY_SIMPLEX,0.4,(0,255,0),1)	
+		for j in range(0,dispcount):	
+			wlbl=re.sub(r'^\W*\w+\W*','',labels[sd[j]])
+			pred="%4.1f%% %s" % (scores[0,sd[j]]*100,wlbl)
+			print pred
+			position = (10,20+20*j)
+				
+			cv2.putText(frame,pred, 
+				position, cv2.FONT_HERSHEY_SIMPLEX,0.6,(0,255,0),1)	
+
 		
 		cv2.imshow('test',frame)
 		cv2.waitKey(1)
