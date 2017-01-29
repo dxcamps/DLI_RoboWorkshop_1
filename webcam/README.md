@@ -41,15 +41,17 @@ make -j3 pycaffe
 
 ### Set environment for python interface, this can be either fp16 or fp32
 
+```
 export CAFFE_HOME=/home/ubuntu/Code/fp32
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CAFFE_HOME}/caffe/build/lib
 export PYTHONPATH=${PYTHONPATH}:${CAFFE_HOME}/caffe/python/
+```
 
 ### Run the webcam driver
 
 ```
 cd /home/ubuntu/deploy_files/webcam
-python webCamClassify.py
+python webCamClassify-AlexNet.py
 ```
 
 

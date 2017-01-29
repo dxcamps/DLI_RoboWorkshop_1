@@ -42,7 +42,7 @@ def main(argv):
 	parser.add_argument(
 	    "--mean_file",
 	    default=os.path.join(pycaffe_dir,
-	                         '/home/ubuntu/deploy_files/mean.npy'),
+	                         '/home/ubuntu/deploy_files/imagenet_mean.binaryproto'),
 	    help="Data set image mean of [Channels x Height x Width] dimensions " +
 	         "(numpy array). Set to '' for no mean subtraction."
 	)
@@ -69,7 +69,14 @@ def main(argv):
 
 	mean, channel_swap = None, None
 	if args.mean_file:
-	    mean = np.load(args.mean_file)
+	   ### How to load a pickle file
+	   ### mean = np.load(args.mean_file)
+	   data=open(args.mean_file,'rb').read()
+	   blob=caffe.proto.caffe_pb2.BlobProto()
+	   blob.ParseFromString(data) 
+	   mean=np.array(caffe.io.blobproto_to_array(blob))[0,:,:,:]
+
+	   
 	if args.channel_swap:
 	    channel_swap = [int(s) for s in args.channel_swap.split(',')]
 
@@ -94,7 +101,7 @@ def main(argv):
 	semaphore = False
 
 # Change the camera number here, the built in unit should be 0
-	stream = cv2.VideoCapture(0)
+	stream = cv2.VideoCapture(1)
 
 	with open(args.labels_file) as f:
 		rawlabels = f.read().splitlines()
