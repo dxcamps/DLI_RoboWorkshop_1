@@ -49,12 +49,21 @@ export PYTHONPATH=${PYTHONPATH}:${CAFFE_HOME}/caffe/python/
 
 ### Run the webcam driver
 
+By default, it is going to use the AlexNet config files found in the deploy_files directory. 
+
 ```
-cd /home/ubuntu/deploy_files/webcam
-python webCamClassify-AlexNet.py
+cd /home/ubuntu/DLI_RoboWorkshop_1/webcam
+python webCamClassify.py
 ```
 
+If you want to use the CPU mode, add the flag --with-cpu
 
+If you want to use the GoogleNet model, you can specify that via the command line:
+
+```
+cd /home/ubuntu/DLI_RoboWorkshop_1/webcam
+python webCamClassify.py --model_def /home/ubuntu/deploy_files/deploy_googlenet_b1.prototxt --pretrained_model /home/ubuntu/deploy_files/bvlc_googlenet.caffemodel
+```
 
 
 

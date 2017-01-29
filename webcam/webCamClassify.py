@@ -34,11 +34,11 @@ def main(argv):
 	    help="Trained model weights file."
 	)
 	parser.add_argument(
-	    "--gpu",
-	default=True,
+	    "--cpu",
+	default=False,
 	    action='store_true',
-	    help="Switch for gpu computation."
-	)
+	    help="Switch for cpu computation."
+	)	
 	parser.add_argument(
 	    "--mean_file",
 	    default=os.path.join(pycaffe_dir,
@@ -80,12 +80,12 @@ def main(argv):
 	if args.channel_swap:
 	    channel_swap = [int(s) for s in args.channel_swap.split(',')]
 
-	if args.gpu:
-	    caffe.set_mode_gpu()
-	    print("GPU mode")
-	else:
+	if args.cpu:
 	    caffe.set_mode_cpu()
 	    print("CPU mode")
+	else:
+	    caffe.set_mode_gpu()
+	    print("GPU mode")
 
 	classifier = caffe.Net(args.model_def, args.pretrained_model, caffe.TEST)
 	transformer = caffe.io.Transformer({'data': classifier.blobs['data'].data.shape})
@@ -107,9 +107,6 @@ def main(argv):
 		rawlabels = f.read().splitlines()
 
 		labels = [r for r in rawlabels]
-		print labels
-		print type(labels)
-		print len(labels)
 		
 	while semaphore == False:
 		(grabbed, frame) = stream.read()
