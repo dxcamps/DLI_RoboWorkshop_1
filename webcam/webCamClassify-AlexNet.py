@@ -35,7 +35,7 @@ def main(argv):
 	)
 	parser.add_argument(
 	    "--gpu",
-	default=False,
+	default=True,
 	    action='store_true',
 	    help="Switch for gpu computation."
 	)
