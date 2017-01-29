@@ -101,7 +101,7 @@ def main(argv):
 	semaphore = False
 
 # Change the camera number here, the built in unit should be 0
-	stream = cv2.VideoCapture(1)
+	stream = cv2.VideoCapture(0)
 
 	with open(args.labels_file) as f:
 		rawlabels = f.read().splitlines()
