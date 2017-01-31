@@ -3,25 +3,25 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
-            "value": "southcentralus"
+            "value": "eastus"
         },
-        "virtualMachines_dlirwxxxvm_name": {
-            "value": "dlirwxxxvm"
+        "virtualMachines_vm_name": {
+            "value": "dlirw<name>-vm"
         },
-        "networkInterfaces_dlirwxxx-nic_name": {
-            "value": "dlirwxxx-nic"
+        "networkInterfaces_nic_name": {
+            "value": "dlirw<name>-nic"
         },
-        "networkSecurityGroups_dlirwxxxvm_nsg_name": {
-            "value": "dlirwxxxvm-nsg"
+        "networkSecurityGroups_nsg_name": {
+            "value": "dlirw<name>-nsg"
         },
-        "publicIPAddresses_dlirwxxxvm_ip_name": {
-            "value": "dlirwxxxvm-ip"
+        "publicIPAddresses_ip_name": {
+            "value": "dlirw<name>-ip"
         },
-        "virtualNetworks_dlirwxxxgroup_vnet_name": {
-            "value": "dlirwxxxgroup-vnet"
+        "virtualNetworks_vnet_name": {
+            "value": "dlirw<name>-vnet"
         },
-        "storageAccounts_dlirwxxxstorage_name": {
-            "value": "dlirwxxxstorage"
+        "storageAccounts_account_name": {
+            "value": "dlirw<name>-storage"
         }
     }
 }

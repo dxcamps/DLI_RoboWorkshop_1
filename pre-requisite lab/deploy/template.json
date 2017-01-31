@@ -3,31 +3,35 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
-            "defaultValue": "southcentralus",
+            "defaultValue": "eastus",
             "type": "string"
         },
-        "virtualMachines_dlirwxxxvm_name": {
-            "defaultValue": "dlirwxxxvm",
+        "virtualMachines_vm_name": {
+            "defaultValue": "dlirw<name>-vm",
             "type": "string"
         },
-        "networkInterfaces_dlirwxxx-nic_name": {
-            "defaultValue": "dlirwxxx-nic",
+        "networkInterfaces_nic_name": {
+            "defaultValue": "dlirw<name>-nic",
             "type": "string"
         },
-        "networkSecurityGroups_dlirwxxxvm_nsg_name": {
-            "defaultValue": "dlirwxxxvm-nsg",
+        "networkSecurityGroups_nsg_name": {
+            "defaultValue": "dlirw<name>-nsg",
             "type": "string"
         },
-        "publicIPAddresses_dlirwxxxvm_ip_name": {
-            "defaultValue": "dlirwxxxvm-ip",
+        "publicIPAddresses_ip_name": {
+            "defaultValue": "dlirw<name>-ip",
             "type": "string"
         },
-        "virtualNetworks_dlirwxxxgroup_vnet_name": {
-            "defaultValue": "dlirwxxxgroup-vnet",
+        "virtualNetworks_vnet_name": {
+            "defaultValue": "dlirw<name>-vnet",
             "type": "string"
         },
-        "storageAccounts_dlirwxxxstorage_name": {
-            "defaultValue": "dlirwxxxstorage",
+        "storageAccounts_account_name": {
+            "defaultValue": "dlirw<name>-storage",
+            "type": "string"
+        },
+        "virtualHardDisks_vhd_name": {
+            "defaultValue": "msftnvidia.vhd",
             "type": "string"
         }
     },
@@ -35,20 +39,20 @@
     "resources": [
         {
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[parameters('virtualMachines_dlirwxxxvm_name')]",
+            "name": "[parameters('virtualMachines_vm_name')]",
             "apiVersion": "2015-06-15",
             "location": "[parameters('location')]",
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "Standard_DS1_v2"
+                    "vmSize": "Standard_NC6"
                 },
                 "storageProfile": {
                     "osDisk": {
-                        "name": "[parameters('virtualMachines_dlirwxxxvm_name')]",
+                        "name": "[parameters('virtualMachines_vm_name')]",
                         "osType": "Linux",
                         "createOption": "Attach",
                         "vhd": {
-                            "uri": "[concat('https', '://', parameters('storageAccounts_dlirwxxxstorage_name'), '.blob.core.windows.net/vhds/nvidiavm20170104130104.vhd')]"
+                            "uri": "[concat('https', '://', parameters('storageAccounts_account_name'), '.blob.core.windows.net/vhds/', parameters('virtualHardDisks_vhd_name'))]"
                         },
                         "caching": "ReadWrite"
                     },
@@ -57,20 +61,20 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_dlirwxxx-nic_name'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_nic_name'))]"
                         }
                     ]
                 }
             },
             "resources": [],
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_dlirwxxxstorage_name'))]",
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_dlirwxxx-nic_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_account_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_nic_name'))]"
             ]
         },
         {
             "type": "Microsoft.Network/networkInterfaces",
-            "name": "[parameters('networkInterfaces_dlirwxxx-nic_name')]",
+            "name": "[parameters('networkInterfaces_nic_name')]",
             "apiVersion": "2016-03-30",
             "location": "[parameters('location')]",
             "properties": {
@@ -81,10 +85,10 @@
                             "privateIPAddress": "10.1.0.4",
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_dlirwxxxvm_ip_name'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_ip_name'))]"
                             },
                             "subnet": {
-                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_dlirwxxxgroup_vnet_name')), '/subnets/default')]"
+                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_name')), '/subnets/default')]"
                             }
                         }
                     }
@@ -94,19 +98,19 @@
                 },
                 "enableIPForwarding": false,
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_dlirwxxxvm_nsg_name'))]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
                 }
             },
             "resources": [],
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_dlirwxxxvm_ip_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_dlirwxxxgroup_vnet_name'))]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_dlirwxxxvm_nsg_name'))]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_ip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
             ]
         },
         {
             "type": "Microsoft.Network/networkSecurityGroups",
-            "name": "[parameters('networkSecurityGroups_dlirwxxxvm_nsg_name')]",
+            "name": "[parameters('networkSecurityGroups_nsg_name')]",
             "apiVersion": "2016-03-30",
             "location": "[parameters('location')]",
             "properties": {
@@ -157,7 +161,7 @@
         },
         {
             "type": "Microsoft.Network/publicIPAddresses",
-            "name": "[parameters('publicIPAddresses_dlirwxxxvm_ip_name')]",
+            "name": "[parameters('publicIPAddresses_ip_name')]",
             "apiVersion": "2016-03-30",
             "location": "[parameters('location')]",
             "properties": {
@@ -169,7 +173,7 @@
         },
         {
             "type": "Microsoft.Network/virtualNetworks",
-            "name": "[parameters('virtualNetworks_dlirwxxxgroup_vnet_name')]",
+            "name": "[parameters('virtualNetworks_vnet_name')]",
             "apiVersion": "2016-03-30",
             "location": "[parameters('location')]",
             "properties": {
@@ -192,11 +196,11 @@
         },
         {
             "type": "Microsoft.DevTestLab/schedules",
-            "name": "[concat('shutdown-computevm-', parameters('virtualMachines_dlirwxxxvm_name'))]",
+            "name": "[concat('shutdown-computevm-', parameters('virtualMachines_vm_name'))]",
             "apiVersion": "2016-05-15",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachines_dlirwxxxvm_name'))]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachines_vm_name'))]"
             ],
             "properties": {
                 "status": "Enabled",
@@ -210,7 +214,7 @@
                     "timeInMinutes": 15,
                     "webhookUrl": ""
                 },
-                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines',parameters('virtualMachines_dlirwxxxvm_name'))]"
+                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines',parameters('virtualMachines_vm_name'))]"
             }
         },
         {
@@ -220,9 +224,9 @@
                 "tier": "Standard"
             },
             "kind": "Storage",
-            "name": "[parameters('storageAccounts_dlirwxxxstorage_name')]",
+            "name": "[parameters('storageAccounts_account_name')]",
             "apiVersion": "2016-01-01",
-            "location": "southcentralus",
+            "location": "[parameters('location')]",
             "tags": {},
             "properties": {},
             "resources": [],
