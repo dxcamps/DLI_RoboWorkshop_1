@@ -7,39 +7,18 @@
             "type": "string"
         },
         "name_prefix": {
-            "value": "name",
+            "defaultValue": "name",
             "type": "string"
         }
     },
     "variables":{
-        "virtualMachines_vm_name": {
-            "defaultValue": "[concat(parameters('name_prefix'),'vm')]",
-            "type": "string"
-        },
-        "networkInterfaces_nic_name": {
-            "defaultValue": "[concat(parameters('name_prefix'),'nic')]",
-            "type": "string"
-        },
-        "networkSecurityGroups_nsg_name": {
-            "defaultValue": "[concat(parameters('name_prefix'),'nsg')]",
-            "type": "string"
-        },
-        "publicIPAddresses_ip_name": {
-            "defaultValue": "[concat(parameters('name_prefix'),'ip')]",
-            "type": "string"
-        },
-        "virtualNetworks_vnet_name": {
-            "defaultValue": "[concat(parameters('name_prefix'),'vnet')]",
-            "type": "string"
-        },
-        "storageAccounts_account_name": {
-            "defaultValue": "[concat(parameters('name_prefix'),'storage')]",
-            "type": "string"
-        },
-        "virtualHardDisks_vhd_name": {
-            "defaultValue": "msftnvidia.vhd",
-            "type": "string"
-        }
+        "virtualMachines_vm_name": "[concat(parameters('name_prefix'),'vm')]",
+        "networkInterfaces_nic_name": "[concat(parameters('name_prefix'),'nic')]",
+        "networkSecurityGroups_nsg_name": "[concat(parameters('name_prefix'),'nsg')]",
+        "publicIPAddresses_ip_name": "[concat(parameters('name_prefix'),'ip')]",
+        "virtualNetworks_vnet_name": "[concat(parameters('name_prefix'),'vnet')]",
+        "storageAccounts_account_name": "[concat(parameters('name_prefix'),'storage')]",
+        "virtualHardDisks_vhd_name": "msftnvidia.vhd"
     },
     "resources": [
         {

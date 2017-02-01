@@ -159,11 +159,12 @@ commands and some problems they encounter...`", asking you to participate in azu
     azure login
     ```
 
-1. The output should be something similar to the following:
+1. The output should be something similar to the following (output shown wrapped for readability):
 
     ```bash
     info:    Executing command login
-    info:    To sign in, use a web browser to open the page https://aka.ms/devicelogin and enter the code XXXXXXXXX to authenticate.
+    info:    To sign in, use a web browser to open the page https://aka.ms/devicelogin 
+             and enter the code XXXXXXXXX to authenticate.
     ```
 1. As instructed, copy the `XXXXXXXXX` code from the info message, open your browser, and navigate to the [http://aka.ms/devicelogin](http://aka.ms/devicelogin) site to authenticate:
 
@@ -241,7 +242,7 @@ commands and some problems they encounter...`", asking you to participate in azu
 
 The Azure Virtual Machine that you will be using for this lab will be based on a copy of a pre-existing Virtual Hard Disk (VHD) that we have created for your use.  The pre-existing VHD has Ubuntu 16.0.4 LTS installed, along with all of the deep learning tools, frameworks, data sets and jupyter notebooks that you will need for the lab.  In this task, you will create an Azure Storage Account, and blob container that will hold your copy of the VHD.
 
-1. First, to create your Resource Group, from your system's command prompt or terminal window, issue the following command. Make sure to replace the ***&lt;name&gt;*** place holder in the `dlirw<name>-group` name with the naming prefix you chose above.
+1. First, to create your Resource Group, from your system's command prompt or terminal window, issue the following command. Make sure to replace the ***&lt;name&gt;*** place holder in the `<name>group` name with the naming prefix you chose above.
 
     > **Note**: Recall that we need to create all of our resources in the same "Location" and that because the N-Series NVidia backed GPU Virtual Machines are currently only availalbe in the "**eastus**" region, we want to sepcify that as the location for our storage account.
 
@@ -272,7 +273,7 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     info:    group create command OK
     ```
 
-1. Next, create the Azure Storage Account within your new resource group, making sure again to use the appropriate location.  In the following command replace `dlirw<name>-group` and `dlirw<name>-storage` with the resource group and storage account names determined above:
+1. Next, create the Azure Storage Account within your new resource group, making sure again to use the appropriate location.  In the following command replace `<name>group` and `<name>storage` with the resource group and storage account names determined above:
 
     > **Note**: This command may take thirty seconds or longer to execute
 
@@ -321,7 +322,7 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
 
 1. Next, we'll create the container to store the vhd for our virtual machine:
 
-    > **Note**: This is a SINGLE command wrapped across multiple lines for readability. You need to copy, or type the syntax below as a single line, with the appropriate values for the `--account-name dlirw<name>-storage`  and  `--account-key xxx...xxx==` values.
+    > **Note**: This is a SINGLE command wrapped across multiple lines for readability. You need to copy, or type the syntax below as a single line, with the appropriate values for the `--account-name <name>storage`  and  `--account-key xxx...xxx==` values.
 
     ```bash
     azure storage container create
@@ -347,6 +348,13 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     data:    }
     info:    storage container create command OK
     ```
+
+1. Reset the password with the following command:
+
+    ```bash
+    azure vm reset-access -g <name>group -n <name>vm -u drcrook -p David@234567890
+    ```
+
 ---
 
 <a name="task6"></a>
@@ -367,7 +375,7 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
 
 1. To copy the pre-existing VHD from the hosted storage account into the container you just created, use the `azure storage blob copy start` command with the values from the table above:
 
-    > **Note**: This is ONE command.  It is shown here wrapped across multiple lines but you will need to copy and paste this command into a text editor, replace the `--dest-account-name dlirw<name>-storage` and `--dest-account-key xxx...xxx==` place holders with your actual values, then copy and paste that completed single line syntax into your command prompt or terminal:
+    > **Note**: This is ONE command.  It is shown here wrapped across multiple lines but you will need to copy and paste this command into a text editor, replace the `--dest-account-name <name>storage` and `--dest-account-key xxx...xxx==` place holders with your actual values, then copy and paste that completed single line syntax into your command prompt or terminal:
 
     ```bash
     azure storage blob copy start
@@ -508,6 +516,7 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
 1. From the list of resources in the Resource Group, click on your Virtual Machine to open it's overview blade. 
 1. From the list of settings along the left, click on "**Auto-shutdown**".  
 1. Then in the "**Auto-shutdown**" blade, configure the option according to your desires.  You can read more about the feature here, [Announcing auto-shutdown for VMs using Azure Resource Manager](https://azure.microsoft.com/en-us/blog/announcing-auto-shutdown-for-vms-using-azure-resource-manager/)
+
 ---
 
 <a name="task9"></a>
