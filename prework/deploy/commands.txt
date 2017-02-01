@@ -2,16 +2,16 @@
 #### Important Values
 #### ================================================================================
 
-Name Prefix: 		    <name>
+Name Prefix:          <name>
 
-Resource Group:		    <name>group
+Resource Group:       <name>group
 
-Storage Account:	    <name>storage
-Storage Account Key: 	<key1>
+Storage Account:      <name>storage
+Storage Account Key:  <key1>
 
-Virtual Machine:	    <name>vm
-Public IP address:	    <publicip>
-DNS FQDN:		        <fqdn>
+Virtual Machine:      <name>vm
+Public IP address:    <publicip>
+DNS FQDN:             <fqdn>
 
 #### ================================================================================
 #### Understanding the Azure Resources in this Lab

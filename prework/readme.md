@@ -29,14 +29,15 @@ To complete this lab, you will need to have the following items:
 In this lab, you will complete the following tasks:
 
 1. [Understanding the Azure Resources in this Lab](#task1)
-1. [Creating your Azure Subscription](#task2)
-1. [Installing the Azure Command-Line Interface (Azure CLI)](#task3)
-1. [Logging into your Azure Subscription via the Azure-CLI](#task4)
-1. [Creating the Azure Resource Group, Storage Account, and Container](#task5)
-1. [Copying the Virtual Hard Disk (VHD) for the Virtual Machine](#task6)
-1. [Creating the Virtual Machine using the Copied VHD](#task7)
-1. [Configuring Auto-shutdown on the new VM](#task8)
-1. [Connecting to your Virtual Machine using SSH](#task9)
+1. [Cloning the GitHub repo to your computer](#task2)
+1. [Creating your Azure Subscription](#task3)
+1. [Installing the Azure Command-Line Interface (Azure CLI)](#task4)
+1. [Logging into your Azure Subscription via the Azure-CLI](#task5)
+1. [Creating the Azure Resource Group, Storage Account, and Container](#task6)
+1. [Copying the Virtual Hard Disk (VHD) for the Virtual Machine](#task7)
+1. [Creating the Virtual Machine using the Copied VHD](#task8)
+1. [Configuring Auto-shutdown on the new VM](#task9)
+1. [Connecting to your Virtual Machine using SSH](#task10)
 
 ---
 
@@ -97,13 +98,66 @@ You will want to replace the "***&lt;name&gt;***" place holder (including the **
 
 Choose a good ***&lt;name&gt;*** now, and make a note of it so you can use it later in the lab.
 
-You will need to modify the majority of the commands blow to use the ***&lt;name&gt;*** prefix you have chosen.  In addition, a number of the commands are split across multiple lines for readability, but will need to be entered on a single line.  For this reason, you may want to open a text file in the text editor of your choice now so that you can easily keep track of key values (like your name prefix, account keys, etc.), and so that you have an easy way to modify the commands given below before you exectute them.
-
 Throughout the remainder of the documentation the syntax samples will use ***dli0201*** ("dli" being short for Deep Learning Institute and "0201" for January, 31) as a ***&lt;name&gt;*** place holder value.  **DO NOT USE dli0201** for yourself, as it would likely conflict with the resources created while documenting this lab, or with others who lazily use that same name. 
 
 ---
 
 <a name="task2"></a>
+
+## Cloning the GitHub repo to your computer
+
+You will need to modify the majority of the commands blow to use the ***&lt;name&gt;*** prefix you have chosen.  In addition, a number of the commands shown below are split across multiple lines for readability, but will need to be entered on a single line.  We have simplified this task for you by creating a "commands.txt" file in the github repo.  You can open that file, do some global search and replaces on for your specific values, then simply copy and past the commands from the file into your command prompt one by one.  
+
+To do this, you will need to first clone the GitHub repo down to your personal workstation so you can get the file. 
+
+1. From your system's command prompt or terminal, change to the folder where under which you want to clone the github repo (for example, your user's home directory):
+
+    > **Note**: You can clone the repo on your workstation wherever you like, just make sure you know where it is!  We are just suggesting the home folder as a likely place.
+
+    on Windows
+
+    ```bash
+    cd %HOMEPATH%
+    ```
+
+    in bash:
+
+    ```bash
+    cd ~
+    ```
+
+1. then use the git command line tool to clone the github repo:
+
+    ```bash
+    git clone http://github.com/dxcamps/DLI_RoboWorkshop_1
+    ```
+
+1. Once the github repo has been cloned, change into the `./DLI_RoboWorkshop_1/pre-requisite lab/deploy` folder
+
+    ```bash
+    cd ./DLI_RoboWorkshop_1/pre-requisite lab/deploy
+    ```
+
+1. You can list the contents of the folder with an `ls` (Mac or Linux) or `dir` (windows) command, and see the files in the folder:
+
+    ```bash
+    $ ls
+    deployer.rb  DeploymentHelper.cs  deploy-preview.sh  deploy.ps1  deploy.sh  parameters.json  template.json
+    ```
+
+1. Open the `commands.txt` file in your text editor, and do a global search and replace of the `<name>` place holder with the name prefix you chose above (our example, `dli0201`).  
+
+    - As and example, on Windows:
+
+        - Open the commands.txt in Notepad, then from the edit menu, select "**Edit**" | "**Replace...**" from the menu bar, in the 
+
+
+    
+
+
+---
+
+<a name="task3"></a>
 
 ## Creating your Azure Subscription
 
@@ -119,7 +173,7 @@ Lastly, if you choose to use a personal subscription other than one created by a
 
 ---
 
-<a name="task3"></a>
+<a name="task4"></a>
 
 ## Installing the Azure Command-Line Interface (Azure CLI)
 
@@ -141,7 +195,7 @@ The Azure CLI is a cross platform command line interface that you can use to man
     ```
 ---
 
-<a name="task4"></a>
+<a name="task5"></a>
 
 ## Logging into your Azure Subscription via the Azure CLI
 
@@ -241,7 +295,7 @@ commands and some problems they encounter...`", asking you to participate in azu
         ```
 ---
 
-<a name="task5"></a>
+<a name="task6"></a>
 
 ## Creating the Azure Resource Group, Storage Account, and Container
 
@@ -355,36 +409,27 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
 
 ---
 
-<a name="task6"></a>
+<a name="task7"></a>
 
 ## Copying the Virtual Hard Disk (VHD) for the Virtual Machine
 
-Now that we have the Azure Resource Group, Storage Account and Blob Container created, we can now copy the pre-existing VHD provided for this workshop.  To copy the original VHD, you will need the following values:
-
-| Token | Description | Value |
-| --- | --- | --- | 
-| <nobr>source-sas</nobr> | The Shared Access Signature (SAS) key needed to gain access to the source URL | `st=2017-01-02T00%3A36%3A00Z&se=2050-02-02T00%3A36%3A00Z&sp=rl&sv=2015-12-11&sr=b&sig=NidB6Dt4FsD5xNw1l931AIsayFUJrH%2B0vOKcKhsKoGA%3D` |
-| <nobr>source-uri</nobr> | The URL (uri) that points to the source VHD             | `https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidia.vhd` |
-| <nobr>dest-account-name</nobr> | The name of the azure storage account you created above | `<name>storage` |
-| <nobr>dest-account-key</nobr> | The primary access key (key1) for the storage account you created above | `xxx...xxx==` |
-| <nobr>dest-container</nobr> | The name of the container you created above to store the copy of the VHD | `vhds` |
-| <nobr>blob</nobr> | The name of the vhd blob itself.  You'll need this when monitoring the status of the copy. | `msftnvidia.vhd` |
+Now that we have the Azure Resource Group, Storage Account and Blob Container created, we can now copy the pre-existing VHD provided for this workshop.  
 
 
-1. To copy the pre-existing VHD from the hosted storage account into the container you just created, use the `azure storage blob copy start` command with the values from the table above:
+1. To copy the pre-existing VHD from the hosted storage account into the container you just created, use the following command:
 
-    > **Note**: This is ONE command.  It is shown here wrapped across multiple lines but you will need to copy and paste this command into a text editor, replace the `--dest-account-name <name>storage` and `--dest-account-key xxx...xxx==` place holders with your actual values, then copy and paste that completed single line syntax into your command prompt or terminal:
+    > **Note**: The `--source-uri` value points to the location of the pre-created vhd.  It points to a vhd blob named `msftnvidia.vhd`.  The `--source-sas` is the Shared Access Signature (sas) that you need to use to get permissions to access the source vhd.  These are pre-existing values that need to be entered exactly as shown below.  Do not modify them. 
 
     ```bash
     azure storage blob copy start
         --dest-account-name <name>storage
-        --dest-account-key xxx...xxx==
+        --dest-account-key <key1>
         --dest-container vhds
         --source-uri https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidia.vhd
         --source-sas "st=2017-01-02T00%3A36%3A00Z&se=2050-02-02T00%3A36%3A00Z&sp=rl&sv=2015-12-11&sr=b&sig=NidB6Dt4FsD5xNw1l931AIsayFUJrH%2B0vOKcKhsKoGA%3D"
     ```
 
-1.  The command should return output similar to the following:
+1. The command should return output similar to the following:
 
     ```bash
     info:    Executing command storage blob copy start
@@ -397,10 +442,14 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
     ```
 1. The copy could take up to 20 minutes or possibly longer (in tests it sometimes ran as long as 60 minutes), you can monitor the progress by repeatedly issuing the following command:
 
-    > **Note**: As before, make sure to put your actual storage account key value in for the `--account-key xxx...xxx==`  paramter value.
+    > **Note**: The `msftnvidia.vhd` blob name is the name of the pre-existing source vhd.  Do not change the name in the command below.
 
     ```bash
-    azure storage blob copy show --account-name <name>storage --account-key xxx...xxx== --container vhds --blob msftnvidia.vhd
+    azure storage blob copy show
+      --account-name <name>storage
+      --account-key <key1>
+      --container vhds
+      --blob msftnvidia.vhd
     ```
 
 1. The output of the command above shows the copy status in the `Progress` and `Status` columns.  
@@ -428,34 +477,28 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
     ```
 ---
 
-<a name="task7"></a>
+<a name="task8"></a>
 
 ## Creating the Virtual Machine using the Copied VHD
 
 We are almost ready, the final step is to deploy a new Virtual Machne (VM) to the resource group we created above that uses the VHD we just copied as it's OS Disk.  Turns out that VMs need a bunch of other things as well including Network Interfaces, Virtual Networks, IP Addresses, Firewall Rules, etc.  Rather than have you create each one of these by hand and risk doing something wrong, we will use a pre-configured Azure Resource Manager (ARM) template.  The template file is in the same github repo as the other workshop content so first, we'll need to clone the repo, then we can change into the folder with the deployment script and run the azure-cli command to deploy the vm based on the template. 
 
-1. From your system's command prompt or terminal, change to the folder where under which you want to clone the github repo, then use the git command line tool to clone the github repo:
-
-    ```bash
-    git clone http://github.com/dxcamps/DLI_RoboWorkshop_1
-    ```
-
-1. Once the github repo has been cloned, change into the `./DLI_RoboWorkshop_1/pre-requisite lab/deploy` folder
+1. From your system's command prompt or terminal, ensure that you are `preworklab/deploy` directory under the location where you cloned the `DLI_RoboWorkshop_1` repository to:
 
     ```bash
     cd ./DLI_RoboWorkshop_1/pre-requisite lab/deploy
     ```
 
-1. You can list the contents of the folder with an `ls` (Mac or Linux) or `dir` (windows) command, and see the files in the folder:
+1. As before, can list the contents of the folder with an `ls` (Mac or Linux) or `dir` (windows) command, and see the files in the folder:
 
     ```bash
     $ ls
     deployer.rb  DeploymentHelper.cs  deploy-preview.sh  deploy.ps1  deploy.sh  parameters.json  template.json
     ```
 
-1. The last two files, `parameters.json` and `template.json` are the ones we'll use:
+1. The last two files, `parameters.json` and `template.json` are the ones we'll use in this task:
 
-    - `template.json` contains the actual ARM template that defines all the resources that will be createad, e.g. The VM, Virtual Network, NIC, IP Address, Firewall Rules, etc.  **YOU DO NOT NEED TO MAKE ANY CHANGES IN THIS FILE**.
+    - `template.json` (**YOU DO NOT NEED TO MAKE ANY CHANGES IN THIS FILE**) contains the actual ARM template that defines all the resources that will be createad, e.g. The VM, Virtual Network, NIC, IP Address, Firewall Rules, etc.  
     - `parameters.json` contains the values that are needed for the deployment, like the actual name of the VM, the location where it should be deployed, etc.
 
 1. Open the `parameters.json` file in the text editor of your choice.  Verify that the location is correct.  Change the "name_place_holder" parameter's value of `<name>` to the name prefix you chose above, and save your changes.
@@ -498,7 +541,11 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
 1. Use the Azure CLI to deploy the vm using the template:
 
     ```bash
-    azure group deployment create --resource-group <name>group --name vmdeployment --template-file template.json --parameters-file parameters.json
+    azure group deployment create 
+      --resource-group <name>group 
+      --name vmdeployment 
+      --template-file template.json 
+      --parameters-file parameters.json
     ```
 
 1. Once the VM has been created, we need to reset the password so you can login.  The VM was created by a user named "drcrook", so we will log in as him, but when the vm was copied, the password was reset.  We need to set it to something we know.  Use the following command, again replacing the ***&lt;name&gt;*** place holders with your name prefix.  The command will reset the credentials to the following:
@@ -528,7 +575,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     azure vm show --resource-group dli2010group --name dli0201vm
     ```
 
-    we get the output: 
+    we get the output:
 
     ```bash
     azure vm show --resource-group dli2010group --name dli0201vm
@@ -538,7 +585,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
 
 ---
 
-<a name="task8"></a>
+<a name="task9"></a>
 
 ## Configuring Auto-shutdown on the new VM
 
@@ -552,7 +599,7 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
 
 ---
 
-<a name="task9"></a>
+<a name="task10"></a>
 
 ## Connecting to your Virtual Machine using SSH
 
