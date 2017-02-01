@@ -1,0 +1,191 @@
+#### ================================================================================
+#### Important Values
+#### ================================================================================
+
+Name Prefix: 		    <name>
+
+Resource Group:		    <name>group
+
+Storage Account:	    <name>storage
+Storage Account Key: 	<key1>
+
+Virtual Machine:	    <name>vm
+Public IP address:	    <publicip>
+DNS FQDN:		        <fqdn>
+
+#### ================================================================================
+#### Understanding the Azure Resources in this Lab
+#### ================================================================================
+
+## No commands in this section
+
+#### ================================================================================
+#### Creating your Azure Subscription
+#### ================================================================================
+
+## No commands in this section
+
+#### ================================================================================
+#### Installing the Azure Command-Line Interface (Azure CLI)
+#### ================================================================================
+
+## On Windows:
+
+npm i -g azure-cli
+
+## Or in bash
+
+sudo npm i -g azure-cli
+
+#### ================================================================================
+#### Logging into your Azure Subscription via the Azure-CLI
+#### ================================================================================
+
+##   --------------------------------------------------------------------------------
+##   Set the azure-cli into "Azure Resource Manager" mode (ARM):
+##   --------------------------------------------------------------------------------
+
+azure config mode arm
+
+##   --------------------------------------------------------------------------------
+## Login to your Azure Subscription from the azure-cli:
+##   --------------------------------------------------------------------------------
+
+azure login
+
+
+#### ================================================================================
+#### Creating the Azure Resource Group, Storage Account, and Container
+#### ================================================================================
+
+##   --------------------------------------------------------------------------------
+##   First, create your Resource Group
+##   --------------------------------------------------------------------------------
+
+azure group create <name>group --location "eastus"
+
+##   --------------------------------------------------------------------------------
+##   Next, create the Azure Storage Account within your new resource group
+##   --------------------------------------------------------------------------------
+
+azure storage account create <name>storage --resource-group <name>group --location "eastus" --kind Storage --sku-name LRS
+
+##   --------------------------------------------------------------------------------
+##   Now that you have a storage account, retrieve the key needed to manage it
+##   Copy the value of the "key1" key, and in this same text file, do a search and 
+##   replace of <key1> with the key1 value you just copied.  
+##   --------------------------------------------------------------------------------
+
+azure storage account keys list <name>storage --resource-group <name>group
+
+##   --------------------------------------------------------------------------------
+##   Create the container to store the vhd for our virtual machine
+##   --------------------------------------------------------------------------------
+
+azure storage container create --account-name <name>storage --account-key <key1> --container vhds
+
+#### ================================================================================
+#### Copying the Virtual Hard Disk (VHD) for the Virtual Machine
+#### ================================================================================
+
+##   --------------------------------------------------------------------------------
+##   Copy the pre-existing VHD from the hosted storage account into the container
+##   --------------------------------------------------------------------------------
+
+azure storage blob copy start --dest-account-name <name>storage --dest-account-key <key1> --dest-container vhds --source-uri https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidia.vhd --source-sas "st=2017-01-02T00%3A36%3A00Z&se=2050-02-02T00%3A36%3A00Z&sp=rl&sv=2015-12-11&sr=b&sig=NidB6Dt4FsD5xNw1l931AIsayFUJrH%2B0vOKcKhsKoGA%3D"
+
+##   --------------------------------------------------------------------------------
+##   You can monitor the progress by repeatedly issuing the following command:
+##   --------------------------------------------------------------------------------
+
+azure storage blob copy show --account-name <name>storage --account-key <key1> --container vhds --blob msftnvidia.vhd
+
+#### ================================================================================
+#### Creating the Virtual Machine using the Copied VHD
+#### ================================================================================
+
+##   --------------------------------------------------------------------------------
+##   Change into the folder where you want the repo clone to be created, then
+##   clone the github repo:
+##   --------------------------------------------------------------------------------
+
+git clone http://github.com/dxcamps/DLI_RoboWorkshop_1
+
+##   --------------------------------------------------------------------------------
+##   Change in to the deploy folder:
+##   --------------------------------------------------------------------------------
+
+cd ./DLI_RoboWorkshop_1/pre-requisite lab/deploy
+
+cd ./DLI_RoboWorkshop_1/pre-requisite lab/deploy
+
+##   --------------------------------------------------------------------------------
+##   You can list the contents of the folder with an ls, or a dir in Windows
+##   --------------------------------------------------------------------------------
+
+dir
+
+## or
+
+ls
+
+##   --------------------------------------------------------------------------------
+##   Edit the parameters.json file replacing the <name> place holder with your prefix
+##   
+##   Here are the contents:
+##   --------------------------------------------------------------------------------
+
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "eastus"
+        },
+        "name_place_holder": {
+            "value": "<name>"
+        }
+    }
+}
+
+##   --------------------------------------------------------------------------------
+##   Use the Azure CLI to deploy the vm using the template
+##   --------------------------------------------------------------------------------
+
+azure group deployment create --resource-group <name>group --name vmdeployment --template-file template.json --parameters-file parameters.json
+
+##   --------------------------------------------------------------------------------
+##   Reset the password so you can login to the VM:
+##   --------------------------------------------------------------------------------
+
+azure vm reset-access -g <name>group -n <name>vm -u drcrook -p Pwd@234567890
+
+##   --------------------------------------------------------------------------------
+##   Get the Public IP address and FQDN for your vm, then do a search and replace in 
+##   this file replacing: 
+##   <publicip> with your Public IP address value 
+##   and 
+##   <fqdn> with your FQDN value.
+##   --------------------------------------------------------------------------------
+
+azure vm show --resource-group <name>group --name <name>vm
+
+#### ================================================================================
+#### Configuring Auto-shutdown on the new VM
+#### ================================================================================
+
+##   No relevate commands in this section. All steps are performed in the portal.  
+
+#### ================================================================================
+#### Connecting to your Virtual Machine using SSH
+#### ================================================================================
+
+##   --------------------------------------------------------------------------------
+##   SSH into your VM using:
+##   --------------------------------------------------------------------------------
+
+ssh drcrook@<fqdn>
+
+## or
+
+ssh drcook@<publicip>

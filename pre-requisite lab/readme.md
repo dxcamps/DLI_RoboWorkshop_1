@@ -75,12 +75,13 @@ Azure Virtual Machines provide an extremely powerful and flexible way to run eit
 - DIGITS
 - Jupyter
 
-You will copy that vhd over to a storage account in your own subscription, and then run a tempalte to create a Virtual Machine that uses that vhd as it's hard disk.
+You will copy that vhd over to a storage account in your own subscription, and then use a template to create a Virtual Machine that uses that vhd as it's hard disk.
 
 In addition to the vhd, your Virtual Machine will also need some additional resources.  These will all be created for you by a template, but it's helpful to understand them.
 
 - A Network Interface (NIC) - This is the virtual version of the Network Interface (think ethernet port) on your computer.
 - A public IP Address - This will be assigned to your NIC and is how we will access our VM over the Internet.
+- A Fully Qualified Domain Name (FQDN): this will be your vm name, followed by `eastus.cloudapp.azure.com` (assuming you create your vm in the `eastus` data center).
 - A Virtual Network - This is the internal virtual network that our NIC is attached to.  We don't really need it for this workshop, but a virtual network would allow you to connect multiple virtual machines to it, and allow direct, private communication between those VMs on that network.
 - A Network Security Group - These provide the sets of firewall access rules that Azure enforces for you.  The template you run will create a network security group that allows incoming access to ports 22 (for ssh), 80 (for jupyter) and 8888 (for DIGITS).  The template then assigns that networks security group to your NIC.
 
@@ -91,12 +92,14 @@ In the diagram above, you see a number of resources with names that match the pa
 You will want to replace the "***&lt;name&gt;***" place holder (including the ***&lt;*** and ***&gt;*** angle brackets) with something unique to you.  Suggestions include:
 
 - Use only simple lower case alphanumeric (a-z,0-9) characters.  No underscores, dashes, or special symbols.
-- Your first, middle and last initials and the current Month and Day in ***mmdd*** format.  For example, if the date were Janueary 31st (0131), John Q. Doe might use "***jqd0131***" in place of the "***&lt;name&gt;***" place holder.  If so, his Resource Group name would be "**jqd0131-group**", his storage account name would be "**jqd0131-storage**", and his virtual machine name would be "**jqd0131-vm**".  You get the idea.
+- Your first, middle and last initials and the current Month and Day in ***mmdd*** format.  For example, if your name was John Q. Doe (***jqd***) , and the current date was February 1st (***0201***), you might use "***jqd0201***" in place of the "***&lt;name&gt;***" place holder.  If so, the Resource Group name would be "**jqd0201group**", the storage account name would be "**jqd0201storage**", and the virtual machine name would be "**jqd0201vm**".  You get the idea.
 - Any other short set of characters that will likely result in a globally unique name, and that makes sense to you.
 
-Choose a good ***&lt;name&gt;*** now, and make a note of it so you can use it later in the lab.  
+Choose a good ***&lt;name&gt;*** now, and make a note of it so you can use it later in the lab.
 
-Throughout the remainder of the documentation the syntax samples will use ***dli0131*** ("dli" being short for Deep Learning Institute and "0131" for January, 31) as a ***&lt;name&gt;*** place holder value.  **DO NOT USE dli0131** for yourself, as it would likely conflict with the resources created while documenting this lab, or with others who lazily use that same name. 
+You will need to modify the majority of the commands blow to use the ***&lt;name&gt;*** prefix you have chosen.  In addition, a number of the commands are split across multiple lines for readability, but will need to be entered on a single line.  For this reason, you may want to open a text file in the text editor of your choice now so that you can easily keep track of key values (like your name prefix, account keys, etc.), and so that you have an easy way to modify the commands given below before you exectute them.
+
+Throughout the remainder of the documentation the syntax samples will use ***dli0201*** ("dli" being short for Deep Learning Institute and "0201" for January, 31) as a ***&lt;name&gt;*** place holder value.  **DO NOT USE dli0201** for yourself, as it would likely conflict with the resources created while documenting this lab, or with others who lazily use that same name. 
 
 ---
 
@@ -104,11 +107,13 @@ Throughout the remainder of the documentation the syntax samples will use ***dli
 
 ## Creating your Azure Subscription
 
-If you are attending a sponsored workshop, there may be Azure Passes available for your use.  If so, check with your event organizers for access to an Azure Pass, and follow their instructions to sign up for Azure using that pass.  You should also verify with your event organizers the duration the Azure Pass is valid for, as well as the monetary credit it offers.
+If you are attending a sponsored workshop, there may be Azure Passes available for your use.  If so, check with your event organizers for access to an Azure Pass, and follow their instructions to sign up for Azure using that pass.  You should also verify with your event organizers the duration the Azure Pass is valid for, as well as the monetary credit it offers.  
+
+If you are running this pre-requisite lab before the workshop, make sure that it isn't so far in advance of the workshop that the pass may expire before the event date.  Also make sure to shutdown and deallocate (but not delete) the the virtual machine when you are done with the pre-requisite lab so that it doesn't consume the credits availalbe in your subscription.  We will show you how to both automatically (setup by default) as well as manually shutdown and deallocate your vm at the end of this lab.
 
 If you do NOT have access to an Azure Pass, you can create a free Azure Trial subscription at [azure.com/free](http://azure.com/free).
 
-> **Note**: The free Azure trial currently grants you a US$200 credit for a period of 30 days.  If either the 30 day limit, or $200 credit is exceeded, your trial resources (except those with free usage) will be shut down.  You will need a credit card to sign up for the trial, but it is used for identification purposes only and you will not be charged UNLESS you choose to go on a pay-as-you go basis.  
+> **Note**: The free Azure trial currently grants you a US$200 credit for a period of 30 days.  If either the 30 day limit, or $200 credit is exceeded, your trial resources (except those with free usage) will be shut down.  You will need a credit card to sign up for the trial, but it is used for identification purposes only and you will not be charged UNLESS you choose to go on a pay-as-you go basis.
 
 Lastly, if you choose to use a personal subscription other than one created by an Azure Pass or Free Trial, be aware that you will be responsible for the usage incurred during this lab.  For more information on the costs associated with Azure resources, see the [Azure pricing](https://azure.microsoft.com/en-us/pricing/) page.
 
@@ -240,7 +245,7 @@ commands and some problems they encounter...`", asking you to participate in azu
 
 ## Creating the Azure Resource Group, Storage Account, and Container
 
-The Azure Virtual Machine that you will be using for this lab will be based on a copy of a pre-existing Virtual Hard Disk (VHD) that we have created for your use.  The pre-existing VHD has Ubuntu 16.0.4 LTS installed, along with all of the deep learning tools, frameworks, data sets and jupyter notebooks that you will need for the lab.  In this task, you will create an Azure Storage Account, and blob container that will hold your copy of the VHD.
+The Azure Virtual Machine that you will be using for this lab will be based on a copy of a pre-existing Virtual Hard Disk (VHD) that we have created for your use.  The pre-existing VHD has Ubuntu 16.0.4 LTS installed, along with all of the deep learning tools, frameworks, data sets and jupyter notebooks that you will need for the lab.  In this task, you will create an Azure Resource Group, Storage Account, and Blob Container that will hold your copy of the VHD.
 
 1. First, to create your Resource Group, from your system's command prompt or terminal window, issue the following command. Make sure to replace the ***&lt;name&gt;*** place holder in the `<name>group` name with the naming prefix you chose above.
 
@@ -250,22 +255,21 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     azure group create <name>group --location "eastus"
     ```
 
-    with our ***dli0131** example ***&lt;name&gt;*** prefix:
+    With our ***dli0201** example ***&lt;name&gt;*** prefix:
 
     ```bash
-    azure group create dli0131group --location "eastus"
+    azure group create dli0201group --location "eastus"
     ```
 
-1. The output should look something similar to:
+    The output should look something similar to:
 
     ```bash
-    $ azure group create dli0131group --location "eastus"
     info:    Executing command group create
-    + Getting resource group dli0131group
-    + Creating resource group dli0131group
-    info:    Created resource group dli0131group
-    data:    Id:                  /subscriptions/zzz.zzz/resourceGroups/dli0131group
-    data:    Name:                dli0131group
+    + Getting resource group dli0201group
+    + Creating resource group dli0201group
+    info:    Created resource group dli0201group
+    data:    Id:                  /subscriptions/zzz...zzz/resourceGroups/dli0201group
+    data:    Name:                dli0201group
     data:    Location:            eastus
     data:    Provisioning State:  Succeeded
     data:    Tags: null
@@ -280,10 +284,10 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     ```bash
     azure storage account create <name>storage --resource-group <name>group --location "eastus" --kind Storage --sku-name LRS
     ```
-    with our ***dli0131** example ***&lt;name&gt;*** prefix:
+    with our ***dli0201** example ***&lt;name&gt;*** prefix:
 
     ```bash
-    azure storage account create dli0131storage --resource-group dli0131group --location "eastus" --kind Storage --sku-name LRS
+    azure storage account create dli0201storage --resource-group dli0201group --location "eastus" --kind Storage --sku-name LRS
     ```
 
     sample output:
@@ -301,22 +305,22 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     azure storage account keys list <name>storage --resource-group <name>group
     ```
 
-    with our ***dli0131** example ***&lt;name&gt;*** prefix:
+    with our ***dli0201** example ***&lt;name&gt;*** prefix:
 
     ```bash
-    azure storage account keys list dli0131storage --resource-group dli0131group
+    azure storage account keys list dli0201storage --resource-group dli0201group
     ```
 
 
-1. From the output, make a note of the `key1` value returned:
+1. From the output, copy the value of the "key1" key, and paste it into your text file where you can find it easily.
 
     ```bash
     info:    Executing command storage account keys list
     + Getting storage account keys
     data:    Name  Key                                                                                       Permissions
     data:    ----  ----------------------------------------------------------------------------------------  -----------
-    data:    key1  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx==  Full
-    data:    key2  yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy==  Full
+    data:    key1  xxx...xxx==  Full
+    data:    key2  yyy...yyy==  Full
     info:    storage account keys list command OK
     ```
 
@@ -325,13 +329,13 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     > **Note**: This is a SINGLE command wrapped across multiple lines for readability. You need to copy, or type the syntax below as a single line, with the appropriate values for the `--account-name <name>storage`  and  `--account-key xxx...xxx==` values.
 
     ```bash
-    azure storage container create
-    --account-name <name>storage
-    --account-key xxx...xxx==
-    --container vhds
+    azure storage container create 
+      --account-name <name>storage 
+      --account-key xxx...xxx== 
+      --container vhds
     ```
 
-1.  The output should resemble the following:
+    The output should resemble the following:
 
     ```bash
     info:    Executing command storage container create
@@ -340,19 +344,13 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     data:    {
     data:        name: 'vhds',
     data:        metadata: {},
-    data:        etag: '"0x8D44A3DCE6E6BBA"',
-    data:        lastModified: 'Wed, 01 Feb 2017 01:01:08 GMT',
+    data:        etag: '"0x8D44AC9D4D5357D"',
+    data:        lastModified: 'Wed, 01 Feb 2017 17:43:28 GMT',
     data:        lease: { status: 'unlocked', state: 'available' },
-    data:        requestId: '3d0a1445-0001-00e3-2526-7c016b000000',
+    data:        requestId: '876dfb1d-0001-0046-1db2-7cf8e9000000',
     data:        publicAccessLevel: 'Off'
     data:    }
     info:    storage container create command OK
-    ```
-
-1. Reset the password with the following command:
-
-    ```bash
-    azure vm reset-access -g <name>group -n <name>vm -u drcrook -p David@234567890
     ```
 
 ---
@@ -397,7 +395,7 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
     info:    storage blob copy start command OK
 
     ```
-1. The copy could take up to 20 minutes or possibly longer, you can monitor the progress by repeatedly issuing the following command:
+1. The copy could take up to 20 minutes or possibly longer (in tests it sometimes ran as long as 60 minutes), you can monitor the progress by repeatedly issuing the following command:
 
     > **Note**: As before, make sure to put your actual storage account key value in for the `--account-key xxx...xxx==`  paramter value.
 
@@ -479,7 +477,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     }
     ```
 
-    and with our sample ***dli0131*** value for ***&lt;name&gt;***:
+    and with our sample ***dli0201*** value for ***&lt;name&gt;***:
 
     ```json
     {
@@ -490,7 +488,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
                 "value": "eastus"
             },
             "name_place_holder": {
-                "value": "dli0131"
+                "value": "dli0201"
             }
         }
     }
@@ -502,6 +500,41 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     ```bash
     azure group deployment create --resource-group <name>group --name vmdeployment --template-file template.json --parameters-file parameters.json
     ```
+
+1. Once the VM has been created, we need to reset the password so you can login.  The VM was created by a user named "drcrook", so we will log in as him, but when the vm was copied, the password was reset.  We need to set it to something we know.  Use the following command, again replacing the ***&lt;name&gt;*** place holders with your name prefix.  The command will reset the credentials to the following:
+
+    - login:  `drcrook`
+    - password:  `Pwd@234567890`
+
+    ```bash
+    azure vm reset-access -g <name>group -n <name>vm -u drcrook -p Pwd@234567890
+    ```
+
+    with our sample ***dli0201*** value for ***&lt;name&gt;***:
+
+    ```bash
+    azure vm reset-access -g dli0201group -n dli0201vm -u drcrook -p Pwd@234567890
+    ```
+
+1. Finally, to connect to the vm, you will need to know it's IP address and/or dns name.  You can get all the details about your vm using:
+
+    ```bash
+    azure vm show --resource-group <name>group --name <name>vm
+    ```
+
+    with our sample ***dli0201*** value for ***&lt;name&gt;***:
+
+    ```bash
+    azure vm show --resource-group dli2010group --name dli0201vm
+    ```
+
+    we get the output: 
+
+    ```bash
+    azure vm show --resource-group dli2010group --name dli0201vm
+    ```
+
+1. From the output, copy the "Public IP address" and "FQDN" values, and keep them handy for future use.
 
 ---
 
