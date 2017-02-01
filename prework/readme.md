@@ -47,7 +47,7 @@ In this lab, you will complete the following tasks:
 
 ![Deep Learning Workshop Architecture](images/deeplearningworkshoparchitecture.png)
 
-In this workshop, you will be using an Azure Virtual Machine (VM) to complete your work. The Virtual Machine will use a copy of a pre-existing Virtual Hard Disk (VHD) that we have created for your use.  The pre-existing VHD has Ubuntu 16.0.4 LTS installed, along with all of the deep learning tools, frameworks, data sets and jupyter notebooks that you will need for the lab.  The purpose of this pre-requisite lab is to walk you step-by-step through the process of configuring your Azure Subscription with the resources necessary to complete the workshop.  This section is provided to help you better understand what those resources are in an effort to help you better understand the subsequent tasks, and the workshop overall.
+In this workshop, you will be using an Azure Virtual Machine (VM) to complete your work. The Virtual Machine will use a copy of a pre-existing Virtual Hard Disk (VHD) that we have created for your use.  The pre-existing VHD has Ubuntu 16.0.4 LTS installed, along with all of the deep learning tools, frameworks, data sets and jupyter notebooks that you will need for the lab.  The purpose of this prework is to walk you step-by-step through the process of configuring your Azure Subscription with the resources necessary to complete the workshop.  This section is provided to help you better understand what those resources are in an effort to help you better understand the subsequent tasks, and the workshop overall.
 
 ### Azure Locations (Data Regions)
 
@@ -132,28 +132,74 @@ To do this, you will need to first clone the GitHub repo down to your personal w
     git clone http://github.com/dxcamps/DLI_RoboWorkshop_1
     ```
 
-1. Once the github repo has been cloned, change into the `./DLI_RoboWorkshop_1/pre-requisite lab/deploy` folder
+1. Once the github repo has been cloned, change into the `./DLI_RoboWorkshop_1/prework/deploy` folder
 
     ```bash
-    cd ./DLI_RoboWorkshop_1/pre-requisite lab/deploy
+    cd ./DLI_RoboWorkshop_1/prework/deploy
     ```
 
 1. You can list the contents of the folder with an `ls` (Mac or Linux) or `dir` (windows) command, and see the files in the folder:
 
     ```bash
     $ ls
-    deployer.rb  DeploymentHelper.cs  deploy-preview.sh  deploy.ps1  deploy.sh  parameters.json  template.json
+    commands.txt  DeploymentHelper.cs  deploy.ps1  parameters.json
+    deployer.rb   deploy-preview.sh    deploy.sh   template.json
     ```
 
-1. Open the `commands.txt` file in your text editor, and do a global search and replace of the `<name>` place holder with the name prefix you chose above (our example, `dli0201`).  
+1. Open the `commands.txt` file in your text editor.  You should see a number of place holders, like `<name>`, `<key1>`, `<publicip>` and `<fqdn>`.  We will be replacing each of those place holders with actual values as we work through the lab.  For now, the only one we know is the `<name>` prefix we chose in the last task.  
+
+1. In the text editor of your choice, do a global search and replace of the `<name>` place holder with the name prefix you chose above (our example, `dli0201`).
 
     - As and example, on Windows:
 
-        - Open the commands.txt in Notepad, then from the edit menu, select "**Edit**" | "**Replace...**" from the menu bar, in the 
+        - Open the commands.txt in Notepad, then from the edit menu, select "**Edit**" | "**Replace...**" from the menu bar, and in the "**Replace**" window, replace `<name>` with your prefix , for example `dli0201`.  Click the "**Replace All**" button, then close the "**Replace** window:
+
+            ![Notepad Search And Replace](images/02010-NotepadSearchReplace.jpg)
+
+            You should notice that all the occurrances of `<name>` have been replaced with your prefix (again, for example `dli0201`):
+
+            ![Notepad Search And Replace Done](images/02020-NotepadSearchReplaceDone.jpg)
+
+        - Close Notepad, making sure to save the changes when prompted.
+
+    - An example with nano on Linux:
+
+        - Open the commands.txt file in nano:
+
+        ```bash
+        nano commands.txt
+        ```
+
+        - In nano, press Ctrl+\ (^\) to do a **Replace**;
+
+            ![Nano Replace Step 1](images/02030-NanoReplace01.jpg)
+
+        - At the "**Search (to replace):**" prompt, enter `<name>`:
+
+            ![Nano Replace Step 2](images/02030-NanoReplace02.jpg)
+
+        - For "**Replace with:**" enter your prefix.  For example `dli0201`:
+
+            ![Nano Replace Step 3](images/02030-NanoReplace03.jpg)
+
+        - At the "**Replace this instance?**" prompt, press `A` for "**All**"
+
+            ![Nano Replace Step 4](images/02030-NanoReplace04.jpg)
+
+        - You should now see that all of the `<name>` place holders have been replaced with your prefix (in this example `dli0201`).  Press Ctrl+X (^X) to "**Exit**":
+
+            ![Nano Replace Step 5](images/02030-NanoReplace05.jpg)
+
+        - At the "**Save modified buffer**" prompt, press `Y` for "**Yes**"
+
+            ![Nano Replace Step 6](images/02030-NanoReplace06.jpg)
+
+        - At the "**File Name to Write:**" prompt, press `ENTER` to confirm the `commands.txt` file, and Nano will exit.
+
+            ![Nano Replace Step 7](images/02030-NanoReplace07.jpg)
 
 
-    
-
+1. The commands.txt file has now been updated  with the `<name>` place holders replaced with your prefix name.  You can use those updated commands as you work through this lab, rather than copying them from this document, and modifying.  Also, the commands have all been properly formatted on a single line and should work on both a Windows "Command Prompt" (not PowerShell though) as well as at a Bash prompt on Windows, Linux or Mac.
 
 ---
 
@@ -163,7 +209,7 @@ To do this, you will need to first clone the GitHub repo down to your personal w
 
 If you are attending a sponsored workshop, there may be Azure Passes available for your use.  If so, check with your event organizers for access to an Azure Pass, and follow their instructions to sign up for Azure using that pass.  You should also verify with your event organizers the duration the Azure Pass is valid for, as well as the monetary credit it offers.  
 
-If you are running this pre-requisite lab before the workshop, make sure that it isn't so far in advance of the workshop that the pass may expire before the event date.  Also make sure to shutdown and deallocate (but not delete) the the virtual machine when you are done with the pre-requisite lab so that it doesn't consume the credits availalbe in your subscription.  We will show you how to both automatically (setup by default) as well as manually shutdown and deallocate your vm at the end of this lab.
+If you are running this prework before the workshop, make sure that it isn't so far in advance of the workshop that the pass may expire before the event date.  Also make sure to shutdown and deallocate (but not delete) the the virtual machine when you are done with the prework so that it doesn't consume the credits availalbe in your subscription.  We will show you how to both automatically (setup by default) as well as manually shutdown and deallocate your vm at the end of this lab.
 
 If you do NOT have access to an Azure Pass, you can create a free Azure Trial subscription at [azure.com/free](http://azure.com/free).
 
@@ -309,12 +355,6 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     azure group create <name>group --location "eastus"
     ```
 
-    With our ***dli0201** example ***&lt;name&gt;*** prefix:
-
-    ```bash
-    azure group create dli0201group --location "eastus"
-    ```
-
     The output should look something similar to:
 
     ```bash
@@ -338,12 +378,6 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     ```bash
     azure storage account create <name>storage --resource-group <name>group --location "eastus" --kind Storage --sku-name LRS
     ```
-    with our ***dli0201** example ***&lt;name&gt;*** prefix:
-
-    ```bash
-    azure storage account create dli0201storage --resource-group dli0201group --location "eastus" --kind Storage --sku-name LRS
-    ```
-
     sample output:
 
     ```bash
@@ -359,10 +393,9 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     azure storage account keys list <name>storage --resource-group <name>group
     ```
 
-    with our ***dli0201** example ***&lt;name&gt;*** prefix:
+    sample output:
 
     ```bash
-    azure storage account keys list dli0201storage --resource-group dli0201group
     ```
 
 
@@ -383,9 +416,9 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     > **Note**: This is a SINGLE command wrapped across multiple lines for readability. You need to copy, or type the syntax below as a single line, with the appropriate values for the `--account-name <name>storage`  and  `--account-key xxx...xxx==` values.
 
     ```bash
-    azure storage container create 
-      --account-name <name>storage 
-      --account-key xxx...xxx== 
+    azure storage container create
+      --account-name <name>storage
+      --account-key xxx...xxx==
       --container vhds
     ```
 
@@ -452,7 +485,7 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
       --blob msftnvidia.vhd
     ```
 
-1. The output of the command above shows the copy status in the `Progress` and `Status` columns.  
+    The output of the command above shows the copy status in the `Progress` and `Status` columns.  
 
     > **Note**: in the example shown below, the `Progress` value of `14144983040/31457280512` means that 14,144,983,040 bytes (13.17GB) of 31457280512 (29.27GB) have been transferred, or in otherwords the copy is about 45% complete.  The `Status` column shows `pending` to indicate the copy is still in progress.
 
@@ -486,7 +519,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
 1. From your system's command prompt or terminal, ensure that you are `preworklab/deploy` directory under the location where you cloned the `DLI_RoboWorkshop_1` repository to:
 
     ```bash
-    cd ./DLI_RoboWorkshop_1/pre-requisite lab/deploy
+    cd ./DLI_RoboWorkshop_1/prework/deploy
     ```
 
 1. As before, can list the contents of the folder with an `ls` (Mac or Linux) or `dir` (windows) command, and see the files in the folder:
@@ -557,10 +590,9 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     azure vm reset-access -g <name>group -n <name>vm -u drcrook -p Pwd@234567890
     ```
 
-    with our sample ***dli0201*** value for ***&lt;name&gt;***:
+    sample output:
 
     ```bash
-    azure vm reset-access -g dli0201group -n dli0201vm -u drcrook -p Pwd@234567890
     ```
 
 1. Finally, to connect to the vm, you will need to know it's IP address and/or dns name.  You can get all the details about your vm using:
@@ -569,19 +601,12 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     azure vm show --resource-group <name>group --name <name>vm
     ```
 
-    with our sample ***dli0201*** value for ***&lt;name&gt;***:
+    sample output:
 
     ```bash
-    azure vm show --resource-group dli2010group --name dli0201vm
     ```
 
-    we get the output:
-
-    ```bash
-    azure vm show --resource-group dli2010group --name dli0201vm
-    ```
-
-1. From the output, copy the "Public IP address" and "FQDN" values, and keep them handy for future use.
+1. From the output, copy the "Public IP address" and replace the `<publicip>` placholders in the commands.txt.  Additionally,  copy the "FQDN" value and replace the `<fqdn>` place holders in commands.txt
 
 ---
 
