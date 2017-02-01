@@ -150,7 +150,10 @@
             "location": "[parameters('location')]",
             "properties": {
                 "publicIPAllocationMethod": "Dynamic",
-                "idleTimeoutInMinutes": 4
+                "idleTimeoutInMinutes": 4,
+                "dnsSettings": {
+                    "domainNameLabel": "[variables('virtualMachines_vm_name')]"
+                }
             },
             "resources": [],
             "dependsOn": []
