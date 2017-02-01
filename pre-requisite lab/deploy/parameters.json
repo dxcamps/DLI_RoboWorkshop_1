@@ -5,23 +5,8 @@
         "location": {
             "value": "eastus"
         },
-        "virtualMachines_vm_name": {
-            "value": "dlirw<name>-vm"
-        },
-        "networkInterfaces_nic_name": {
-            "value": "dlirw<name>-nic"
-        },
-        "networkSecurityGroups_nsg_name": {
-            "value": "dlirw<name>-nsg"
-        },
-        "publicIPAddresses_ip_name": {
-            "value": "dlirw<name>-ip"
-        },
-        "virtualNetworks_vnet_name": {
-            "value": "dlirw<name>-vnet"
-        },
-        "storageAccounts_account_name": {
-            "value": "dlirw<name>-storage"
+        "name_place_holder": {
+            "value": "<name>"
         }
     }
 }

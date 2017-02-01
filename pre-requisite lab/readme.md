@@ -10,13 +10,17 @@ In this lab, we'll walk workshop attendees through the required pre-requisite st
 
 To complete this lab, you will need to have the following items:
 
-1. An active azure subscription that you are willing to use for the lab.  ***BE AWARE** the lab has you create N-Series VMs in Azure.  These VMs are special because they include NVidia GPU support and provide an extremely powerful environment for deep learning projects.  However, they are expensive when compared to other less capable VMs.  It is recommended that you use a trial subscription, or a subscription provided to you at a live event for the lab steps.  This will help to ensure that you are not billed for excessive VM utilization.
+1. A personal laptop running Windows, MAC OS X, or Linux.
+
+1. An active azure subscription that you are willing to use for the lab.  **BE AWARE** the lab has you create N-Series VMs in Azure.  These VMs are special because they include NVidia GPU support and provide an extremely powerful environment for deep learning projects.  However, they are expensive when compared to other less capable VMs.  It is recommended that you use a trial subscription, or a subscription provided to you at a live event for the lab steps.  This will help to ensure that you are not billed for excessive VM utilization.
 
 1. Nodejs v6.9.4 or later. You can download the current version of Nodejs from [https://nodejs.org/en/download/](https://nodejs.org/en/download/)
 
+1. The Azure CLI installed. We will cover the installation below, but you can also follow the instructions from the [Install the Azure CLI](https://docs.microsoft.com/en-us/azure/xplat-cli-install) page.
+
 1. Git installed.  If you don't have git on your system, you can install it from [https://git-scm.com/downloads](https://git-scm.com/downloads)
 
-___
+---
 
 <a name="tasks"></a>
 
@@ -28,7 +32,7 @@ In this lab, you will complete the following tasks:
 1. [Creating your Azure Subscription](#task2)
 1. [Installing the Azure Command-Line Interface (Azure CLI)](#task3)
 1. [Logging into your Azure Subscription via the Azure-CLI](#task4)
-1. [Creating an Azure Storage Account, and Container](#task5)
+1. [Creating the Azure Resource Group, Storage Account, and Container](#task5)
 1. [Copying the Virtual Hard Disk (VHD) for the Virtual Machine](#task6)
 1. [Creating the Virtual Machine using the Copied VHD](#task7)
 1. [Configuring Auto-shutdown on the new VM](#task8)
@@ -40,35 +44,81 @@ In this lab, you will complete the following tasks:
 
 ## Understanding the Azure Resources in this Lab
 
+![Deep Learning Workshop Architecture](images/deeplearningworkshoparchitecture.png)
+
 In this workshop, you will be using an Azure Virtual Machine (VM) to complete your work. The Virtual Machine will use a copy of a pre-existing Virtual Hard Disk (VHD) that we have created for your use.  The pre-existing VHD has Ubuntu 16.0.4 LTS installed, along with all of the deep learning tools, frameworks, data sets and jupyter notebooks that you will need for the lab.  The purpose of this pre-requisite lab is to walk you step-by-step through the process of configuring your Azure Subscription with the resources necessary to complete the workshop.  This section is provided to help you better understand what those resources are in an effort to help you better understand the subsequent tasks, and the workshop overall.
+
+### Azure Locations (Data Regions)
+
+An Azure "Location", or "Region". Specifies the location of the Azure Data Center where you want your resources to be created.  The location that you use is very important in this lab because the N-Series Virtual Machines that have NVidia GPUs on them are only available in the "**East US**" or ("**eastus**") data center at this time.  This workshop requires the use of the NVidia GPUs on the N-Series VMs, so we will need to make sure to provision all of our resources in the "**eastus**" data center.  
+
+> **Note**: The list of data centers where N-Series VMs are available will grow over time.  You can view the current data centers that support them on them "[Products available by region](https://azure.microsoft.com/en-us/regions/services/)" page.  If you choose to use a location other than "**eastus**", you will need to replace all occurrances of "**eastus**" in the instructions below with the name of the location you've chose.
 
 ### Azure Resource Groups
 
-Azure resources like storage accounts, virtual machines, etc., are organized into "Resource Groups".  You will be creating a "Resource Group" in your azure subscription, and then you will create your Azure Storage Account and Azure Virtual machine inside that resource group. 
+A typical solution in Azure requires multiple resources.  For example, in this workshop, we will create an Azure Storage Account to store a Virtual Hard Disk (vhd) file, and then we'll create a Virtual Machine based on that VHD.  In addition, we'll have Network Interfaces, Virtual Networks, Networks Security Groups and more.  To keep all of the resources organized, we'll place them all in a single "**Resource Group**".  Resource Groups offer a number of benefits in azure:
 
-### Azure Locations (Data Centers)
+- You can create an Azure Resource Manager (ARM) template for all of the resources in your group to help automate the deployment of your resources.
+- You can grant others access to your Resource Group without having to give them access to your entire subscription.
+- When you no longer need the resources for a soulution, you can easily delete all of them at once by simply deleting the Resource Group that contains them.
 
-The Azure Virtual Machine used in this workshop requires the use of NVidia GPUs.  Azure offers Virtual Machine instances with access to dedicated NVidia GPU hardware in it's "N-Series" VM offering.  Currently, at the time this pre-requisite lab is being written, the only Azure Location where N-Series VMs are supported is in the "South Central US" data center.  Therefore, as we provision the resources in the following tasks, we need to make sure to use the "South Central US" location.  
 
 ### Azure Storage accounts
 
-Azure Storage Accounts are a core Azure offering.  They support the storage of data in a variety of formats using a number of built-in services.  In this lab, we will be using Azure Storage Blob Containers to store the Virtual Hard Disk (VHD) for our Virtual Machine.  To accomplish this, we will need to first provision an Azure Storage account in our subscription, and place it in the "South Central US" location.  Azure Storage Accounts are globally accessible and as such need a globally unique name. 
+Azure Storage Accounts are a core Azure offering.  They support the storage of data in a variety of formats using a number of built-in services.  In this lab, we will be using Azure Storage Blob Containers to store the Virtual Hard Disk (VHD) blob for our Virtual Machine.  To accomplish this, we will need to first provision an Azure Storage account in our subscription, and ensure that it is in the "**eastus**" location.  Azure Storage Accounts are globally accessible and as such need a globally unique name.  We'll talk more about how these resources will be named later.
 
-___
+### Azure Virtual Machines
+
+Azure Virtual Machines provide an extremely powerful and flexible way to run either Windows or Linux virtual machines in the cloud.  Virtual Machines use Virtual Hard Disks (vhd) files as their "disks".  In this workshop, we will be using a pre-provisioned Virtual Hard Disk that has the following pre-installed:
+
+- Ubuntu 16.04 LTS
+- DIGITS
+- Jupyter
+
+You will copy that vhd over to a storage account in your own subscription, and then run a tempalte to create a Virtual Machine that uses that vhd as it's hard disk.
+
+In addition to the vhd, your Virtual Machine will also need some additional resources.  These will all be created for you by a template, but it's helpful to understand them.
+
+- A Network Interface (NIC) - This is the virtual version of the Network Interface (think ethernet port) on your computer.
+- A public IP Address - This will be assigned to your NIC and is how we will access our VM over the Internet.
+- A Virtual Network - This is the internal virtual network that our NIC is attached to.  We don't really need it for this workshop, but a virtual network would allow you to connect multiple virtual machines to it, and allow direct, private communication between those VMs on that network.
+- A Network Security Group - These provide the sets of firewall access rules that Azure enforces for you.  The template you run will create a network security group that allows incoming access to ports 22 (for ssh), 80 (for jupyter) and 8888 (for DIGITS).  The template then assigns that networks security group to your NIC.
+
+### Choosing a good "***&lt;name&gt;***"
+
+In the diagram above, you see a number of resources with names that match the pattern "***&lt;name&gt;xxx***".  A number of the resources you create will need a globally unique name, so following the pattern is recommended.
+
+You will want to replace the "***&lt;name&gt;***" place holder (including the ***&lt;*** and ***&gt;*** angle brackets) with something unique to you.  Suggestions include:
+
+- Use only simple lower case alphanumeric (a-z,0-9) characters.  No underscores, dashes, or special symbols.
+- Your first, middle and last initials and the current Month and Day in ***mmdd*** format.  For example, if the date were Janueary 31st (0131), John Q. Doe might use "***jqd0131***" in place of the "***&lt;name&gt;***" place holder.  If so, his Resource Group name would be "**jqd0131-group**", his storage account name would be "**jqd0131-storage**", and his virtual machine name would be "**jqd0131-vm**".  You get the idea.
+- Any other short set of characters that will likely result in a globally unique name, and that makes sense to you.
+
+Choose a good ***&lt;name&gt;*** now, and make a note of it so you can use it later in the lab.  
+
+Throughout the remainder of the documentation the syntax samples will use ***dli0131*** ("dli" being short for Deep Learning Institute and "0131" for January, 31) as a ***&lt;name&gt;*** place holder value.  **DO NOT USE dli0131** for yourself, as it would likely conflict with the resources created while documenting this lab, or with others who lazily use that same name. 
+
+---
 
 <a name="task2"></a>
 
 ## Creating your Azure Subscription
 
-1. Create your azure Subscription
+If you are attending a sponsored workshop, there may be Azure Passes available for your use.  If so, check with your event organizers for access to an Azure Pass, and follow their instructions to sign up for Azure using that pass.  You should also verify with your event organizers the duration the Azure Pass is valid for, as well as the monetary credit it offers.
 
-___
+If you do NOT have access to an Azure Pass, you can create a free Azure Trial subscription at [azure.com/free](http://azure.com/free).
+
+> **Note**: The free Azure trial currently grants you a US$200 credit for a period of 30 days.  If either the 30 day limit, or $200 credit is exceeded, your trial resources (except those with free usage) will be shut down.  You will need a credit card to sign up for the trial, but it is used for identification purposes only and you will not be charged UNLESS you choose to go on a pay-as-you go basis.  
+
+Lastly, if you choose to use a personal subscription other than one created by an Azure Pass or Free Trial, be aware that you will be responsible for the usage incurred during this lab.  For more information on the costs associated with Azure resources, see the [Azure pricing](https://azure.microsoft.com/en-us/pricing/) page.
+
+---
 
 <a name="task3"></a>
 
 ## Installing the Azure Command-Line Interface (Azure CLI)
 
-The Azure-CLI is a cross platform command line interface that you can use to manage resources in your Azure Subscription from your local workstation.  The Azure-CLI is a Nodejs application and as such runs on Windows, Linux and Mac OS X. It's for that reason specifically that we have chosen it as the toolset for this lab.
+The Azure CLI is a cross platform command line interface that you can use to manage resources in your Azure Subscription from your local workstation.  The Azure CLI is a Nodejs application and as such runs on Windows, Linux and Mac OS X. It's for that reason specifically that we have chosen it as the toolset for this lab.
 
 1. Ensure that you have Nodejs v6.9.4 or later installed.  If you don't you can install it from [https://nodejs.org/en/download/](https://nodejs.org/en/download/).
 
@@ -84,11 +134,11 @@ The Azure-CLI is a cross platform command line interface that you can use to man
     ```bash
     sudo npm i -g azure-cli
     ```
-___
+---
 
 <a name="task4"></a>
 
-## Logging into your Azure Subscription via the Azure-CLI
+## Logging into your Azure Subscription via the Azure CLI
 
 In this steps, you'll login to your Azure subscription from your workstations command line.  There are multiple ways to login to the Azure-CLI.  You can learn about alternat login methods here: [Log in to Azure from the Azure CLI](https://docs.microsoft.com/en-us/azure/xplat-cli-connect) 
 
@@ -174,58 +224,88 @@ commands and some problems they encounter...`", asking you to participate in azu
         ```bash
         info:    Executing command account show
         data:    Name                        : YourSub
-        data:    ID                          : xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+        data:    ID                          : zzz...zzz
         data:    State                       : Enabled
-        data:    Tenant ID                   : yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
+        data:    Tenant ID                   : qqq...qqq
         data:    Is Default                  : true
         data:    Environment                 : AzureCloud
         data:    Has Certificate             : No
         data:    Has Access Token            : Yes
         data:    User name                   : youruser@yourdomain.com
         ```
-___
+---
 
 <a name="task5"></a>
 
-## Creating an Azure Storage Account, and Container
+## Creating the Azure Resource Group, Storage Account, and Container
 
 The Azure Virtual Machine that you will be using for this lab will be based on a copy of a pre-existing Virtual Hard Disk (VHD) that we have created for your use.  The pre-existing VHD has Ubuntu 16.0.4 LTS installed, along with all of the deep learning tools, frameworks, data sets and jupyter notebooks that you will need for the lab.  In this task, you will create an Azure Storage Account, and blob container that will hold your copy of the VHD.
 
-1. First, to create your Resource Group, from your system's command prompt or terminal window, issue the following command (where `dlirwxxxgroup` is the resource group name as determined above):
+1. First, to create your Resource Group, from your system's command prompt or terminal window, issue the following command. Make sure to replace the ***&lt;name&gt;*** place holder in the `dlirw<name>-group` name with the naming prefix you chose above.
+
+    > **Note**: Recall that we need to create all of our resources in the same "Location" and that because the N-Series NVidia backed GPU Virtual Machines are currently only availalbe in the "**eastus**" region, we want to sepcify that as the location for our storage account.
 
     ```bash
-    azure group create dlirwxxxgroup --location "SouthCentralUS"
+    azure group create <name>group --location "eastus"
+    ```
+
+    with our ***dli0131** example ***&lt;name&gt;*** prefix:
+
+    ```bash
+    azure group create dli0131group --location "eastus"
     ```
 
 1. The output should look something similar to:
 
     ```bash
+    $ azure group create dli0131group --location "eastus"
     info:    Executing command group create
-    + Getting resource group dlirwxxxgroup
-    + Creating resource group dlirwxxxgroup
-    info:    Created resource group dlirwxxxgroup
-    data:    Id:                  /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/dlirwxxxgroup
-    data:    Name:                dlirwxxxgroup
-    data:    Location:            southcentralus
+    + Getting resource group dli0131group
+    + Creating resource group dli0131group
+    info:    Created resource group dli0131group
+    data:    Id:                  /subscriptions/zzz.zzz/resourceGroups/dli0131group
+    data:    Name:                dli0131group
+    data:    Location:            eastus
     data:    Provisioning State:  Succeeded
     data:    Tags: null
     data:
     info:    group create command OK
     ```
 
-1. Next, create the Azure Storage Account within your new resource group, making sure again to use the South Central US location.  In the following command replace `dlirwxxxgroup` and `dlirwxxxstorage` with the resource group and storage account names determined above:
+1. Next, create the Azure Storage Account within your new resource group, making sure again to use the appropriate location.  In the following command replace `dlirw<name>-group` and `dlirw<name>-storage` with the resource group and storage account names determined above:
 
     > **Note**: This command may take thirty seconds or longer to execute
 
     ```bash
-    azure storage account create dlirwxxxstorage --resource-group dlirwxxxgroup --location "SouthCentralUS" --kind Storage --sku-name PLRS
+    azure storage account create <name>storage --resource-group <name>group --location "eastus" --kind Storage --sku-name LRS
     ```
-
-1. Now that you have a storage account, we need to retrieve the key needed to manage it.  Use the following command, again replacing `dlirwxxx...` with appropriate values from above:
+    with our ***dli0131** example ***&lt;name&gt;*** prefix:
 
     ```bash
-    azure storage account keys list dlirwxxxstorage --resource-group dlirwxxxgroup
+    azure storage account create dli0131storage --resource-group dli0131group --location "eastus" --kind Storage --sku-name LRS
     ```
+
+    sample output:
+
+    ```bash
+    info:    Executing command storage account create
+    + Checking availability of the storage account name
+    + Creating storage account
+    info:    storage account create command OK
+    ```
+
+1. Now that you have a storage account, we need to retrieve the key needed to manage it:
+
+    ```bash
+    azure storage account keys list <name>storage --resource-group <name>group
+    ```
+
+    with our ***dli0131** example ***&lt;name&gt;*** prefix:
+
+    ```bash
+    azure storage account keys list dli0131storage --resource-group dli0131group
+    ```
+
 
 1. From the output, make a note of the `key1` value returned:
 
@@ -241,13 +321,13 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
 
 1. Next, we'll create the container to store the vhd for our virtual machine:
 
-    > **Note**: This is a SINGLE command wrapped across multiple lines for readability. You need to copy, or type the syntax below as a single line, with the appropriate values for the `--account-name dlirwxxxstorage`  and  `--account-key xxx...xxx==` values.
+    > **Note**: This is a SINGLE command wrapped across multiple lines for readability. You need to copy, or type the syntax below as a single line, with the appropriate values for the `--account-name dlirw<name>-storage`  and  `--account-key xxx...xxx==` values.
 
     ```bash
-    azure storage container create 
-    --container vhds 
-    --account-name dlirwxxxstorage 
+    azure storage container create
+    --account-name <name>storage
     --account-key xxx...xxx==
+    --container vhds
     ```
 
 1.  The output should resemble the following:
@@ -259,15 +339,15 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     data:    {
     data:        name: 'vhds',
     data:        metadata: {},
-    data:        etag: '"0x8D43B5BF7376395"',
-    data:        lastModified: 'Fri, 13 Jan 2017 02:29:14 GMT',
+    data:        etag: '"0x8D44A3DCE6E6BBA"',
+    data:        lastModified: 'Wed, 01 Feb 2017 01:01:08 GMT',
     data:        lease: { status: 'unlocked', state: 'available' },
-    data:        requestId: 'ade684b0-001c-0025-7f44-6d0f07000000',
+    data:        requestId: '3d0a1445-0001-00e3-2526-7c016b000000',
     data:        publicAccessLevel: 'Off'
     data:    }
     info:    storage container create command OK
     ```
-___
+---
 
 <a name="task6"></a>
 
@@ -277,25 +357,25 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
 
 | Token | Description | Value |
 | --- | --- | --- | 
-| <nobr>source-sas</nobr> | The Shared Access Signature (SAS) key needed to gain access to the source URL | `sv=2015-12-11&ss=b&srt=sco&sp=rl&se=2050-01-13T02:18:26Z&st=2017-01-12T18:18:26Z&spr=https,http&sig=TGEmNmml7PXu90db5zIbA%2BUXHEOrY9XZ6dI7avV34ew%3D` |
-| <nobr>source-uri</nobr> | The URL (uri) that points to the source VHD             | `https://nvidiavmstorage.blob.core.windows.net/vhds/nvidiavm20170104130104.vhd` |
-| <nobr>dest-account-name</nobr> | The name of the azure storage account you created above | `dlirwxxxstorage` |
+| <nobr>source-sas</nobr> | The Shared Access Signature (SAS) key needed to gain access to the source URL | `st=2017-01-02T00%3A36%3A00Z&se=2050-02-02T00%3A36%3A00Z&sp=rl&sv=2015-12-11&sr=b&sig=NidB6Dt4FsD5xNw1l931AIsayFUJrH%2B0vOKcKhsKoGA%3D` |
+| <nobr>source-uri</nobr> | The URL (uri) that points to the source VHD             | `https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidia.vhd` |
+| <nobr>dest-account-name</nobr> | The name of the azure storage account you created above | `<name>storage` |
 | <nobr>dest-account-key</nobr> | The primary access key (key1) for the storage account you created above | `xxx...xxx==` |
 | <nobr>dest-container</nobr> | The name of the container you created above to store the copy of the VHD | `vhds` |
-| <nobr>blob</nobr> | The name of the vhd blob itself.  You'll need this when monitoring the status of the copy. | `nvidiavm20170104130104.vhd` |
+| <nobr>blob</nobr> | The name of the vhd blob itself.  You'll need this when monitoring the status of the copy. | `msftnvidia.vhd` |
 
 
 1. To copy the pre-existing VHD from the hosted storage account into the container you just created, use the `azure storage blob copy start` command with the values from the table above:
 
-    > **Note**: This is ONE command.  It is shown here wrapped across multiple lines but you will need to copy and paste this command into a text editor, replace the `--dest-account-name dlirwxxxstorage` and `--dest-account-key xxx...xxx==` place holders with your actual values, then copy and paste that completed single line syntax into your command prompt or terminal:
+    > **Note**: This is ONE command.  It is shown here wrapped across multiple lines but you will need to copy and paste this command into a text editor, replace the `--dest-account-name dlirw<name>-storage` and `--dest-account-key xxx...xxx==` place holders with your actual values, then copy and paste that completed single line syntax into your command prompt or terminal:
 
     ```bash
-    azure storage blob copy start 
-        --source-uri https://nvidiavmstorage.blob.core.windows.net/vhds/nvidiavm20170104130104.vhd
-        --source-sas sv=2015-12-11&ss=b&srt=sco&sp=rl&se=2050-01-13T02:18:26Z&st=2017-01-12T18:18:26Z&spr=https,http&sig=TGEmNmml7PXu90db5zIbA%2BUXHEOrY9XZ6dI7avV34ew%3D
-        --dest-container vhds 
-        --dest-account-name dlirwxxxstorage 
+    azure storage blob copy start
+        --dest-account-name <name>storage
         --dest-account-key xxx...xxx==
+        --dest-container vhds
+        --source-uri https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidia.vhd
+        --source-sas "st=2017-01-02T00%3A36%3A00Z&se=2050-02-02T00%3A36%3A00Z&sp=rl&sv=2015-12-11&sr=b&sig=NidB6Dt4FsD5xNw1l931AIsayFUJrH%2B0vOKcKhsKoGA%3D"
     ```
 
 1.  The command should return output similar to the following:
@@ -309,12 +389,12 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
     info:    storage blob copy start command OK
 
     ```
-1. The copy will take up to 20 minutes or so, you can monitor the progress by repeatedly issuing the following command:
+1. The copy could take up to 20 minutes or possibly longer, you can monitor the progress by repeatedly issuing the following command:
 
     > **Note**: As before, make sure to put your actual storage account key value in for the `--account-key xxx...xxx==`  paramter value.
 
     ```bash
-    azure storage blob copy show --account-name dlirwxxxstorage --account-key xxx...xxx== --container vhds --blob nvidiavm20170104130104.vhd
+    azure storage blob copy show --account-name <name>storage --account-key xxx...xxx== --container vhds --blob msftnvidia.vhd
     ```
 
 1. The output of the command above shows the copy status in the `Progress` and `Status` columns.  
@@ -340,7 +420,7 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
     data:    a8d4752a-b2e2-4510-9f55-3b11805d44ea  31457280512/31457280512  success
     info:    storage blob copy show command OK
     ```
-___
+---
 
 <a name="task7"></a>
 
@@ -366,20 +446,56 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     $ ls
     deployer.rb  DeploymentHelper.cs  deploy-preview.sh  deploy.ps1  deploy.sh  parameters.json  template.json
     ```
+
 1. The last two files, `parameters.json` and `template.json` are the ones we'll use:
 
-    - `template.json` contains the actual ARM template that defines all the resources that will be createad, e.g. The VM, Virtual Network, NIC, IP Address, Firewall Rules, etc.
+    - `template.json` contains the actual ARM template that defines all the resources that will be createad, e.g. The VM, Virtual Network, NIC, IP Address, Firewall Rules, etc.  **YOU DO NOT NEED TO MAKE ANY CHANGES IN THIS FILE**.
     - `parameters.json` contains the values that are needed for the deployment, like the actual name of the VM, the location where it should be deployed, etc.
 
-1. Open the `parameters.json` file in the text editor of your choice, and replace all of the `dlirwxxx` values with your name prefix, then save your changes.
+1. Open the `parameters.json` file in the text editor of your choice.  Verify that the location is correct.  Change the "name_place_holder" parameter's value of `<name>` to the name prefix you chose above, and save your changes.
 
-1. Use the azure-cli to deploy the vm using the template:
+    Here's the original parameters.json file contents
 
-    ```bash
-    azure group deployment create --name vmdeployment --resource-group dlirwxxxgroup --template-file template.json --parameters-file parameters.json
+    ```json
+    {
+        "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+        "contentVersion": "1.0.0.0",
+        "parameters": {
+            "location": {
+                "value": "eastus"
+            },
+            "name_place_holder": {
+                "value": "<name>"
+            }
+        }
+    }
     ```
 
-___
+    and with our sample ***dli0131*** value for ***&lt;name&gt;***:
+
+    ```json
+    {
+        "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+        "contentVersion": "1.0.0.0",
+        "parameters": {
+            "location": {
+                "value": "eastus"
+            },
+            "name_place_holder": {
+                "value": "dli0131"
+            }
+        }
+    }
+    ```
+
+
+1. Use the Azure CLI to deploy the vm using the template:
+
+    ```bash
+    azure group deployment create --resource-group <name>group --name vmdeployment --template-file template.json --parameters-file parameters.json
+    ```
+
+---
 
 <a name="task8"></a>
 
@@ -392,7 +508,7 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
 1. From the list of resources in the Resource Group, click on your Virtual Machine to open it's overview blade. 
 1. From the list of settings along the left, click on "**Auto-shutdown**".  
 1. Then in the "**Auto-shutdown**" blade, configure the option according to your desires.  You can read more about the feature here, [Announcing auto-shutdown for VMs using Azure Resource Manager](https://azure.microsoft.com/en-us/blog/announcing-auto-shutdown-for-vms-using-azure-resource-manager/)
-___
+---
 
 <a name="task9"></a>
 
