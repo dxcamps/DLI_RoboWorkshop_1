@@ -1,1 +1,0 @@
-# Preparing the Source VHD Image
