@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import numpy as np
 import pandas as pd
 import os
@@ -60,6 +62,11 @@ def main(argv):
 
 	)
 	parser.add_argument(
+	    "--camera",
+	    default="nvcamerasrc ! video/x-raw(memory:NVMM), width=(int)1280, height=(int)720,format=(string)I420, framerate=(fraction)24/1 ! nvvidconv flip-method=2 ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR ! appsink",
+	    help="Specify the ID of the device, ex: 1 for /dev/video1, or a gstreamer command."
+        )
+	parser.add_argument(
 	    "--labels_file",
 	    default=os.path.join(pycaffe_dir,
 	            "/home/ubuntu/deploy_files/synset_words.txt"),
@@ -94,20 +101,24 @@ def main(argv):
 	#transformer.set_channel_swap('data', (2,1,0))
 	transformer.set_mean('data',mean.mean(1).mean(1))
 
-	print("Reading frames from webcam...")
+	print ""
+	print "Reading frames from webcam..."
+	print "Using Camera: "+args.camera
+	print ""
 
-	time.sleep(3)
+	# Open stream
+	stream = cv2.VideoCapture(args.camera)
 
-	semaphore = False
-
-# Change the camera number here, the built in unit should be 0
-	stream = cv2.VideoCapture(0)
+        if not stream.isOpened():
+                print("Could not open camera")
+                sys.exit(1)
 
 	with open(args.labels_file) as f:
 		rawlabels = f.read().splitlines()
 
 		labels = [r for r in rawlabels]
 		
+	semaphore = False
 	while semaphore == False:
 		(grabbed, frame) = stream.read()
 		if grabbed == False:

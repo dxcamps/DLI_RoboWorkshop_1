@@ -9,8 +9,16 @@ sudo apt-get cuda-toolkit libdnn5
 sudo ln -s /usr/local/cuda-8.0 /usr/local/cuda
 ```
 
+## Install GStreamer-1.0
+```
+sudo add-apt-repository universe 
+sudo add-apt-repository multiverse 
+sudo apt-get update 
+sudo apt-get install gstreamer1.0-tools gstreamer1.0-alsa gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav 
+sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-good1.0-dev libgstreamer-plugins-bad1.0-dev 
+```
 
-### Install Python Dependencies
+## Install Python Dependencies
 
 ```
 sudo apt-get install cmake git aptitude screen g++ libboost-all-dev \
@@ -21,11 +29,12 @@ sudo apt-get install cmake git aptitude screen g++ libboost-all-dev \
     libopencv4tegra-python
 ```
 
-### Create pycaffe interfaces (separately for fp16 and fp32)
-NOTE: Currently works for fp32 only
+## Create pycaffe interfaces (separately for fp16 and fp32)
+NOTE: Currently works for fp32 only.  This might rebuild the entire application.
 
+### For FP32
 ```
-cd /home/ubuntu/Code/fpXX/caffe
+cd /home/ubuntu/Code/fp32/caffe
 ```
 Add the path for the AARCH64 target of CUBLAS to Makefile.config. This requires adding the path to the INCLUDE_PATH and LIBRARY_PATH variables.  They should look like:
 
@@ -39,7 +48,9 @@ Then build the interface.  This may trigger a complete rebuild of caffe dependin
 make -j3 pycaffe
 ```
 
-### Set environment for python interface, this can be either fp16 or fp32
+### For FP16
+
+## Set environment for python interface, this can be either fp16 or fp32
 
 ```
 export CAFFE_HOME=/home/ubuntu/Code/fp32
@@ -47,7 +58,7 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CAFFE_HOME}/caffe/build/lib
 export PYTHONPATH=${PYTHONPATH}:${CAFFE_HOME}/caffe/python/
 ```
 
-### Run the webcam driver
+## Run the webcam driver
 
 By default, it is going to use the AlexNet config files found in the deploy_files directory. 
 
@@ -57,6 +68,8 @@ python webCamClassify.py
 ```
 
 If you want to use the CPU mode, add the flag --with-cpu
+
+By default, this will use the built-in camera.  If you want to change the camera to use another USB camera, specify the device, ex: --camera="/dev/video1".  If you were so inclined, you could add a gsteamer-1.0 command as the camera.  See the code for how this can be done.  In theory, you could specify a .mp4 file as the camera and it will stream through that.
 
 If you want to use the GoogleNet model, you can specify that via the command line:
 
