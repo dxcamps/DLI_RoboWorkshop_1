@@ -241,7 +241,7 @@ azure vm show --resource-group <name>group --name <name>vm
 #### Configuring Auto-shutdown on the new VM
 #### ================================================================================
 
-##   No relevate commands in this section. All steps are performed in the portal.  
+##   No commands in this section. All steps are performed in the portal.  
 
 #### ================================================================================
 #### Connecting to your Virtual Machine using SSH

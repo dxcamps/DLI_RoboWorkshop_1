@@ -396,10 +396,17 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     sample output:
 
     ```bash
+    info:    Executing command storage account keys list
+    + Getting storage account keys
+    data:    Name  Key                                                                                       Permissions
+    data:    ----  ----------------------------------------------------------------------------------------  -----------
+    data:    key1  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx==  Full
+    data:    key2  yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy==  Full
+    info:    storage account keys list command OK
     ```
 
 
-1. From the output, copy the value of the "key1" key, and paste it into your text file where you can find it easily.
+1. From the output, copy the value of the "key1" key (shown as `xxx......xxx==` above, and replace the `<key1>` place holders in commands.txt with it.
 
     ```bash
     info:    Executing command storage account keys list
@@ -431,10 +438,10 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     data:    {
     data:        name: 'vhds',
     data:        metadata: {},
-    data:        etag: '"0x8D44AC9D4D5357D"',
-    data:        lastModified: 'Wed, 01 Feb 2017 17:43:28 GMT',
+    data:        etag: '"0x8D44AE4B4FB4B44"',
+    data:        lastModified: 'Wed, 01 Feb 2017 20:55:51 GMT',
     data:        lease: { status: 'unlocked', state: 'available' },
-    data:        requestId: '876dfb1d-0001-0046-1db2-7cf8e9000000',
+    data:        requestId: '41ae1c0e-0001-00bb-41cd-7c1bea000000',
     data:        publicAccessLevel: 'Off'
     data:    }
     info:    storage container create command OK
@@ -466,14 +473,14 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
 
     ```bash
     info:    Executing command storage blob copy start
-    - Start copying blob https://nvidiavmstorage.blob.core.windows.net/vhds/nvidiavm20170104130104.vhd?sv=2015-12-11&ss=b&srt=sco&sp=rl&se=2050-01-13T02:18:26+&st=2017-01-12T18:18:26Z&spr=https,http&sig=TGEmNmml7PXu90db5zIbA%2BUXHEOrY9XZ6dI7avV34ew%3D
+    - Start copying blob https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidia.vhd?st=2017-01-02T00%3A36%3A00Z&se=+050-02-02T00%3A36%3A00Z&sp=rl&sv=2015-12-11&sr=b&sig=NidB6Dt4FsD5xNw1l931AIsayFUJrH%2B0vOKcKhsKoGA%3D
     data:    Copy ID                               Status
     data:    ------------------------------------  -------
-    data:    a8d4752a-b2e2-4510-9f55-3b11805d44ea  pending
+    data:    89fa6be5-33f8-4602-b97d-06d255e6a0c6  pending
     info:    storage blob copy start command OK
-
     ```
-1. The copy could take up to 20 minutes or possibly longer (in tests it sometimes ran as long as 60 minutes), you can monitor the progress by repeatedly issuing the following command:
+
+1. The copy could take up to 30-60 minutes or possibly longer (in tests it sometimes ran as long as 60 minutes), you can monitor the progress by repeatedly issuing the following command:
 
     > **Note**: The `msftnvidia.vhd` blob name is the name of the pre-existing source vhd.  Do not change the name in the command below.
 
@@ -487,14 +494,14 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
 
     The output of the command above shows the copy status in the `Progress` and `Status` columns.  
 
-    > **Note**: in the example shown below, the `Progress` value of `14144983040/31457280512` means that 14,144,983,040 bytes (13.17GB) of 31457280512 (29.27GB) have been transferred, or in otherwords the copy is about 45% complete.  The `Status` column shows `pending` to indicate the copy is still in progress.
+    > **Note**: in the example shown below, the `Progress` value of `24528171008/107374182912` means that 24,528,171,008 bytes (22.8GB) of 107,374,182,912 (100GB) have been transferred, or in otherwords the copy is about 23% complete.  The `Status` column shows `pending` to indicate the copy is still in progress.
 
     ```bash
     info:    Executing command storage blob copy show
     + Getting storage blob information
-    data:    Copy ID                               Progress                 Status
-    data:    ------------------------------------  -----------------------  -------
-    data:    a8d4752a-b2e2-4510-9f55-3b11805d44ea  14144983040/31457280512  pending
+    data:    Copy ID                               Progress                  Status
+    data:    ------------------------------------  ------------------------  -------
+    data:    89fa6be5-33f8-4602-b97d-06d255e6a0c6  24528171008/107374182912  pending
     info:    storage blob copy show command OK
     ```
 
@@ -503,9 +510,9 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
     ```bash
     info:    Executing command storage blob copy show
     + Getting storage blob information
-    data:    Copy ID                               Progress                 Status
-    data:    ------------------------------------  -----------------------  -------
-    data:    a8d4752a-b2e2-4510-9f55-3b11805d44ea  31457280512/31457280512  success
+    data:    Copy ID                               Progress                   Status
+    data:    ------------------------------------  -------------------------  ------
+    data:    89fa6be5-33f8-4602-b97d-06d255e6a0c6  107374182912/107374182912  success
     info:    storage blob copy show command OK
     ```
 ---
@@ -526,13 +533,14 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
 
     ```bash
     $ ls
-    deployer.rb  DeploymentHelper.cs  deploy-preview.sh  deploy.ps1  deploy.sh  parameters.json  template.json
+    commands.txt  DeploymentHelper.cs  deploy.ps1  parameters.json
+    deployer.rb   deploy-preview.sh    deploy.sh   template.json
     ```
 
 1. The last two files, `parameters.json` and `template.json` are the ones we'll use in this task:
 
     - `template.json` (**YOU DO NOT NEED TO MAKE ANY CHANGES IN THIS FILE**) contains the actual ARM template that defines all the resources that will be createad, e.g. The VM, Virtual Network, NIC, IP Address, Firewall Rules, etc.  
-    - `parameters.json` contains the values that are needed for the deployment, like the actual name of the VM, the location where it should be deployed, etc.
+    - `parameters.json` contains the values that are needed for the deployment, like the actual name of the VM, the location where it should be deployed, etc.  You'll edit this file and enter the value for your `<name>` prefix.
 
 1. Open the `parameters.json` file in the text editor of your choice.  Verify that the location is correct.  Change the "name_place_holder" parameter's value of `<name>` to the name prefix you chose above, and save your changes.
 
@@ -574,11 +582,35 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
 1. Use the Azure CLI to deploy the vm using the template:
 
     ```bash
-    azure group deployment create 
-      --resource-group <name>group 
-      --name vmdeployment 
-      --template-file template.json 
+    azure group deployment create
+      --resource-group <name>group
+      --name vmdeployment
+      --template-file template.json
       --parameters-file parameters.json
+    ```
+
+    Once it completes, you should see output similar to the following:
+
+    ```bash
+    info:    Resource 'shutdown-computevm-dli0201vm' of type 'Microsoft.DevTestLab/schedules' provisioning status is Succeeded
+    info:    Resource 'dli0201vm' of type 'Microsoft.Compute/virtualMachines' provisioning status is Succeeded
+    info:    Resource 'dli0201nic' of type 'Microsoft.Network/networkInterfaces' provisioning status is Succeeded
+    info:    Resource 'dli0201storage' of type 'Microsoft.Storage/storageAccounts' provisioning status is Succeeded
+    info:    Resource 'dli0201ip' of type 'Microsoft.Network/publicIPAddresses' provisioning status is Succeeded
+    info:    Resource 'dli0201vnet' of type 'Microsoft.Network/virtualNetworks' provisioning status is Succeeded
+    info:    Resource 'dli0201nsg' of type 'Microsoft.Network/networkSecurityGroups' provisioning status is Succeeded
+    data:    DeploymentName     : vmdeployment
+    data:    ResourceGroupName  : dli0201group
+    data:    ProvisioningState  : Succeeded
+    data:    Timestamp          : 2017-02-02T00:09:48.480Z
+    data:    Mode               : Incremental
+    data:    CorrelationId      : 6be18319-1546-409b-8f2f-732923ad7571
+    data:    DeploymentParameters :
+    data:    Name         Type    Value
+    data:    -----------  ------  -------
+    data:    location     String  eastus
+    data:    name_prefix  String  dli0201
+    info:    group deployment create command OK
     ```
 
 1. Once the VM has been created, we need to reset the password so you can login.  The VM was created by a user named "drcrook", so we will log in as him, but when the vm was copied, the password was reset.  We need to set it to something we know.  Use the following command, again replacing the ***&lt;name&gt;*** place holders with your name prefix.  The command will reset the credentials to the following:
@@ -593,6 +625,10 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     sample output:
 
     ```bash
+    info:    Executing command vm reset-access
+    + Looking up the VM "dli0201vm"
+    + Installing extension "VMAccessForLinux", VM: "dli0201vm"
+    info:    vm reset-access command OK
     ```
 
 1. Finally, to connect to the vm, you will need to know it's IP address and/or dns name.  You can get all the details about your vm using:
@@ -604,9 +640,45 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     sample output:
 
     ```bash
+    info:    Executing command vm show
+    + Looking up the VM "dli0201vm"
+    + Looking up the NIC "dli0201nic"
+    + Looking up the public ip "dli0201ip"
+    data:    Id                              :/subscriptions/e752503e-0639-4d87-88c0-cb134bba79e2/resourceGroups/dli0201group/providers/Microsoft.Compute/virtualMachines/dli0201vm
+    data:    ProvisioningState               :Succeeded
+    data:    Name                            :dli0201vm
+    data:    Location                        :eastus
+    data:    Type                            :Microsoft.Compute/virtualMachines
+    data:
+    data:    Hardware Profile:
+    data:      Size                          :Standard_NC6
+    data:
+    data:    Storage Profile:
+    data:
+    data:      OS Disk:
+    data:        OSType                      :Linux
+    data:        Name                        :dli0201vm
+    data:        Caching                     :ReadWrite
+    data:        CreateOption                :Attach
+    data:        Vhd:
+    data:          Uri                       :https://dli0201storage.blob.core.windows.net/vhds/msftnvidia.vhd
+    data:
+    data:    Network Profile:
+    data:      Network Interfaces:
+    data:        Network Interface #1:
+    data:          Primary                   :true
+    data:          MAC Address               :00-0D-3A-12-95-E7
+    data:          Provisioning State        :Succeeded
+    data:          Name                      :dli0201nic
+    data:          Location                  :eastus
+    data:            Public IP address       :40.114.1.63
+    data:            FQDN                    :dli0201vm.eastus.cloudapp.azure.com
+    data:
+    data:    Diagnostics Instance View:
+    info:    vm show command OK
     ```
 
-1. From the output, copy the "Public IP address" and replace the `<publicip>` placholders in the commands.txt.  Additionally,  copy the "FQDN" value and replace the `<fqdn>` place holders in commands.txt
+1. From the output, copy the "Public IP address" (`40.114.1.63` above) and replace the `<publicip>` placholders in the commands.txt.  Additionally,  copy the "FQDN" (`dli0201vm.eastus.cloudapp.azure.com` above) value and replace the `<fqdn>` place holders in commands.txt
 
 ---
 
@@ -627,4 +699,17 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
 <a name="task10"></a>
 
 ## Connecting to your Virtual Machine using SSH
+
+1. Use the ssh client of your choice, and connect from your computer to your new Azure Virtual Machine using ssh using the `<publicip>` or `<fqdn>` values you retrieved above.  Recall that we've reset the password for `drcrook` to `Pwd@234567890`
+
+    ```bash
+    ssh drcrook@<publicip>
+    ```
+
+    or
+
+    ```bash
+    ssh drcrook@<fqdn>
+    ```
+
 
