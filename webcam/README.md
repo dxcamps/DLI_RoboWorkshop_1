@@ -97,7 +97,7 @@ python webCamClassify.py
 
 If you want to use the CPU mode, add the flag --with-cpu
 
-By default, this will use the built-in camera.  If you want to change the camera to use another USB camera, specify the device, ex: --camera="/dev/video1".  If you were so inclined, you could add a gsteamer-1.0 command as the camera.  See the code for how this can be done.  In theory, you could specify a .mp4 file as the camera and it will stream through that.
+By default, this will use the built-in camera.  If you want to change the camera to use another USB camera, specify the device, ex: --camera="/dev/video1".  If you were so inclined, you could add a GStreamer-1.0 command as the camera.  See the code for how this can be done.  In theory, you could specify a .mp4 file as the camera and it will stream through that.
 
 If you want to use the GoogleNet model, you can specify that via the command line:
 

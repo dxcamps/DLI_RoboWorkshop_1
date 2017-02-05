@@ -2,11 +2,11 @@
 
 ## Prerequisites
 
-The GIE library must be installed.  The rest of the prerequisities will be installed by cmake when building the jetson-inference package.
+The GIE library must be installed.  The rest of the prerequisites will be installed by cmake when building the jetson-inference package.
 
 ### Install GIE
 
-This should have been satifiied when you installed the software on the Jetson.  If not, transfer the package nv-gie-repo-ubuntu1604-6-rc-cuda8.0_1.0.2-1_arm64.deb from JetPack download.  
+This should have been satisfied when you installed the software on the Jetson.  If not, transfer the package nv-gie-repo-ubuntu1604-6-rc-cuda8.0_1.0.2-1_arm64.deb from JetPack download.  
 
 ```
 sudo dpkg -i nv-gie-repo-ubuntu1604-6-rc-cuda8.0_1.0.2-1_arm64.deb
