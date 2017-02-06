@@ -45,7 +45,7 @@ In this lab, you will complete the following tasks:
 
 ## Understanding the Azure Resources in this Lab
 
-![Deep Learning Workshop Architecture](images/deeplearningworkshoparchitecture.png)
+![Deep Learning Workshop Architecture](images/DeepLearningWorkshopArchitecture.png)
 
 In this workshop, you will be using an Azure Virtual Machine (VM) to complete your work. The Virtual Machine will use a copy of a pre-existing Virtual Hard Disk (VHD) that we have created for your use.  The pre-existing VHD has Ubuntu 16.0.4 LTS installed, along with all of the deep learning tools, frameworks, data sets and jupyter notebooks that you will need for the lab.  The purpose of this prework is to walk you step-by-step through the process of configuring your Azure Subscription with the resources necessary to complete the workshop.  This section is provided to help you better understand what those resources are in an effort to help you better understand the subsequent tasks, and the workshop overall.
 
@@ -160,7 +160,7 @@ To do this, you will need to first clone the GitHub repo down to your personal w
 
             ![Notepad Search And Replace Done](images/02020-NotepadSearchReplaceDone.jpg)
 
-        - Close Notepad, making sure to save the changes when prompted.
+        - Keep your text editor open so you can easily copy the commands from it.
 
     - An example with nano on Linux:
 
@@ -465,7 +465,7 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
         --dest-account-name <name>storage
         --dest-account-key <key1>
         --dest-container vhds
-        --source-uri https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidia.vhd
+        --source-uri https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidiaimage.vhd
         --source-sas "st=2017-01-02T00%3A36%3A00Z&se=2050-02-02T00%3A36%3A00Z&sp=rl&sv=2015-12-11&sr=b&sig=NidB6Dt4FsD5xNw1l931AIsayFUJrH%2B0vOKcKhsKoGA%3D"
     ```
 
@@ -473,7 +473,7 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
 
     ```bash
     info:    Executing command storage blob copy start
-    - Start copying blob https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidia.vhd?st=2017-01-02T00%3A36%3A00Z&se=+050-02-02T00%3A36%3A00Z&sp=rl&sv=2015-12-11&sr=b&sig=NidB6Dt4FsD5xNw1l931AIsayFUJrH%2B0vOKcKhsKoGA%3D
+    - Start copying blob https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidiaimage.vhd
     data:    Copy ID                               Status
     data:    ------------------------------------  -------
     data:    89fa6be5-33f8-4602-b97d-06d255e6a0c6  pending
@@ -489,7 +489,7 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
       --account-name <name>storage
       --account-key <key1>
       --container vhds
-      --blob msftnvidia.vhd
+      --blob msftnvidiaimage.vhd
     ```
 
     The output of the command above shows the copy status in the `Progress` and `Status` columns.  
@@ -615,7 +615,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
 
 1. Once the VM has been created, we need to reset the password so you can login.  The VM was created by a user named "drcrook", so we will log in as him, but when the vm was copied, the password was reset.  We need to set it to something we know.  Use the following command, again replacing the ***&lt;name&gt;*** place holders with your name prefix.  The command will reset the credentials to the following:
 
-    - login:  `drcrook`
+    - login:  `dliuser`
     - password:  `Pwd@234567890`
 
     ```bash
@@ -644,7 +644,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     + Looking up the VM "dli0201vm"
     + Looking up the NIC "dli0201nic"
     + Looking up the public ip "dli0201ip"
-    data:    Id                              :/subscriptions/e752503e-0639-4d87-88c0-cb134bba79e2/resourceGroups/dli0201group/providers/Microsoft.Compute/virtualMachines/dli0201vm
+    data:    Id                              :/subscriptions/xxx...xxx/resourceGroups/dli0201group/providers/Microsoft.Compute/virtualMachines/dli0201vm
     data:    ProvisioningState               :Succeeded
     data:    Name                            :dli0201vm
     data:    Location                        :eastus
