@@ -213,17 +213,11 @@ ls
 azure group deployment create --resource-group <name>group --name vmdeployment --template-file template.json --parameters-file parameters.json
 
 ##   --------------------------------------------------------------------------------
-##   Reset the password so you can login to the VM:
-##   --------------------------------------------------------------------------------
-
-azure vm reset-access -g <name>group -n <name>vm -u drcrook -p Pwd@234567890
-
-##   --------------------------------------------------------------------------------
-##   Get the Public IP address and FQDN for your vm, then do a search and replace in 
+##   Get the FQDN and Public IP address for your vm, then do a search and replace in 
 ##   this file (commands.txt) replacing: 
-##   <publicip> with your Public IP address value 
-##   and 
 ##   <fqdn> with your FQDN value.
+##   and 
+##   <publicip> with your Public IP address value 
 ##   --------------------------------------------------------------------------------
 
 azure vm show --resource-group <name>group --name <name>vm
@@ -242,8 +236,8 @@ azure vm show --resource-group <name>group --name <name>vm
 ##   SSH into your VM using:
 ##   --------------------------------------------------------------------------------
 
-ssh drcrook@<fqdn>
+ssh dliuser@<fqdn>
 
 ## or
 
-ssh drcook@<publicip>
+ssh dliuser@<publicip>
