@@ -613,25 +613,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     info:    group deployment create command OK
     ```
 
-1. Once the VM has been created, we need to reset the password so you can login.  The VM was created by a user named "drcrook", so we will log in as him, but when the vm was copied, the password was reset.  We need to set it to something we know.  Use the following command, again replacing the ***&lt;name&gt;*** place holders with your name prefix.  The command will reset the credentials to the following:
-
-    - login:  `dliuser`
-    - password:  `Pwd@234567890`
-
-    ```bash
-    azure vm reset-access -g <name>group -n <name>vm -u drcrook -p Pwd@234567890
-    ```
-
-    sample output:
-
-    ```bash
-    info:    Executing command vm reset-access
-    + Looking up the VM "dli0201vm"
-    + Installing extension "VMAccessForLinux", VM: "dli0201vm"
-    info:    vm reset-access command OK
-    ```
-
-1. Finally, to connect to the vm, you will need to know it's IP address and/or dns name.  You can get all the details about your vm using:
+1. Finally, to connect to the vm, you will need to know it's fully qualified domin name (fqdn) and/or ip address.  You can get all the details about your vm using:
 
     ```bash
     azure vm show --resource-group <name>group --name <name>vm
@@ -678,7 +660,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     info:    vm show command OK
     ```
 
-1. From the output, copy the "Public IP address" (`40.114.1.63` above) and replace the `<publicip>` placholders in the commands.txt.  Additionally,  copy the "FQDN" (`dli0201vm.eastus.cloudapp.azure.com` above) value and replace the `<fqdn>` place holders in commands.txt
+1. From the output, copy the "FQDN" (`dli0201vm.eastus.cloudapp.azure.com` above) value and replace the `<fqdn>` place holders in commands.txt.  Additionally, copy the "Public IP address" (`40.114.1.63` above) and replace the `<publicip>` placholders in the commands.txt.
 
 ---
 
@@ -698,18 +680,149 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
 
 <a name="task10"></a>
 
-## Connecting to your Virtual Machine using SSH
+## Connecting to your Virtual Machine using SSH and starting Digits
 
-1. Use the ssh client of your choice, and connect from your computer to your new Azure Virtual Machine using ssh using the `<publicip>` or `<fqdn>` values you retrieved above.  Recall that we've reset the password for `drcrook` to `Pwd@234567890`
+1. The user name and password for the vm are:
+
+    - user: `dliuser`
+    - paasword: `Pwd@234567890`
+
+1. Use the ssh client of your choice, and ssh into either the fqdn or ip address for your vm, and use the user name and password given above to login:
 
     ```bash
-    ssh drcrook@<publicip>
+    ssh dliuser@<fqdn>
     ```
 
     or
 
     ```bash
-    ssh drcrook@<fqdn>
+    ssh dliuser@<publicip>
     ```
+
+1. Once logged in, you should be in the `dliuser`'s `home` folder.  Next, clone the github repo for the workshop into the vm so you have a copy of all the code needed:
+
+    ```bash
+    git clone https://github.com/dxcamps/DLI_RoboWorkshop_1
+    ```
+
+    The repo should be cloned into:
+
+    ```bash
+    ~/DLI_RoboWorkshop_1
+    ```
+
+    or 
+
+    ```bash
+    /home/dliuser/DLI_RoboWorkshop_1
+    ```
+
+1.  Change into the `/usr/local/digits` folder
+
+    ```bash
+    cd /usr/local/digits
+    ```
+
+1. Run the `digits-devserver` server on port `8888`:
+
+    > **Note**: the `&` at the end of the command allows starts the digits server in the background so you can cancel out of the command to return to the prompt if needed.
+
+    ```bash
+    ./digits-devserver --port 8888 &
+    ```
+
+1. Wait until the output shows something similar to:
+
+    > **Note**: This could take up to two minutes or longer the first time you run it on your server.  Don't try to connect from your local browser until tyou see the `[INFO] Loaded x jobs.` message.
+
+    ```bash
+    [1] 3932
+    ___ ___ ___ ___ _____ ___
+    |   \_ _/ __|_ _|_   _/ __|
+    | |) | | (_ || |  | | \__ \
+    |___/___\___|___| |_| |___/ 5.0.0-rc.1
+
+    Couldn't import dot_parser, loading of dot files will not be possible.
+    2017-02-06 18:40:10 [INFO ] Loaded 7 jobs.
+    ```
+
+1. From your personal workstation, open a browser window and navigate to `http://<fqdn>:8888` where `<fqdn>` is the fully qualified domain name for your vm that you copied earier.  
+
+    ```bash
+    http://<fqdn>:8888
+    ```
+
+    You should see a page similaro to the following load in your browser:
+
+    ![Digits Server Home Page](images/DigitsServerHomePage.jpg)
+
+
+---
+
+<a name="task11"></a>
+
+## Staring and Testing Jupyter
+
+1. ***OPEN A SECOND SSH CONNECTION*** (keep the ssh session with DIGITS running in it open) to your vm (logging in again as `dliuser` with the password `Pwd@234567890`), and again change into the `~/DLI_RoboWorkshop_1/notebooks` folder.
+
+    ```bash
+    cd ~/DLI_RoboWorkshop_1/notebooks
+    ```
+
+1. Run the jupyter server on port 80 (***don't forget the `sudo`***):
+
+    ```bash
+    sudo jupyter notebook --port 8 &
+    ```
+
+1. Wait for output similar to:
+
+    ```bash
+    [1] 4043
+    [I 18:42:41.404 NotebookApp] Writing notebook server cookie secret to /home/dliuser/.local/share/jupyter/runtime/notebook_cookie_secret
+    [W 18:42:41.615 NotebookApp] WARNING: The notebook server is listening on all IP addresses and not using encryption. This is not recommended.
+    [W 18:42:41.615 NotebookApp] WARNING: The notebook server is listening on all IP addresses and not using authentication. This is highly insecure and not recommended.
+    [I 18:42:41.662 NotebookApp] Serving notebooks from local directory: /home/dliuser/DLI_RoboWorkshop_1/notebooks
+    [I 18:42:41.662 NotebookApp] 0 active kernels
+    [I 18:42:41.662 NotebookApp] The Jupyter Notebook is running at: http://[all ip addresses on your system]:80/
+    [I 18:42:41.662 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+    ```
+
+1. Back, on your personal laptop, open a browser and navigate to `http://<fqdn>:80` where `<fqdn>` is the fully qualified domain name of your vm that you copied earlier:
+
+    ```bash
+    http://<fqdn>:80
+    ```
+
+    You should see a page similar to the following:
+
+    ![Jupyter Home Pageh](images/JupyterServerHomePage.jpg)
+
+1. Click on the "**TestSetup.ipynb**" link to open the test notebook.
+
+    ![Jupyter Test Notebook Link](images/JupyterTestNotebookLink.jpg)
+
+1. From the Jupyter menu bar, select "**Cell**" | "**All Output**" | "**Clear**":
+
+    ![Clear All Output](images/JuypyterClearAllOutput.jpg)
+
+1. Once the output is cleared, you can run all the cells by selecting "**Cell**" | "**Run All**" from the menu bar:
+
+    ![Run All](images/JupyterRunAll.jpg)
+
+1. You should see output similar to the following:
+
+    ![Run All Output](images/JupyterRunAllOutput.jpg)
+
+1. The top section verifies that the NVidia GPU is present, and reports details on it:
+
+    ![Verify GPU](images/JupyterVerifyGpu.jpg)
+
+1. The rest of the Test page, loads a picture with some bottles in it, as well as the output of the training data that was generated for the image, then plots boxes around the bottles that the training process found in the image: 
+
+    > **Note**: Notice the red boxes drawn around the three bottles found on the bathroom counter top.  It even outlined the partial reflection in of one of the bottles in the mirror:
+
+    ![Jupter Bottle Bounding Boxes](images/JupyterBottleBoxes.jpg)
+
 
 
