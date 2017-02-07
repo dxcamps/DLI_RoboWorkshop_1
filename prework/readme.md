@@ -146,11 +146,11 @@ To do this, you will need to first clone the GitHub repo down to your personal w
     deployer.rb   deploy-preview.sh    deploy.sh   template.json
     ```
 
-1. Open the `commands.txt` file in your text editor.  You should see a number of place holders, like `<name>`, `<key1>`, `<publicip>` and `<fqdn>`.  We will be replacing each of those place holders with actual values as we work through the lab.  For now, the only one we know is the `<name>` prefix we chose in the last task.  
+1. Open the `commands.txt` file in the text editor of your choice.  You should see a number of place holders, like `<name>`, `<key1>`, `<publicip>` and `<fqdn>`.  We will be replacing each of those place holders with actual values as we work through the lab.  For now, the only one we know is the `<name>` prefix we chose in the last task.
 
 1. In the text editor of your choice, do a global search and replace of the `<name>` place holder with the name prefix you chose above (our example, `dli0201`).
 
-    - As and example, on Windows:
+    - As and example, on Windows (use similar steps in your text editor if it is something other than notepad):
 
         - Open the commands.txt in Notepad, then from the edit menu, select "**Edit**" | "**Replace...**" from the menu bar, and in the "**Replace**" window, replace `<name>` with your prefix , for example `dli0201`.  Click the "**Replace All**" button, then close the "**Replace** window:
 
@@ -160,46 +160,9 @@ To do this, you will need to first clone the GitHub repo down to your personal w
 
             ![Notepad Search And Replace Done](images/02020-NotepadSearchReplaceDone.jpg)
 
-        - Keep your text editor open so you can easily copy the commands from it.
+        - ***Keep your text editor open so you can easily copy the commands from it.***
 
-    - An example with nano on Linux:
-
-        - Open the commands.txt file in nano:
-
-        ```bash
-        nano commands.txt
-        ```
-
-        - In nano, press Ctrl+\ (^\) to do a **Replace**;
-
-            ![Nano Replace Step 1](images/02030-NanoReplace01.jpg)
-
-        - At the "**Search (to replace):**" prompt, enter `<name>`:
-
-            ![Nano Replace Step 2](images/02030-NanoReplace02.jpg)
-
-        - For "**Replace with:**" enter your prefix.  For example `dli0201`:
-
-            ![Nano Replace Step 3](images/02030-NanoReplace03.jpg)
-
-        - At the "**Replace this instance?**" prompt, press `A` for "**All**"
-
-            ![Nano Replace Step 4](images/02030-NanoReplace04.jpg)
-
-        - You should now see that all of the `<name>` place holders have been replaced with your prefix (in this example `dli0201`).  Press Ctrl+X (^X) to "**Exit**":
-
-            ![Nano Replace Step 5](images/02030-NanoReplace05.jpg)
-
-        - At the "**Save modified buffer**" prompt, press `Y` for "**Yes**"
-
-            ![Nano Replace Step 6](images/02030-NanoReplace06.jpg)
-
-        - At the "**File Name to Write:**" prompt, press `ENTER` to confirm the `commands.txt` file, and Nano will exit.
-
-            ![Nano Replace Step 7](images/02030-NanoReplace07.jpg)
-
-
-1. The commands.txt file has now been updated  with the `<name>` place holders replaced with your prefix name.  You can use those updated commands as you work through this lab, rather than copying them from this document, and modifying.  Also, the commands have all been properly formatted on a single line and should work on both a Windows "Command Prompt" (not PowerShell though) as well as at a Bash prompt on Windows, Linux or Mac.
+1. The commands.txt file has now been updated  with the `<name>` place holders replaced with your prefix name.  ***You can use those updated commands as you work through this lab, rather than copying them from this document, and modifying them one at a time.  Also, the commands have all been properly formatted on a single line and should work on both a Windows "Command Prompt" (not PowerShell though) as well as at a Bash prompt on Windows, Linux or Mac.***
 
 ---
 
@@ -207,7 +170,7 @@ To do this, you will need to first clone the GitHub repo down to your personal w
 
 ## Creating your Azure Subscription
 
-If you are attending a sponsored workshop, there may be Azure Passes available for your use.  If so, check with your event organizers for access to an Azure Pass, and follow their instructions to sign up for Azure using that pass.  You should also verify with your event organizers the duration the Azure Pass is valid for, as well as the monetary credit it offers.  
+If you are attending a sponsored workshop you should be receiving instructions prior to the event on how to sign up for you Azure subscription.  Follow the instructions in that email to create your subscription.
 
 If you are running this prework before the workshop, make sure that it isn't so far in advance of the workshop that the pass may expire before the event date.  Also make sure to shutdown and deallocate (but not delete) the the virtual machine when you are done with the prework so that it doesn't consume the credits availalbe in your subscription.  We will show you how to both automatically (setup by default) as well as manually shutdown and deallocate your vm at the end of this lab.
 
@@ -249,7 +212,7 @@ In this steps, you'll login to your Azure subscription from your workstations co
 
 We'll be using the "**Azure login with interactive login**" method:
 
-1.  From your system's command prompt or terminal, enter the following command to set the azure-cli into "Azure Resource Manager" mode (ARM):
+1. From your system's command prompt or terminal, enter the following command to set the azure-cli into "Azure Resource Manager" mode (ARM):
 
     > **Note**: The first time you use the azure-cli you will likely see a prompt that starts with "`Microsoft Azure CLI would like to collect data about how users use CLI
 commands and some problems they encounter...`", asking you to participate in azure-cli data collection.  You can accept or decline as you wish, it won't impact how the cli functions. 
@@ -302,9 +265,9 @@ commands and some problems they encounter...`", asking you to participate in azu
         ```bash
         $ azure account list
         info:    Executing command account list
-        data:    Name      Id                                    Current  State
-        data:    --------  ------------------------------------  -------  -------
-        data:    YourSub   xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  true     Enabled
+        data:    Name       Id                                    Current  State
+        data:    --------   ------------------------------------  -------  -------
+        data:    Your Sub   xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  true     Enabled
         info:    account list command OK
         ```
 
@@ -314,10 +277,12 @@ commands and some problems they encounter...`", asking you to participate in azu
         azure account set <Your Subscription Name or Subscription Id>
         ```
 
-    - For example, if we use the sample data above, notice the subscription name is `YourSub`.  We could then use this command to ensure that the `YourSub` subscription was the current subscription used by the azure-cli:
+    - For example, if we use the sample data above, notice the subscription name is "`Your Sub`".  We could then use this command to ensure that the "`Your Sub`" subscription was the current subscription used by the azure-cli:
+
+        > **Note**: If your subscription name has spaces in it, make sure to surround it in quotes.
 
         ```bash
-        azure account set YourSub
+        azure account set "Your Sub"
         ```
     - Finally, to get the details of the current subscription, you can enter the following command:
 
