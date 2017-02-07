@@ -49,7 +49,7 @@ git clone http://github.com/dxcamps/DLI_RoboWorkshop_1
 
 cd ./DLI_RoboWorkshop_1/prework/deploy
 
-1. You can list the contents of the folder with an `ls` (Mac or Linux) or `dir` (windows) command, and see the files in the folder:
+1. You can list the contents of the folder with an 'ls' (Mac or Linux) or 'dir' (windows) command, and see the files in the folder:
 
 ##   Windows
 
@@ -159,7 +159,7 @@ azure storage container create --account-name <name>storage --account-key <key1>
 ##   Copy the pre-existing VHD from the hosted storage account into the container
 ##   --------------------------------------------------------------------------------
 
-azure storage blob copy start --dest-account-name <name>storage --dest-account-key <key1> --dest-container vhds --source-uri https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidia.vhd --source-sas "st=2017-01-02T00%3A36%3A00Z&se=2050-02-02T00%3A36%3A00Z&sp=rl&sv=2015-12-11&sr=b&sig=NidB6Dt4FsD5xNw1l931AIsayFUJrH%2B0vOKcKhsKoGA%3D"
+azure storage blob copy start --dest-account-name <name>storage --dest-account-key <key1> --dest-container vhds --source-uri https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidiaimage.vhd
 
 ##   --------------------------------------------------------------------------------
 ##   You can monitor the progress by repeatedly issuing the following command:
@@ -172,22 +172,13 @@ azure storage blob copy show --account-name <name>storage --account-key <key1> -
 #### ================================================================================
 
 ##   --------------------------------------------------------------------------------
-##   Change into the folder where you want the repo clone to be created, then
-##   clone the github repo:
-##   --------------------------------------------------------------------------------
-
-git clone http://github.com/dxcamps/DLI_RoboWorkshop_1
-
-##   --------------------------------------------------------------------------------
-##   Change in to the deploy folder:
+##   Change in to the DLI_RoboWorkshop_1/preworkdeploy folder:
 ##   --------------------------------------------------------------------------------
 
 cd ./DLI_RoboWorkshop_1/prework/deploy
 
-cd ./DLI_RoboWorkshop_1/prework/deploy
-
 ##   --------------------------------------------------------------------------------
-##   You can list the contents of the folder with an ls, or a dir in Windows
+##   As before, you can list the contents of the folder with an ls, or a dir in Windows
 ##   --------------------------------------------------------------------------------
 
 dir
@@ -222,17 +213,11 @@ ls
 azure group deployment create --resource-group <name>group --name vmdeployment --template-file template.json --parameters-file parameters.json
 
 ##   --------------------------------------------------------------------------------
-##   Reset the password so you can login to the VM:
-##   --------------------------------------------------------------------------------
-
-azure vm reset-access -g <name>group -n <name>vm -u drcrook -p Pwd@234567890
-
-##   --------------------------------------------------------------------------------
-##   Get the Public IP address and FQDN for your vm, then do a search and replace in 
+##   Get the FQDN and Public IP address for your vm, then do a search and replace in 
 ##   this file (commands.txt) replacing: 
-##   <publicip> with your Public IP address value 
-##   and 
 ##   <fqdn> with your FQDN value.
+##   and 
+##   <publicip> with your Public IP address value 
 ##   --------------------------------------------------------------------------------
 
 azure vm show --resource-group <name>group --name <name>vm
@@ -251,8 +236,8 @@ azure vm show --resource-group <name>group --name <name>vm
 ##   SSH into your VM using:
 ##   --------------------------------------------------------------------------------
 
-ssh drcrook@<fqdn>
+ssh dliuser@<fqdn>
 
 ## or
 
-ssh drcook@<publicip>
+ssh dliuser@<publicip>

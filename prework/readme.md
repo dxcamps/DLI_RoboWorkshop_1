@@ -45,7 +45,7 @@ In this lab, you will complete the following tasks:
 
 ## Understanding the Azure Resources in this Lab
 
-![Deep Learning Workshop Architecture](images/deeplearningworkshoparchitecture.png)
+![Deep Learning Workshop Architecture](images/DeepLearningWorkshopArchitecture.png)
 
 In this workshop, you will be using an Azure Virtual Machine (VM) to complete your work. The Virtual Machine will use a copy of a pre-existing Virtual Hard Disk (VHD) that we have created for your use.  The pre-existing VHD has Ubuntu 16.0.4 LTS installed, along with all of the deep learning tools, frameworks, data sets and jupyter notebooks that you will need for the lab.  The purpose of this prework is to walk you step-by-step through the process of configuring your Azure Subscription with the resources necessary to complete the workshop.  This section is provided to help you better understand what those resources are in an effort to help you better understand the subsequent tasks, and the workshop overall.
 
@@ -146,11 +146,11 @@ To do this, you will need to first clone the GitHub repo down to your personal w
     deployer.rb   deploy-preview.sh    deploy.sh   template.json
     ```
 
-1. Open the `commands.txt` file in your text editor.  You should see a number of place holders, like `<name>`, `<key1>`, `<publicip>` and `<fqdn>`.  We will be replacing each of those place holders with actual values as we work through the lab.  For now, the only one we know is the `<name>` prefix we chose in the last task.  
+1. Open the `commands.txt` file in the text editor of your choice.  You should see a number of place holders, like `<name>`, `<key1>`, `<publicip>` and `<fqdn>`.  We will be replacing each of those place holders with actual values as we work through the lab.  For now, the only one we know is the `<name>` prefix we chose in the last task.
 
 1. In the text editor of your choice, do a global search and replace of the `<name>` place holder with the name prefix you chose above (our example, `dli0201`).
 
-    - As and example, on Windows:
+    - As and example, on Windows (use similar steps in your text editor if it is something other than notepad):
 
         - Open the commands.txt in Notepad, then from the edit menu, select "**Edit**" | "**Replace...**" from the menu bar, and in the "**Replace**" window, replace `<name>` with your prefix , for example `dli0201`.  Click the "**Replace All**" button, then close the "**Replace** window:
 
@@ -160,46 +160,9 @@ To do this, you will need to first clone the GitHub repo down to your personal w
 
             ![Notepad Search And Replace Done](images/02020-NotepadSearchReplaceDone.jpg)
 
-        - Close Notepad, making sure to save the changes when prompted.
+        - ***Keep your text editor open so you can easily copy the commands from it.***
 
-    - An example with nano on Linux:
-
-        - Open the commands.txt file in nano:
-
-        ```bash
-        nano commands.txt
-        ```
-
-        - In nano, press Ctrl+\ (^\) to do a **Replace**;
-
-            ![Nano Replace Step 1](images/02030-NanoReplace01.jpg)
-
-        - At the "**Search (to replace):**" prompt, enter `<name>`:
-
-            ![Nano Replace Step 2](images/02030-NanoReplace02.jpg)
-
-        - For "**Replace with:**" enter your prefix.  For example `dli0201`:
-
-            ![Nano Replace Step 3](images/02030-NanoReplace03.jpg)
-
-        - At the "**Replace this instance?**" prompt, press `A` for "**All**"
-
-            ![Nano Replace Step 4](images/02030-NanoReplace04.jpg)
-
-        - You should now see that all of the `<name>` place holders have been replaced with your prefix (in this example `dli0201`).  Press Ctrl+X (^X) to "**Exit**":
-
-            ![Nano Replace Step 5](images/02030-NanoReplace05.jpg)
-
-        - At the "**Save modified buffer**" prompt, press `Y` for "**Yes**"
-
-            ![Nano Replace Step 6](images/02030-NanoReplace06.jpg)
-
-        - At the "**File Name to Write:**" prompt, press `ENTER` to confirm the `commands.txt` file, and Nano will exit.
-
-            ![Nano Replace Step 7](images/02030-NanoReplace07.jpg)
-
-
-1. The commands.txt file has now been updated  with the `<name>` place holders replaced with your prefix name.  You can use those updated commands as you work through this lab, rather than copying them from this document, and modifying.  Also, the commands have all been properly formatted on a single line and should work on both a Windows "Command Prompt" (not PowerShell though) as well as at a Bash prompt on Windows, Linux or Mac.
+1. The commands.txt file has now been updated  with the `<name>` place holders replaced with your prefix name.  ***You can use those updated commands as you work through this lab, rather than copying them from this document, and modifying them one at a time.  Also, the commands have all been properly formatted on a single line and should work on both a Windows "Command Prompt" (not PowerShell though) as well as at a Bash prompt on Windows, Linux or Mac.***
 
 ---
 
@@ -207,7 +170,7 @@ To do this, you will need to first clone the GitHub repo down to your personal w
 
 ## Creating your Azure Subscription
 
-If you are attending a sponsored workshop, there may be Azure Passes available for your use.  If so, check with your event organizers for access to an Azure Pass, and follow their instructions to sign up for Azure using that pass.  You should also verify with your event organizers the duration the Azure Pass is valid for, as well as the monetary credit it offers.  
+If you are attending a sponsored workshop you should be receiving instructions prior to the event on how to sign up for you Azure subscription.  Follow the instructions in that email to create your subscription.
 
 If you are running this prework before the workshop, make sure that it isn't so far in advance of the workshop that the pass may expire before the event date.  Also make sure to shutdown and deallocate (but not delete) the the virtual machine when you are done with the prework so that it doesn't consume the credits availalbe in your subscription.  We will show you how to both automatically (setup by default) as well as manually shutdown and deallocate your vm at the end of this lab.
 
@@ -249,7 +212,7 @@ In this steps, you'll login to your Azure subscription from your workstations co
 
 We'll be using the "**Azure login with interactive login**" method:
 
-1.  From your system's command prompt or terminal, enter the following command to set the azure-cli into "Azure Resource Manager" mode (ARM):
+1. From your system's command prompt or terminal, enter the following command to set the azure-cli into "Azure Resource Manager" mode (ARM):
 
     > **Note**: The first time you use the azure-cli you will likely see a prompt that starts with "`Microsoft Azure CLI would like to collect data about how users use CLI
 commands and some problems they encounter...`", asking you to participate in azure-cli data collection.  You can accept or decline as you wish, it won't impact how the cli functions. 
@@ -302,9 +265,9 @@ commands and some problems they encounter...`", asking you to participate in azu
         ```bash
         $ azure account list
         info:    Executing command account list
-        data:    Name      Id                                    Current  State
-        data:    --------  ------------------------------------  -------  -------
-        data:    YourSub   xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  true     Enabled
+        data:    Name       Id                                    Current  State
+        data:    --------   ------------------------------------  -------  -------
+        data:    Your Sub   xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  true     Enabled
         info:    account list command OK
         ```
 
@@ -314,10 +277,12 @@ commands and some problems they encounter...`", asking you to participate in azu
         azure account set <Your Subscription Name or Subscription Id>
         ```
 
-    - For example, if we use the sample data above, notice the subscription name is `YourSub`.  We could then use this command to ensure that the `YourSub` subscription was the current subscription used by the azure-cli:
+    - For example, if we use the sample data above, notice the subscription name is "`Your Sub`".  We could then use this command to ensure that the "`Your Sub`" subscription was the current subscription used by the azure-cli:
+
+        > **Note**: If your subscription name has spaces in it, make sure to surround it in quotes.
 
         ```bash
-        azure account set YourSub
+        azure account set "Your Sub"
         ```
     - Finally, to get the details of the current subscription, you can enter the following command:
 
@@ -465,7 +430,7 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
         --dest-account-name <name>storage
         --dest-account-key <key1>
         --dest-container vhds
-        --source-uri https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidia.vhd
+        --source-uri https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidiaimage.vhd
         --source-sas "st=2017-01-02T00%3A36%3A00Z&se=2050-02-02T00%3A36%3A00Z&sp=rl&sv=2015-12-11&sr=b&sig=NidB6Dt4FsD5xNw1l931AIsayFUJrH%2B0vOKcKhsKoGA%3D"
     ```
 
@@ -473,7 +438,7 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
 
     ```bash
     info:    Executing command storage blob copy start
-    - Start copying blob https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidia.vhd?st=2017-01-02T00%3A36%3A00Z&se=+050-02-02T00%3A36%3A00Z&sp=rl&sv=2015-12-11&sr=b&sig=NidB6Dt4FsD5xNw1l931AIsayFUJrH%2B0vOKcKhsKoGA%3D
+    - Start copying blob https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidiaimage.vhd
     data:    Copy ID                               Status
     data:    ------------------------------------  -------
     data:    89fa6be5-33f8-4602-b97d-06d255e6a0c6  pending
@@ -489,7 +454,7 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
       --account-name <name>storage
       --account-key <key1>
       --container vhds
-      --blob msftnvidia.vhd
+      --blob msftnvidiaimage.vhd
     ```
 
     The output of the command above shows the copy status in the `Progress` and `Status` columns.  
@@ -613,25 +578,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     info:    group deployment create command OK
     ```
 
-1. Once the VM has been created, we need to reset the password so you can login.  The VM was created by a user named "drcrook", so we will log in as him, but when the vm was copied, the password was reset.  We need to set it to something we know.  Use the following command, again replacing the ***&lt;name&gt;*** place holders with your name prefix.  The command will reset the credentials to the following:
-
-    - login:  `drcrook`
-    - password:  `Pwd@234567890`
-
-    ```bash
-    azure vm reset-access -g <name>group -n <name>vm -u drcrook -p Pwd@234567890
-    ```
-
-    sample output:
-
-    ```bash
-    info:    Executing command vm reset-access
-    + Looking up the VM "dli0201vm"
-    + Installing extension "VMAccessForLinux", VM: "dli0201vm"
-    info:    vm reset-access command OK
-    ```
-
-1. Finally, to connect to the vm, you will need to know it's IP address and/or dns name.  You can get all the details about your vm using:
+1. Finally, to connect to the vm, you will need to know it's fully qualified domin name (fqdn) and/or ip address.  You can get all the details about your vm using:
 
     ```bash
     azure vm show --resource-group <name>group --name <name>vm
@@ -644,7 +591,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     + Looking up the VM "dli0201vm"
     + Looking up the NIC "dli0201nic"
     + Looking up the public ip "dli0201ip"
-    data:    Id                              :/subscriptions/e752503e-0639-4d87-88c0-cb134bba79e2/resourceGroups/dli0201group/providers/Microsoft.Compute/virtualMachines/dli0201vm
+    data:    Id                              :/subscriptions/xxx...xxx/resourceGroups/dli0201group/providers/Microsoft.Compute/virtualMachines/dli0201vm
     data:    ProvisioningState               :Succeeded
     data:    Name                            :dli0201vm
     data:    Location                        :eastus
@@ -678,7 +625,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     info:    vm show command OK
     ```
 
-1. From the output, copy the "Public IP address" (`40.114.1.63` above) and replace the `<publicip>` placholders in the commands.txt.  Additionally,  copy the "FQDN" (`dli0201vm.eastus.cloudapp.azure.com` above) value and replace the `<fqdn>` place holders in commands.txt
+1. From the output, copy the "FQDN" (`dli0201vm.eastus.cloudapp.azure.com` above) value and replace the `<fqdn>` place holders in commands.txt.  Additionally, copy the "Public IP address" (`40.114.1.63` above) and replace the `<publicip>` placholders in the commands.txt.
 
 ---
 
@@ -698,18 +645,149 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
 
 <a name="task10"></a>
 
-## Connecting to your Virtual Machine using SSH
+## Connecting to your Virtual Machine using SSH and starting Digits
 
-1. Use the ssh client of your choice, and connect from your computer to your new Azure Virtual Machine using ssh using the `<publicip>` or `<fqdn>` values you retrieved above.  Recall that we've reset the password for `drcrook` to `Pwd@234567890`
+1. The user name and password for the vm are:
+
+    - user: `dliuser`
+    - paasword: `Pwd@234567890`
+
+1. Use the ssh client of your choice, and ssh into either the fqdn or ip address for your vm, and use the user name and password given above to login:
 
     ```bash
-    ssh drcrook@<publicip>
+    ssh dliuser@<fqdn>
     ```
 
     or
 
     ```bash
-    ssh drcrook@<fqdn>
+    ssh dliuser@<publicip>
     ```
+
+1. Once logged in, you should be in the `dliuser`'s `home` folder.  Next, clone the github repo for the workshop into the vm so you have a copy of all the code needed:
+
+    ```bash
+    git clone https://github.com/dxcamps/DLI_RoboWorkshop_1
+    ```
+
+    The repo should be cloned into:
+
+    ```bash
+    ~/DLI_RoboWorkshop_1
+    ```
+
+    or 
+
+    ```bash
+    /home/dliuser/DLI_RoboWorkshop_1
+    ```
+
+1.  Change into the `/usr/local/digits` folder
+
+    ```bash
+    cd /usr/local/digits
+    ```
+
+1. Run the `digits-devserver` server on port `8888`:
+
+    > **Note**: the `&` at the end of the command allows starts the digits server in the background so you can cancel out of the command to return to the prompt if needed.
+
+    ```bash
+    ./digits-devserver --port 8888 &
+    ```
+
+1. Wait until the output shows something similar to:
+
+    > **Note**: This could take up to two minutes or longer the first time you run it on your server.  Don't try to connect from your local browser until tyou see the `[INFO] Loaded x jobs.` message.
+
+    ```bash
+    [1] 3932
+    ___ ___ ___ ___ _____ ___
+    |   \_ _/ __|_ _|_   _/ __|
+    | |) | | (_ || |  | | \__ \
+    |___/___\___|___| |_| |___/ 5.0.0-rc.1
+
+    Couldn't import dot_parser, loading of dot files will not be possible.
+    2017-02-06 18:40:10 [INFO ] Loaded 7 jobs.
+    ```
+
+1. From your personal workstation, open a browser window and navigate to `http://<fqdn>:8888` where `<fqdn>` is the fully qualified domain name for your vm that you copied earier.  
+
+    ```bash
+    http://<fqdn>:8888
+    ```
+
+    You should see a page similaro to the following load in your browser:
+
+    ![Digits Server Home Page](images/DigitsServerHomePage.jpg)
+
+
+---
+
+<a name="task11"></a>
+
+## Staring and Testing Jupyter
+
+1. ***OPEN A SECOND SSH CONNECTION*** (keep the ssh session with DIGITS running in it open) to your vm (logging in again as `dliuser` with the password `Pwd@234567890`), and again change into the `~/DLI_RoboWorkshop_1/notebooks` folder.
+
+    ```bash
+    cd ~/DLI_RoboWorkshop_1/notebooks
+    ```
+
+1. Run the jupyter server on port 80 (***don't forget the `sudo`***):
+
+    ```bash
+    sudo jupyter notebook --port 8 &
+    ```
+
+1. Wait for output similar to:
+
+    ```bash
+    [1] 4043
+    [I 18:42:41.404 NotebookApp] Writing notebook server cookie secret to /home/dliuser/.local/share/jupyter/runtime/notebook_cookie_secret
+    [W 18:42:41.615 NotebookApp] WARNING: The notebook server is listening on all IP addresses and not using encryption. This is not recommended.
+    [W 18:42:41.615 NotebookApp] WARNING: The notebook server is listening on all IP addresses and not using authentication. This is highly insecure and not recommended.
+    [I 18:42:41.662 NotebookApp] Serving notebooks from local directory: /home/dliuser/DLI_RoboWorkshop_1/notebooks
+    [I 18:42:41.662 NotebookApp] 0 active kernels
+    [I 18:42:41.662 NotebookApp] The Jupyter Notebook is running at: http://[all ip addresses on your system]:80/
+    [I 18:42:41.662 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+    ```
+
+1. Back, on your personal laptop, open a browser and navigate to `http://<fqdn>:80` where `<fqdn>` is the fully qualified domain name of your vm that you copied earlier:
+
+    ```bash
+    http://<fqdn>:80
+    ```
+
+    You should see a page similar to the following:
+
+    ![Jupyter Home Pageh](images/JupyterServerHomePage.jpg)
+
+1. Click on the "**TestSetup.ipynb**" link to open the test notebook.
+
+    ![Jupyter Test Notebook Link](images/JupyterTestNotebookLink.jpg)
+
+1. From the Jupyter menu bar, select "**Cell**" | "**All Output**" | "**Clear**":
+
+    ![Clear All Output](images/JuypyterClearAllOutput.jpg)
+
+1. Once the output is cleared, you can run all the cells by selecting "**Cell**" | "**Run All**" from the menu bar:
+
+    ![Run All](images/JupyterRunAll.jpg)
+
+1. You should see output similar to the following:
+
+    ![Run All Output](images/JupyterRunAllOutput.jpg)
+
+1. The top section verifies that the NVidia GPU is present, and reports details on it:
+
+    ![Verify GPU](images/JupyterVerifyGpu.jpg)
+
+1. The rest of the Test page, loads a picture with some bottles in it, as well as the output of the training data that was generated for the image, then plots boxes around the bottles that the training process found in the image: 
+
+    > **Note**: Notice the red boxes drawn around the three bottles found on the bathroom counter top.  It even outlined the partial reflection in of one of the bottles in the mirror:
+
+    ![Jupter Bottle Bounding Boxes](images/JupyterBottleBoxes.jpg)
+
 
 

@@ -1,0 +1,37 @@
+diff -urN '--exclude=data' '--exclude=.git' jetson-inference-orig/detectnet-camera/detectnet-camera.cpp jetson-inference/detectnet-camera/detectnet-camera.cpp
+--- jetson-inference-orig/detectnet-camera/detectnet-camera.cpp	2017-02-05 15:02:30.066794816 +0000
++++ jetson-inference/detectnet-camera/detectnet-camera.cpp	2017-02-05 15:12:56.690848067 +0000
+@@ -54,6 +54,8 @@
+ 			networkType = detectNet::PEDNET_MULTI;
+ 		else if( strcmp(argv[1], "ped-100") == 0 )
+ 			networkType = detectNet::PEDNET;
++		else if( strcmp(argv[1], "bottlenet") == 0 )
++			networkType = detectNet::BOTTLENET;
+ 		else if( strcmp(argv[1], "facenet") == 0 || strcmp(argv[1], "facenet-120") == 0 || strcmp(argv[1], "face-120") == 0 )
+ 			networkType = detectNet::FACENET;
+ 	}
+diff -urN '--exclude=data' '--exclude=.git' jetson-inference-orig/detectNet.cpp jetson-inference/detectNet.cpp
+--- jetson-inference-orig/detectNet.cpp	2017-02-05 15:02:30.066794816 +0000
++++ jetson-inference/detectNet.cpp	2017-02-04 16:02:10.306024879 +0000
+@@ -21,6 +21,8 @@
+ 		return Create("multiped-500/deploy.prototxt", "multiped-500/snapshot_iter_178000.caffemodel", "multiped-500/mean.binaryproto", threshold );
+ 	else if( networkType == FACENET )
+ 		return Create("facenet-120/deploy.prototxt", "facenet-120/snapshot_iter_24000.caffemodel", NULL, threshold );
++	else if( networkType == BOTTLENET )
++		return Create("bottlenet/deploy.prototxt", "bottlenet/snapshot_iter_37300.caffemodel", "bottlenet/mean.binaryproto", threshold );
+ 	else /*if( networkTYpe == PEDNET )*/
+ 		return Create("ped-100/deploy.prototxt", "ped-100/snapshot_iter_70800.caffemodel", "ped-100/mean.binaryproto", threshold );
+ }
+diff -urN '--exclude=data' '--exclude=.git' jetson-inference-orig/detectNet.h jetson-inference/detectNet.h
+--- jetson-inference-orig/detectNet.h	2017-02-05 15:02:30.066794816 +0000
++++ jetson-inference/detectNet.h	2017-02-04 15:51:54.487270399 +0000
+@@ -22,7 +22,8 @@
+ 	{
+ 		PEDNET = 0,		/**< Pedestrian / person detector */
+ 		PEDNET_MULTI,	/**< Multi-class pedestrian + baggage detector */
+-		FACENET			/**< Human facial detector trained on FDDB */
++		FACENET,			/**< Human facial detector trained on FDDB */
++		BOTTLENET			/** Bottle detector **/
+ 	};
+ 
+ 	/**

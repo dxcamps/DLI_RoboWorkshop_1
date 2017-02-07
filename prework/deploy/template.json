@@ -13,14 +13,16 @@
     },
     "variables":{
         "virtualMachines_vm_name": "[concat(parameters('name_prefix'),'vm')]",
+        "virtualMachines_vm_user": "dliuser",
+        "virtualMachines_vm_password": "Pwd@234567890",
+        "virtualHardDisks_container_name": "vhds",
+        "virtualHardDisks_image_name": "msftnvidiaimage.vhd",
+        "virtualHardDisks_vhd_name": "msftnvidia.vhd",
         "networkInterfaces_nic_name": "[concat(parameters('name_prefix'),'nic')]",
         "networkSecurityGroups_nsg_name": "[concat(parameters('name_prefix'),'nsg')]",
         "publicIPAddresses_ip_name": "[concat(parameters('name_prefix'),'ip')]",
         "virtualNetworks_vnet_name": "[concat(parameters('name_prefix'),'vnet')]",
-        "storageAccounts_account_name": "[concat(parameters('name_prefix'),'storage')]",
-        "virtualHardDisks_vhd_name": "msftnvidia.vhd",
-        "sudo_user": "drcrook",
-        "sudo_pwd": "Pwd@234567890"
+        "storageAccounts_account_name": "[concat(parameters('name_prefix'),'storage')]"
     },
     "resources": [
         {
@@ -34,16 +36,23 @@
                 },
                 "storageProfile": {
                     "osDisk": {
-                        "name": "[variables('virtualMachines_vm_name')]",
                         "osType": "Linux",
-                        "createOption": "Attach",
+                        "name": "msftnvidiaimage.vhd",
+                        "createOption": "FromImage",
+                        "image": {
+                        "uri": "[concat('https://',variables('storageAccounts_account_name'),'.blob.core.windows.net/',variables('virtualHardDisks_container_name'),'/',variables('virtualHardDisks_image_name'))]"
+                        },
                         "vhd": {
-                            "uri": "[concat('https', '://', variables('storageAccounts_account_name'), '.blob.core.windows.net/vhds/', variables('virtualHardDisks_vhd_name'))]"
+                        "uri": "[concat('https://',variables('storageAccounts_account_name'),'.blob.core.windows.net/',variables('virtualHardDisks_container_name'),'/',variables('virtualHardDisks_vhd_name'))]"
                         },
                         "caching": "ReadWrite"
-                    },
-                    "dataDisks": []
+                    }
                 },
+                "osProfile": {
+                    "computerName": "[variables('virtualMachines_vm_name')]",
+                    "adminUsername": "[variables('virtualMachines_vm_user')]",
+                    "adminPassword": "[variables('virtualMachines_vm_password')]"
+                },                
                 "networkProfile": {
                     "networkInterfaces": [
                         {
@@ -205,29 +214,6 @@
                 },
                 "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines',variables('virtualMachines_vm_name'))]"
             }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('virtualMachines_vm_name'),'_enablevmaccess')]",
-            "apiVersion": "2016-03-30",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',variables('virtualMachines_vm_name'))]"
-            ],
-            "properties": 
-            {
-                "publisher": "Microsoft.OSTCExtensions",
-                "type": "VMAccessForLinux",
-                "typeHandlerVersion": "1.4",
-                "autoUpgradeMinorVersion": true,
-                "settings": {},
-                "protectedSettings": 
-                {
-                    "username": "[variables(`sudo_user`)]",
-                    "password": "[variables(`sudo_pwd`)]",
-                    "reset_ssh": true
-                }
-                }
         },
         {
             "type": "Microsoft.Storage/storageAccounts",
