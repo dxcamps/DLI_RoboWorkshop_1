@@ -64,7 +64,7 @@ while loop:
 	width_input=frame.shape[1]
         od_frame=cv2.resize(frame,(WIDTH,HEIGHT),0,0)
     
-        start = time.time()
+        t1 = time.time()
 
         data = transformer.preprocess('data', od_frame.astype('float16')/255)
         # Set the preprocessed frame to be the Caffe model's data layer
@@ -73,7 +73,7 @@ while loop:
         # The output of DetectNet is an array of bounding box predictions
         bounding_boxes = classifier.forward()['bbox-list'][0]
 
-        end = (time.time() - start)*1000
+        dt = (time.time() - t1)
     
         if cval:
             # Convert the image from OpenCV BGR format to matplotlib RGB format for display
@@ -123,9 +123,10 @@ while loop:
         ## Display the inference time per frame
         #cv2.putText(frame,itxt,
         #            (10,height_input-60), cv2.FONT_HERSHEY_SIMPLEX,0.6,(255,255,255),2)
-   
+  
+	print "inference time=%.3f ms, total time per frame=%.3f ms" % (1000*dt,1000*(time.time()-t1)) 
 	cv2.imshow('object detection',frame)
-        wtstr="%4.1f FPS" % (1.0/(time.time()-start))
+        wtstr="%4.1f FPS" % (1.0/dt)
         cv2.setWindowTitle('object detection', wtstr)
 
 
