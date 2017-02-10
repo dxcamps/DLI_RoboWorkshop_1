@@ -2,7 +2,7 @@
 
 ### Installing BottleNet
 
-Copy the contents of the BottleNet .tar.gz file into a directory called data
+Copy the contents of the BottleNet .tar.gz file into a directory called data.  You must use the full deploy.prototxt file, not one that has been edited for other purposes.
 
 ### Running BottleNet
 
