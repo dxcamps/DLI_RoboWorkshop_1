@@ -32,7 +32,7 @@ In this lab, you will complete the following tasks:
 1. [Cloning the GitHub repo to your computer](#task2)
 1. [Creating your Azure Subscription](#task3)
 1. [Installing the Azure Command-Line Interface (Azure CLI)](#task4)
-1. [Logging into your Azure Subscription via the Azure-CLI](#task5)
+1. [Logging into and configuring your Azure Subscription via the Azure CLI](#task5)
 1. [Creating the Azure Resource Group, Storage Account, and Container](#task6)
 1. [Copying the Virtual Hard Disk (VHD) for the Virtual Machine](#task7)
 1. [Creating the Virtual Machine using the Copied VHD](#task8)
@@ -206,7 +206,7 @@ The Azure CLI is a cross platform command line interface that you can use to man
 
 <a name="task5"></a>
 
-## Logging into your Azure Subscription via the Azure CLI
+## Logging into and configuring your Azure Subscription via the Azure CLI
 
 In this steps, you'll login to your Azure subscription from your workstations command line.  There are multiple ways to login to the Azure-CLI.  You can learn about alternat login methods here: [Log in to Azure from the Azure CLI](https://docs.microsoft.com/en-us/azure/xplat-cli-connect) 
 
@@ -307,6 +307,35 @@ commands and some problems they encounter...`", asking you to participate in azu
         ```
 ---
 
+1. We will be using a number of Azure "**Resource Providers**" in this lab.  Resource Providers enable us to manage specific types of resources in the Azure Platform via the "**Azure Resource Manager**" API that is used by the Azure-cli.  We need to enabled, or "**Register**" each of the providers we will be using before we can use them.  The "**Resource Providers**" we need include:
+
+    - "Microsoft.Storage"
+    - "Microsoft.Network"
+    - "Microsoft.Compute"
+    - "Microsoft.DevTestLab"
+
+1. We'll use the Azure-cli to register each one.  Is the following command to register the "**Microsoft.Storage**" resource provider:
+
+    ```bash
+    azure provider register Microsoft.Storage
+    ```
+
+    Example output:
+
+    ```bash
+    info:    Executing command provider register
+    + Registering provider Microsoft.Storage with subscription de9618cf-ca76-4a42-acf0-7f5f992a674a
+    info:    provider register command OK
+    ```
+
+1. Repeat the `azure provider register` command for each of the other resource providers:
+
+    ```bash
+    azure provider register Microsoft.Network
+    azure provider register Microsoft.Compute
+    azure provider register Microsoft.DevTestLab
+    ```
+
 <a name="task6"></a>
 
 ## Creating the Azure Resource Group, Storage Account, and Container
@@ -366,10 +395,9 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     + Getting storage account keys
     data:    Name  Key                                                                                       Permissions
     data:    ----  ----------------------------------------------------------------------------------------  -----------
-    data:    key1  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx==  Full
-    data:    key2  yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy==  Full
-    info:    storage account keys list command OK
-    ```
+    data:    key1  xxx...xxx==  Full
+    data:    key2  yyy...yyy==  Full
+    info:    storage account keys list command OK    ```
 
 
 1. From the output, copy the value of the "key1" key (shown as `xxx......xxx==` above, and replace the `<key1>` place holders in commands.txt with it.

@@ -120,6 +120,15 @@ azure account set <Your Subscription Name or Subscription Id>
 
 azure account show
 
+##   --------------------------------------------------------------------------------
+##   Register the necessary Azure Resource Providers:
+##   --------------------------------------------------------------------------------
+
+azure provider register Microsoft.Storage
+azure provider register Microsoft.Network
+azure provider register Microsoft.Compute
+azure provider register Microsoft.DevTestLab
+
 
 #### ================================================================================
 #### Creating the Azure Resource Group, Storage Account, and Container
@@ -165,7 +174,7 @@ azure storage blob copy start --dest-account-name <name>storage --dest-account-k
 ##   You can monitor the progress by repeatedly issuing the following command:
 ##   --------------------------------------------------------------------------------
 
-azure storage blob copy show --account-name <name>storage --account-key <key1> --container vhds --blob msftnvidia.vhd
+azure storage blob copy show --account-name <name>storage --account-key <key1> --container vhds --blob msftnvidiaimage.vhd
 
 #### ================================================================================
 #### Creating the Virtual Machine using the Copied VHD
