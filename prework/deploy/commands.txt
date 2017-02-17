@@ -129,7 +129,6 @@ azure provider register Microsoft.Network
 azure provider register Microsoft.Compute
 azure provider register Microsoft.DevTestLab
 
-
 #### ================================================================================
 #### Creating the Azure Resource Group, Storage Account, and Container
 #### ================================================================================

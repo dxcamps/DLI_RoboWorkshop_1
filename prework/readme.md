@@ -397,20 +397,13 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     data:    ----  ----------------------------------------------------------------------------------------  -----------
     data:    key1  xxx...xxx==  Full
     data:    key2  yyy...yyy==  Full
-    info:    storage account keys list command OK    ```
+    info:    storage account keys list command OK    
+    ```
 
 
 1. From the output, copy the value of the "key1" key (shown as `xxx......xxx==` above, and replace the `<key1>` place holders in commands.txt with it.
 
-    ```bash
-    info:    Executing command storage account keys list
-    + Getting storage account keys
-    data:    Name  Key                                                                                       Permissions
-    data:    ----  ----------------------------------------------------------------------------------------  -----------
-    data:    key1  xxx...xxx==  Full
-    data:    key2  yyy...yyy==  Full
-    info:    storage account keys list command OK
-    ```
+
 
 1. Next, we'll create the container to store the vhd for our virtual machine:
 
