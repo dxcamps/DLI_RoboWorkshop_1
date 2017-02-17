@@ -133,15 +133,9 @@ def main(argv):
 		out = classifier.forward()
 		end = (time.time() - start)*1000
 
-		#cv2.rectangle(frame,(5,10),(450,70),(0,0,0),-1)
-		#cv2.putText(frame,"FF time: %dms/%dFPS" % (end,1000/end),
-		#	(10,30), cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,255,255),2)
 		print("Main: Done in %.4f s." % (time.time() - start))
-	
-		# scores = out['softmax']
 		scores = out['prob']
 	
-
 		dispcount=5
 
 		maxmatch = scores.argmax()
@@ -154,10 +148,12 @@ def main(argv):
 			position = (10,20+20*j)
 				
 			cv2.putText(frame,pred, 
-				position, cv2.FONT_HERSHEY_SIMPLEX,0.6,(0,255,0),1)	
+				position, cv2.FONT_HERSHEY_SIMPLEX,0.6,(0,0,0),1)	
 
 		
-		cv2.imshow('test',frame)
+		cv2.imshow('classify',frame)
+		wtstr="%4.1f FPS" % (1.0/(time.time()-start))
+		cv2.setWindowTitle('classify', wtstr)
 		cv2.waitKey(1)
 
     	if cv2.waitKey(1) & 0xFF == ord('q'):
