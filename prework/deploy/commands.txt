@@ -200,7 +200,7 @@ ls
         "location": {
             "value": "eastus"
         },
-        "name_place_holder": {
+        "name_prefix": {
             "value": "<name>"
         }
     }

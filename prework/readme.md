@@ -265,9 +265,10 @@ commands and some problems they encounter...`", asking you to participate in azu
         ```bash
         $ azure account list
         info:    Executing command account list
-        data:    Name       Id                                    Current  State
-        data:    --------   ------------------------------------  -------  -------
-        data:    Your Sub   xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  true     Enabled
+        data:    Name         Id                                    Current   State
+        data:    ----------   ------------------------------------  --------  -------
+        data:    Your Sub     wwwwwwww-wwww-wwww-wwww-wwwwwwwwwwww  true      Enabled
+        data:    Azure Pass   zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz  false     Enabled
         info:    account list command OK
         ```
 
@@ -277,12 +278,12 @@ commands and some problems they encounter...`", asking you to participate in azu
         azure account set <Your Subscription Name or Subscription Id>
         ```
 
-    - For example, if we use the sample data above, notice the subscription name is "`Your Sub`".  We could then use this command to ensure that the "`Your Sub`" subscription was the current subscription used by the azure-cli:
+    - For example, if you are at a sponsored event and were given an Azure Pass to use, notice the subscription name of "`Azure Pass`" for the Azure Pass subscription.  We could then use this command to ensure that the "`Azure Pass`" subscription was the current subscription used by the azure-cli:
 
         > **Note**: If your subscription name has spaces in it, make sure to surround it in quotes.
 
         ```bash
-        azure account set "Your Sub"
+        azure account set "Azure Pass"
         ```
     - Finally, to get the details of the current subscription, you can enter the following command:
 
@@ -294,7 +295,7 @@ commands and some problems they encounter...`", asking you to participate in azu
 
         ```bash
         info:    Executing command account show
-        data:    Name                        : YourSub
+        data:    Name                        : Azure Pass
         data:    ID                          : zzz...zzz
         data:    State                       : Enabled
         data:    Tenant ID                   : qqq...qqq
@@ -302,7 +303,7 @@ commands and some problems they encounter...`", asking you to participate in azu
         data:    Environment                 : AzureCloud
         data:    Has Certificate             : No
         data:    Has Access Token            : Yes
-        data:    User name                   : youruser@yourdomain.com
+        data:    User name                   : dli2017001@outlook.com
         ```
 ---
 
