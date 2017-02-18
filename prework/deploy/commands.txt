@@ -268,6 +268,12 @@ git clone https://github.com/dxcamps/DLI_RoboWorkshop_1
 cd /usr/local/digits
 ./digits-devserver --port 8888 &
 
+##   --------------------------------------------------------------------------------
+##   From a browser on your machine, navigate to the Digits server:
+##   --------------------------------------------------------------------------------
+
+http://<fqdn>:8888
+
 #### ================================================================================
 #### Run the Jupyter Server from ~/DLI_RoboWorkshop_1/notebooks
 #### Once it has fully started you can connect to it from your laptop by going to:
@@ -277,6 +283,11 @@ cd /usr/local/digits
 cd ~/DLI_RoboWorkshop_1/notebooks
 sudo jupyter notebook --port 80 &
 
+##   --------------------------------------------------------------------------------
+##   From a browser on your machine, navigate to the Jupyter server:
+##   --------------------------------------------------------------------------------
+
+http://<fqdn>:80
 
 #### ================================================================================
 #### Manage your VM state
@@ -306,5 +317,11 @@ azure vm stop --resource-group <name>group --name <name>vm
 #### ================================================================================
 #### DELETE LAB RESOURCES ONLY AFTER YOU HAVE ATTENDED THE WORKSOP
 #### ================================================================================
+
+##   --------------------------------------------------------------------------------
+##   We've left the # in front of the following command to keep you from accidentally
+##   running it.  If you really intend to delete the resource group and everything in
+##   it, copy the following command without the leading #
+##   --------------------------------------------------------------------------------
 
 #azure group delete <name>group

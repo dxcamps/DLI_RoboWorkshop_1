@@ -10,7 +10,7 @@ In this lab, we'll walk workshop attendees through the necessary pre-requisite s
 
 To complete this lab, you will need to have the following items:
 
-1. A personal laptop running Windows, MAC OS X, or Linux.
+1. A personal laptop running Windows, MAC OS X, or Linux and a Web Browser.
 
 1. An active azure subscription that you are willing to use for the lab.  **BE AWARE** the lab has you create N-Series VMs in Azure.  These VMs are special because they include NVidia GPU support and provide an extremely powerful environment for deep learning projects.  However, they are expensive when compared to other less capable VMs.  It is recommended that you use a trial subscription, or a subscription provided to you at a live event for the lab steps.  This will help to ensure that you are not billed for excessive VM utilization.
 
@@ -18,7 +18,24 @@ To complete this lab, you will need to have the following items:
 
 1. The Azure CLI installed. We will cover the installation below, but you can also follow the instructions from the [Install the Azure CLI](https://docs.microsoft.com/en-us/azure/xplat-cli-install) page.
 
-1. Git installed.  If you don't have git on your system, you can install it from [https://git-scm.com/downloads](https://git-scm.com/downloads)
+1. Git installed.  If you don't have git on your system, you can install it from [https://git-scm.com/downloads](https://git-scm.com/downloads).  If you install git for the first time, make sure to update it's global config with your  name and email (You can use your preferred name and email address):
+
+    ```bash
+    git config --global user.name "Your Name"
+    git config --global user.email "Your Email"
+    ```
+
+1. An SSH client.  This is built-in on Linux or MAC OS X machines.  For windows users [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) is a popular choice.  Or if you are on Windows 10, you may want to consider using [Bash on Ubuntu on Windows](https://msdn.microsoft.com/en-us/commandline/wsl/about).
+
+--- 
+
+<a name="timing"></a>
+
+## Lab Timing
+
+This lab will likely take you 2-3 hours to complete.  A large portion of that time is in the [Copying the Virtual Hard Disk (VHD) for the Virtual Machine](#task7) task where you copy a pre-existing 100GB Virtual Hard Disk File (VHD) from our storage account to yours.  Typically this copy will take over an hour by itself.  As you plan your timing through the lab, be aware that you may have an hour or more of inactivity during the [Copying the Virtual Hard Disk (VHD) for the Virtual Machine](#task7) task while the copy is completing.  That is a great time to step away for dinner, or a conference call, or just to catch up on whatever show you've been bingeing lately.
+
+That said, it is also possible that the VHD copy will take no time at all, this occurs when the storage account you create happens to be on the same hardware subsystem, or "Stamp", as our source storage account that is hosting the source VHD.  If that happens by co-incidence then the VHD copy is performed as a "shadow copy" and happens nearly instantaneously. There is no way to predict or specify what storage stamp your storage account will be created on, so this lucky co-incidence will only happen in a small percentage of cases.
 
 ---
 
@@ -29,7 +46,7 @@ To complete this lab, you will need to have the following items:
 In this lab, you will complete the following tasks:
 
 1. [Understanding the Azure Resources in this Lab](#task1)
-1. [Cloning the GitHub repo to your computer](#task2)
+1. [Cloning the GitHub Repo and opening Commands.txt](#task2)
 1. [Creating your Azure Subscription](#task3)
 1. [Installing the Azure Command-Line Interface (Azure CLI)](#task4)
 1. [Logging into and configuring your Azure Subscription via the Azure CLI](#task5)
@@ -41,7 +58,6 @@ In this lab, you will complete the following tasks:
 1. [Staring and Testing Jupyter on your VM](#task11)
 1. [Manually Shutting Down, Starting, or Restarting your VM](#task12)
 1. [Deleting your lab resources from your subscription](#task13)
-
 
 ---
 
@@ -61,7 +77,7 @@ An Azure "Location", or "Region". Specifies the location of the Azure Data Cente
 
 ### Azure Resource Groups
 
-A typical solution in Azure requires multiple resources.  For example, in this workshop, we will create an Azure Storage Account to store a Virtual Hard Disk (vhd) file, and then we'll create a Virtual Machine based on that VHD.  In addition, we'll have Network Interfaces, Virtual Networks, Networks Security Groups and more.  To keep all of the resources organized, we'll place them all in a single "**Resource Group**".  Resource Groups offer a number of benefits in azure:
+A typical solution in Azure requires multiple resources.  For example, in this workshop, we will create an Azure Storage Account to store a Virtual Hard Disk (vhd) file, and then we'll create a Virtual Machine based on that VHD.  In addition, we'll have Network Interfaces, Virtual Networks, Networks Security Groups and more.  To keep all of the resources organized, we'll place them all in a single "**Resource Group**".  Resource Groups offer a number of benefits in Azure:
 
 - You can create an Azure Resource Manager (ARM) template for all of the resources in your group to help automate the deployment of your resources.
 - You can grant others access to your Resource Group without having to give them access to your entire subscription.
@@ -80,15 +96,15 @@ Azure Virtual Machines provide an extremely powerful and flexible way to run eit
 - DIGITS
 - Jupyter
 
-You will copy that vhd over to a storage account in your own subscription, and then use a template to create a Virtual Machine that uses that vhd as it's hard disk.
+You will copy that pre-existing vhd over to a storage account in your own subscription, and then use an ARM template to create a Virtual Machine that uses that vhd as it's hard disk.
 
-In addition to the vhd, your Virtual Machine will also need some additional resources.  These will all be created for you by a template, but it's helpful to understand them.
+In addition to the vhd, your Virtual Machine will also need some additional resources.  These will all be created for you by the ARM template, but it's helpful to understand them.
 
 - A Network Interface (NIC) - This is the virtual version of the Network Interface (think ethernet port) on your computer.
-- A public IP Address - This will be assigned to your NIC and is how we will access our VM over the Internet.
-- A Fully Qualified Domain Name (FQDN): this will be your vm name, followed by `eastus.cloudapp.azure.com` (assuming you create your vm in the `eastus` data center).
+- A public IP Address - This will be assigned to your NIC.  Be aware thought that this IP address will change each time your VM is deallocated and restarted.
+- A Fully Qualified Domain Name (FQDN): this will be your vm name, followed by `eastus.cloudapp.azure.com` (assuming you create your vm in the `eastus` data center).  While the IP Address may change, the FQDN will always stay the same and is the preferred way to connect to your VM over the internet.
 - A Virtual Network - This is the internal virtual network that our NIC is attached to.  We don't really need it for this workshop, but a virtual network would allow you to connect multiple virtual machines to it, and allow direct, private communication between those VMs on that network.
-- A Network Security Group - These provide the sets of firewall access rules that Azure enforces for you.  The template you run will create a network security group that allows incoming access to ports 22 (for ssh), 80 (for jupyter) and 8888 (for DIGITS).  The template then assigns that networks security group to your NIC.
+- A Network Security Group - These provide the sets of firewall access rules that Azure enforces for you.  The template you run will create a network security group that allows incoming access to ports 22 (for ssh), 80 (for jupyter) and 8888 (for DIGITS).  The template then assigns that Network Security Group to your NIC.
 
 ### Choosing a good "***&lt;name&gt;***"
 
@@ -108,9 +124,9 @@ Throughout the remainder of the documentation the syntax samples will use ***dli
 
 <a name="task2"></a>
 
-## Cloning the GitHub repo to your computer
+## Cloning the GitHub Repo and opening Commands.txt
 
-You will need to modify the majority of the commands blow to use the ***&lt;name&gt;*** prefix you have chosen.  In addition, a number of the commands shown below are split across multiple lines for readability, but will need to be entered on a single line.  We have simplified this task for you by creating a "commands.txt" file in the github repo.  You can open that file, do some global search and replaces on for your specific values, then simply copy and past the commands from the file into your command prompt one by one.  
+You will need to modify the majority of the commands blow to use the ***&lt;name&gt;*** prefix you have chosen.  In addition, a number of the commands shown below are split across multiple lines for readability, but will need to be entered on a single line.  We have simplified this task for you by creating a "**[commands.txt](deploy/commands.txt)**" file in the github repo.  You can open that file, do some global search and replaces on for your specific values, then simply copy and paste the commands from the file into your command prompt one by one as you work through the lab.  This will help keep things easy, reduce typos, and speed things up in general.
 
 To do this, you will need to first clone the GitHub repo down to your personal workstation so you can get the file. 
 
@@ -150,13 +166,13 @@ To do this, you will need to first clone the GitHub repo down to your personal w
     deployer.rb   deploy-preview.sh    deploy.sh   template.json
     ```
 
-1. Open the `commands.txt` file in the text editor of your choice.  You should see a number of place holders, like `<name>`, `<key1>`, `<publicip>` and `<fqdn>`.  We will be replacing each of those place holders with actual values as we work through the lab.  For now, the only one we know is the `<name>` prefix we chose in the last task.
+1. Open the "**[commands.txt](deploy/commands.txt)**" file in the text editor of your choice.  You should see a number of place holders, like `<name>`, `<key1>`, `<publicip>` and `<fqdn>`.  We will be replacing each of those place holders with actual values as we work through the lab.  For now, the only one we know is the `<name>` prefix we chose in the last task.
 
 1. In the text editor of your choice, do a global search and replace of the `<name>` place holder with the name prefix you chose above (our example, `dli0201`).
 
     - As and example, on Windows (use similar steps in your text editor if it is something other than notepad):
 
-        - Open the commands.txt in Notepad, then from the edit menu, select "**Edit**" | "**Replace...**" from the menu bar, and in the "**Replace**" window, replace `<name>` with your prefix , for example `dli0201`.  Click the "**Replace All**" button, then close the "**Replace** window:
+        - Open the "**[commands.txt](deploy/commands.txt)**" in Notepad, then from the edit menu, select "**Edit**" | "**Replace...**" from the menu bar, and in the "**Replace**" window, replace `<name>` with your prefix , for example `dli0201`.  Click the "**Replace All**" button, then close the "**Replace** window:
 
             ![Notepad Search And Replace](images/02010-NotepadSearchReplace.jpg)
 
@@ -166,7 +182,7 @@ To do this, you will need to first clone the GitHub repo down to your personal w
 
         - ***Keep your text editor open so you can easily copy the commands from it.***
 
-1. The commands.txt file has now been updated  with the `<name>` place holders replaced with your prefix name.  ***You can use those updated commands as you work through this lab, rather than copying them from this document, and modifying them one at a time.  Also, the commands have all been properly formatted on a single line and should work on both a Windows "Command Prompt" (not PowerShell though) as well as at a Bash prompt on Windows, Linux or Mac.***
+1. The "**[commands.txt](deploy/commands.txt)**" file has now been updated  with the `<name>` place holders replaced with your prefix name.  ***You can use those updated commands as you work through this lab, rather than copying them from this document, and modifying them one at a time.  Also, the commands have all been properly formatted on a single line and should work on both a Windows "Command Prompt" (not PowerShell though) as well as at a Bash prompt on Windows, Linux or Mac.***
 
 ---
 
@@ -174,11 +190,11 @@ To do this, you will need to first clone the GitHub repo down to your personal w
 
 ## Creating your Azure Subscription
 
-If you are attending a sponsored workshop you should be receiving instructions prior to the event on how to sign up for you Azure subscription.  Follow the instructions in that email to create your subscription.
+If you are attending a sponsored workshop you should be receiving instructions prior to the event on how to sign up for you Azure subscription or have been given credentials to access an existing subscription.  Follow the instructions in that email to create your subscription.
 
 If you are running this prework before the workshop, make sure that it isn't so far in advance of the workshop that the pass may expire before the event date.  Also make sure to shutdown and deallocate (but not delete) the the virtual machine when you are done with the prework so that it doesn't consume the credits availalbe in your subscription.  We will show you how to both automatically (setup by default) as well as manually shutdown and deallocate your vm at the end of this lab.
 
-If you do NOT have access to an Azure Pass, you can create a free Azure Trial subscription at [azure.com/free](http://azure.com/free).
+If you do NOT have access to an Azure Pass, you can create a free Azure Trial subscription at [azure.com/free](http://azure.com/free).  You may have issues provising an NC6 VM on a free trial based on some initial quota restrictions placed on the Free Trial subscriptions, however you can [contact support through the Azure Portal](https://docs.microsoft.com/en-us/azure/azure-supportability/how-to-create-azure-support-request) and request an increase in the number of corse (up to at least 6) as well as access to the "Standard_NC6" VM sku for your subscription.
 
 > **Note**: The free Azure trial currently grants you a US$200 credit for a period of 30 days.  If either the 30 day limit, or $200 credit is exceeded, your trial resources (except those with free usage) will be shut down.  You will need a credit card to sign up for the trial, but it is used for identification purposes only and you will not be charged UNLESS you choose to go on a pay-as-you go basis.
 
@@ -309,7 +325,6 @@ commands and some problems they encounter...`", asking you to participate in azu
         data:    Has Access Token            : Yes
         data:    User name                   : dli2017001@outlook.com
         ```
----
 
 1. We will be using a number of Azure "**Resource Providers**" in this lab.  Resource Providers enable us to manage specific types of resources in the Azure Platform via the "**Azure Resource Manager**" API that is used by the Azure-cli.  We need to enabled, or "**Register**" each of the providers we will be using before we can use them.  The "**Resource Providers**" we need include:
 
@@ -336,7 +351,9 @@ commands and some problems they encounter...`", asking you to participate in azu
 
     ```bash
     azure provider register Microsoft.Network
+
     azure provider register Microsoft.Compute
+
     azure provider register Microsoft.DevTestLab
     ```
 
@@ -351,6 +368,8 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
 1. First, to create your Resource Group, from your system's command prompt or terminal window, issue the following command. Make sure to replace the ***&lt;name&gt;*** place holder in the `<name>group` name with the naming prefix you chose above.
 
     > **Note**: Recall that we need to create all of our resources in the same "Location" and that because the N-Series NVidia backed GPU Virtual Machines are currently only availalbe in the "**eastus**" region, we want to sepcify that as the location for our storage account.
+
+    > **Note**: Remember also that all the commands, with the proper values for the `<name>` and other place holders can be easily copied from the "**[commands.txt](deploy/commands.txt)**" file and pasted into your command prompt.  This will save you having to type each command, replace the place holders, etc..
 
     ```bash
     azure group create <name>group --location "eastus"
@@ -403,13 +422,13 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     data:    ----  ----------------------------------------------------------------------------------------  -----------
     data:    key1  xxx...xxx==  Full
     data:    key2  yyy...yyy==  Full
-    info:    storage account keys list command OK    
+    info:    storage account keys list command OK
     ```
 
 
-1. From the output, copy the value of the "key1" key (shown as `xxx......xxx==` above, and replace the `<key1>` place holders in commands.txt with it.
+1. From the output, copy the value of the "key1" key (shown as `xxx......xxx==` above, and replace the `<key1>` place holders in "**[commands.txt](deploy/commands.txt)**" with it (example shown in Notepad, use the editor of your choice).
 
-
+    ![Replace Key1 in Commands.txt with Storage Key](images/06010-SaveStorageKeyToCommandsTxt.png)
 
 1. Next, we'll create the container to store the vhd for our virtual machine:
 
@@ -449,17 +468,20 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
 Now that we have the Azure Resource Group, Storage Account and Blob Container created, we can now copy the pre-existing VHD provided for this workshop.  
 
 
+***COPYING THE PRE-EXISTING VHD FOR THE WORKSHOP TO YOUR STORAGE ACCOUNT COULD TAKE OVER AN HOUR.***
+
 1. To copy the pre-existing VHD from the hosted storage account into the container you just created, use the following command:
 
-    > **Note**: The `--source-uri` value points to the location of the pre-created vhd.  It points to a vhd blob named `msftnvidia.vhd`.  The `--source-sas` is the Shared Access Signature (sas) that you need to use to get permissions to access the source vhd.  These are pre-existing values that need to be entered exactly as shown below.  Do not modify them. 
+    > **Note**: This copy COULD take over an hour to complete.  However, it's also possible that it will complete almost immediately.  This could happen if the storage account you created just coincidentally happened to be on the same set of hardware that the source storage account exists on.  If that is the case, the copy is done as a "shadow" copy and takes no time at all.  In most cases though it has to transfer a 100GB VHD file to a separate set of disks and it just takes time for that to complete.
+
+    > **Note**: The `--source-uri` value points to the location of the pre-created vhd.  It points to a vhd blob named `msftnvidiaimage.vhd`.  These are pre-existing values that need to be entered exactly as shown below.  Do not modify them.  This is the VHD we have created for you that already has Ubnutu 16.04 LTS, Digits, and Jupyter pre-installed.  It is hosted by us in a storage container of our own.
 
     ```bash
-    azure storage blob copy start
+    azure storage blob copy start 
         --dest-account-name <name>storage
-        --dest-account-key <key1>
-        --dest-container vhds
+        --dest-account-key xxx...xxx==
+        --dest-container vhds 
         --source-uri https://dlirwsourcestorage.blob.core.windows.net/vhds/msftnvidiaimage.vhd
-        --source-sas "st=2017-01-02T00%3A36%3A00Z&se=2050-02-02T00%3A36%3A00Z&sp=rl&sv=2015-12-11&sr=b&sig=NidB6Dt4FsD5xNw1l931AIsayFUJrH%2B0vOKcKhsKoGA%3D"
     ```
 
 1. The command should return output similar to the following:
@@ -532,10 +554,12 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
 
 1. The last two files, `parameters.json` and `template.json` are the ones we'll use in this task:
 
+    > **Note**: You should take a view minutes to examine the `template.json` file to get a feel for what it will create.  However ***be careful to not make any changes to template.json***
+
     - `template.json` (**YOU DO NOT NEED TO MAKE ANY CHANGES IN THIS FILE**) contains the actual ARM template that defines all the resources that will be createad, e.g. The VM, Virtual Network, NIC, IP Address, Firewall Rules, etc.  
     - `parameters.json` contains the values that are needed for the deployment, like the actual name of the VM, the location where it should be deployed, etc.  You'll edit this file and enter the value for your `<name>` prefix.
 
-1. Open the `parameters.json` file in the text editor of your choice.  Verify that the location is correct.  Change the "name_place_holder" parameter's value of `<name>` to the name prefix you chose above, and save your changes.
+1. Open the `parameters.json` file in the text editor of your choice.  Verify that the location is correct.  Change the "***name_prefix***" parameter's value of `<name>` to the name prefix you chose above, and save your changes.
 
     Here's the original parameters.json file contents
 
@@ -547,7 +571,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
             "location": {
                 "value": "eastus"
             },
-            "name_place_holder": {
+            "name_prefix": {
                 "value": "<name>"
             }
         }
@@ -564,11 +588,12 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
             "location": {
                 "value": "eastus"
             },
-            "name_place_holder": {
+            "name_prefix": {
                 "value": "dli0201"
             }
         }
     }
+
     ```
 
 
@@ -657,6 +682,8 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
 
 1. From the output, copy the "FQDN" (`dli0201vm.eastus.cloudapp.azure.com` above) value and replace the `<fqdn>` place holders in commands.txt.  Additionally, copy the "Public IP address" (`40.114.1.63` above) and replace the `<publicip>` placholders in the commands.txt.
 
+    ![Update commands.txt with your fqdn and publicip](images/08010-SaveFqdnAndIp.png)
+
 ---
 
 <a name="task9"></a>
@@ -666,10 +693,14 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
 FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless you change it, your VM will shutdown automatically at 11:59pm Pacific Standard Time every night.  If you want to change that setting, or disable it, you can complete these steps.
 
 1. Open the [Azure Portal](https://portal.azure.com) and login with the credentials for your Azure Subscription
-1. Click on the "Resource Groups" icon along the left of the portal, then select the `dlixxxgroup` Resource Group you created above.  
-1. From the list of resources in the Resource Group, click on your Virtual Machine to open it's overview blade. 
+1. Click on the "Resource Groups" icon along the left of the portal, then select the `<name>group` Resource Group you created above.
+1. From the list of resources in the Resource Group, click on your `<name>vm` Virtual Machine to open it's overview blade.
 1. From the list of settings along the left, click on "**Auto-shutdown**".  
-1. Then in the "**Auto-shutdown**" blade, configure the option according to your desires.  You can read more about the feature here, [Announcing auto-shutdown for VMs using Azure Resource Manager](https://azure.microsoft.com/en-us/blog/announcing-auto-shutdown-for-vms-using-azure-resource-manager/)
+1. Then in the "**Auto-shutdown**" blade, configure the option according to your desires.  You can read more about the feature here, [Announcing auto-shutdown for VMs using Azure Resource Manager](https://azure.microsoft.com/en-us/blog/announcing-auto-shutdown-for-vms-using-azure-resource-manager/):
+
+    > **Note**: By default, the ARM template we used configures your VM to shutdown (and deallocate it's resources to save hourly billing costs) at 11:59 PM Pacific Time.  It is recommended that you leave this as is so that you are guaranteed your VM will automatically shutdown at the end of the day to save you from being billed for un-needed compute time.  However, you may change these settings to fit your needs if you so desire.
+
+    ![Auto Shutdown in Portal](images/09010-AutoShutdownInPortal.png)
 
 ---
 
@@ -828,11 +859,11 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
 
 ## Manually Shutting Down, Starting, or Restarting your VM
 
-If your VM is not currently doing any processing and you don't need it for some time you should shut it down and deallocate it's resources so that you are not being billed for them.  Even if you are using an Azure Pass or Free Trial the VM will still be depleting your free credits if you leave it running for no reason.  Recall that in the [Configuring Auto-shutdown on the new VM](#task9) section we have already seen that by default your VM should be scheduled to automatically shutdown and deallocate it's resources at 11:59pm Pacific time each time.  However you can shut it down and deallocate it's resources manually at any time to even further reduce the impact it has on your bill or available free credits.
+If your VM is not currently doing any processing and you don't need it for some time you should shut it down and deallocate it's resources so that you are not being billed for them.  Even if you are using an Azure Pass or Free Trial the VM will still be depleting your free credits if you leave it running for no reason.  Recall that in the [Configuring Auto-shutdown on the new VM](#task9) section we have already seen that by default your VM should be scheduled to automatically shutdown and deallocate it's resources at 11:59pm Pacific time every day.  However you can shut it down and deallocate it's resources manually at any time to even further reduce the impact it has on your bill or available free credits.
 
 ### Deallocating vs Shutting Down (Stopping) your VM
 
-Azure Virtual Machine (VM) use a number of resources like CPUs, memory, IP Addresses, etc..  It's those resources that you are being billed for while your VM is running.  As with any computer there are times when you wish to shut the VM down.  The question is, do you want to keep the resources the VM needs (CPUs, memory, IP Addresses) reserved while it is shutdown or not.  If you want to keep those resources reserved even when your VM is shutdown, you can "**stop**" your VM but keep the resources.  Be aware thought that you will continue to be billed for those reserved resources even when your VM is shutdown.  The billing will be the same as if the VM was running.  For example, in this lab, at the time this is being written, the NC6 VM that we are using in the "East US" region costs $0.90US/Hour.  You will be billed that price regardless if the VM is running or stopped if you have not deallocated the VMs resources
+Your Azure Virtual Machine (VM) use a number of resources like CPUs, memory, IP Addresses, etc..  It's those resources that you are being billed for while your VM is running.  As with any computer there are times when you wish to shut the VM down.  The question is, do you want to keep the resources the VM needs (CPUs, memory, IP Addresses) reserved while it is shutdown or not.  If you want to keep those resources reserved even when your VM is shutdown, you can "**stop**" your VM but keep the resources.  Be aware thought that you will continue to be billed for those reserved resources even when your VM is shutdown.  The billing will be the same as if the VM was running.  For example, at the time this is being written, the NC6 VM that we we create in the "East US" region costs $0.90US/Hour.  You will be billed that price regardless if the VM is running or stopped if you have not deallocated the VMs resources
 
 If, on the other hand, you know you don't need the VM back right away, you can instead "**deallocate**" those resources and release them back into the pool of resources that Azure can assign to other VMs. You will no longer be billed the hourly rate for the VM.  Just be aware that some resources, like your VM's IP Address, will be different when you start the VM back up again.  It's FQDN however will be mapped to the new IP Address so if you connect using the FQDN instead of the IP address everything should be fine.  In production, if having an IP Address change is a problem, you can reserve IP Addresses for your VMs.  Read [IP address types and allocation methods in Azure](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-ip-addresses-overview-arm) to learn more.
 
@@ -859,7 +890,7 @@ Lastly, it should be mentioned that there are other resources, like your VM's Vi
 1. You can Deallocate your VM, release it's resource and stop it's hourly billing by issuing:
 
     ```bash
-    azure vm deallocate --resoruce-group <name>group --name <name>vm
+    azure vm deallocate --resource-group <name>group --name <name>vm
     ```
 
     Sample output for the dli0201vm:
