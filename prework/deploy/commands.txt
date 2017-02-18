@@ -245,7 +245,66 @@ azure vm show --resource-group <name>group --name <name>vm
 ##   --------------------------------------------------------------------------------
 
 ssh dliuser@<fqdn>
+Pwd@234567890
 
 ## or
 
 ssh dliuser@<publicip>
+Pwd@234567890
+
+#### ================================================================================
+#### Clone the DLI_RoboWorkshop_1 repo on your new VM
+#### ================================================================================
+
+cd ~
+git clone https://github.com/dxcamps/DLI_RoboWorkshop_1
+
+#### ================================================================================
+#### Run the Digits Dev Server in /usr/local/digit
+#### Once it has fully started you can connect to it from your laptop by going to:
+#### http://<fqdn>:8888
+#### ================================================================================
+
+cd /usr/local/digits
+./digits-devserver --port 8888 &
+
+#### ================================================================================
+#### Run the Jupyter Server from ~/DLI_RoboWorkshop_1/notebooks
+#### Once it has fully started you can connect to it from your laptop by going to:
+#### http://<fqdn>:80
+#### ================================================================================
+
+cd ~/DLI_RoboWorkshop_1/notebooks
+sudo jupyter notebook --port 80 &
+
+
+#### ================================================================================
+#### Manage your VM state
+#### ================================================================================
+
+##   --------------------------------------------------------------------------------
+##   List your VMs
+##   --------------------------------------------------------------------------------
+
+azure vm list
+
+##   --------------------------------------------------------------------------------
+##   Deallocate your VM to stop hourly billing
+##   --------------------------------------------------------------------------------
+
+azure vm deallocate --resoruce-group <name>group --name <name>vm
+
+
+##   --------------------------------------------------------------------------------
+##   Other VM management commands
+##   --------------------------------------------------------------------------------
+
+azure vm start --resource-group <name>group --name <name>vm
+azure vm restart --resource-group <name>group --name <name>vm
+azure vm stop --resource-group <name>group --name <name>vm
+
+#### ================================================================================
+#### DELETE LAB RESOURCES ONLY AFTER YOU HAVE ATTENDED THE WORKSOP
+#### ================================================================================
+
+#azure group delete <name>group

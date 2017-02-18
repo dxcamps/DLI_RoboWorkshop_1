@@ -1,6 +1,6 @@
 # Deep Learning Institute Robot Workshop Pre-Requiste Lab
 
-In this lab, we'll walk workshop attendees through the required pre-requisite steps.  At the completion of this lab, attendees should have a properly prepared Virtual Machine running in Azure that has the NVidia GPUs, and lab assets needed for successful completion of the workshop.
+In this lab, we'll walk workshop attendees through the necessary pre-requisite steps.  At the completion of this lab, attendees should have a properly prepared Virtual Machine running in Azure that has the NVidia GPUs, and lab assets needed for successful completion of the workshop.
 
 ---
 
@@ -37,7 +37,11 @@ In this lab, you will complete the following tasks:
 1. [Copying the Virtual Hard Disk (VHD) for the Virtual Machine](#task7)
 1. [Creating the Virtual Machine using the Copied VHD](#task8)
 1. [Configuring Auto-shutdown on the new VM](#task9)
-1. [Connecting to your Virtual Machine using SSH](#task10)
+1. [Connecting to your Virtual Machine using SSH and starting Digits](#task10)
+1. [Staring and Testing Jupyter on your VM](#task11)
+1. [Manually Shutting Down, Starting, or Restarting your VM](#task12)
+1. [Deleting your lab resources from your subscription](#task13)
+
 
 ---
 
@@ -336,6 +340,8 @@ commands and some problems they encounter...`", asking you to participate in azu
     azure provider register Microsoft.DevTestLab
     ```
 
+---
+
 <a name="task6"></a>
 
 ## Creating the Azure Resource Group, Storage Account, and Container
@@ -602,6 +608,8 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
 
 1. Finally, to connect to the vm, you will need to know it's fully qualified domin name (fqdn) and/or ip address.  You can get all the details about your vm using:
 
+    > **Note**: When your VM is shutdown and "deallocated" it's IP address will be released.  It most likely will have a different address if you restart it again.  The FQDN (Fully Qualified Domain Name) however will remain the same, so in general the FQDN is an easier way to connect to your VM. 
+
     ```bash
     azure vm show --resource-group <name>group --name <name>vm
     ```
@@ -678,17 +686,20 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
 
     ```bash
     ssh dliuser@<fqdn>
+    Pwd@234567890
     ```
 
     or
 
     ```bash
     ssh dliuser@<publicip>
+    Pwd@234567890
     ```
 
 1. Once logged in, you should be in the `dliuser`'s `home` folder.  Next, clone the github repo for the workshop into the vm so you have a copy of all the code needed:
 
     ```bash
+    cd ~
     git clone https://github.com/dxcamps/DLI_RoboWorkshop_1
     ```
 
@@ -748,7 +759,7 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
 
 <a name="task11"></a>
 
-## Staring and Testing Jupyter
+## Staring and Testing Jupyter on your VM
 
 1. ***OPEN A SECOND SSH CONNECTION*** (keep the ssh session with DIGITS running in it open) to your vm (logging in again as `dliuser` with the password `Pwd@234567890`), and again change into the `~/DLI_RoboWorkshop_1/notebooks` folder.
 
@@ -759,7 +770,7 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
 1. Run the jupyter server on port 80 (***don't forget the `sudo`***):
 
     ```bash
-    sudo jupyter notebook --port 8 &
+    sudo jupyter notebook --port 80 &
     ```
 
 1. Wait for output similar to:
@@ -811,5 +822,110 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
 
     ![Jupter Bottle Bounding Boxes](images/JupyterBottleBoxes.jpg)
 
+---
 
+<a name="task12"></a>
 
+## Manually Shutting Down, Starting, or Restarting your VM
+
+If your VM is not currently doing any processing and you don't need it for some time you should shut it down and deallocate it's resources so that you are not being billed for them.  Even if you are using an Azure Pass or Free Trial the VM will still be depleting your free credits if you leave it running for no reason.  Recall that in the [Configuring Auto-shutdown on the new VM](#task9) section we have already seen that by default your VM should be scheduled to automatically shutdown and deallocate it's resources at 11:59pm Pacific time each time.  However you can shut it down and deallocate it's resources manually at any time to even further reduce the impact it has on your bill or available free credits.
+
+### Deallocating vs Shutting Down (Stopping) your VM
+
+Azure Virtual Machine (VM) use a number of resources like CPUs, memory, IP Addresses, etc..  It's those resources that you are being billed for while your VM is running.  As with any computer there are times when you wish to shut the VM down.  The question is, do you want to keep the resources the VM needs (CPUs, memory, IP Addresses) reserved while it is shutdown or not.  If you want to keep those resources reserved even when your VM is shutdown, you can "**stop**" your VM but keep the resources.  Be aware thought that you will continue to be billed for those reserved resources even when your VM is shutdown.  The billing will be the same as if the VM was running.  For example, in this lab, at the time this is being written, the NC6 VM that we are using in the "East US" region costs $0.90US/Hour.  You will be billed that price regardless if the VM is running or stopped if you have not deallocated the VMs resources
+
+If, on the other hand, you know you don't need the VM back right away, you can instead "**deallocate**" those resources and release them back into the pool of resources that Azure can assign to other VMs. You will no longer be billed the hourly rate for the VM.  Just be aware that some resources, like your VM's IP Address, will be different when you start the VM back up again.  It's FQDN however will be mapped to the new IP Address so if you connect using the FQDN instead of the IP address everything should be fine.  In production, if having an IP Address change is a problem, you can reserve IP Addresses for your VMs.  Read [IP address types and allocation methods in Azure](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-ip-addresses-overview-arm) to learn more.
+
+Lastly, it should be mentioned that there are other resources, like your VM's Virtual Hard Disk file (VHD) that must remain in place and be billed for even if your VM is deallocated.  The only way to completely stop billing for your VM is to delete it and all of the resources is uses.
+
+### Manually Deallocating your VM to Stop Hourly Billing
+
+1. Back on the workstation where you have installed the azure-cli and logged into your azure subscription, first get a list of the VMs you have:
+
+    ```bash
+    azure vm list
+    ```
+
+    Sample output:
+
+    ```bash
+    + Getting virtual machines
+    data:    ResourceGroupName  Name        ProvisioningState  PowerState  Location  Size
+    data:    -----------------  ----------  -----------------  ----------  --------  --------------
+    data:    DLI0201GROUP       dli0201vm   Succeeded          VM running  eastus    Standard_NC6
+    info:    vm list command OK
+    ```
+
+1. You can Deallocate your VM, release it's resource and stop it's hourly billing by issuing:
+
+    ```bash
+    azure vm deallocate --resoruce-group <name>group --name <name>vm
+    ```
+
+    Sample output for the dli0201vm:
+
+    ```bash
+    info:    Executing command vm deallocate
+    + Looking up the VM "dli0201vm"
+    + Deallocating the virtual machine "dli0201vm"
+    info:    vm deallocate command OK
+    ```
+
+    An `azure vm list` would now show `VM deallocated` as the VM's `PowerState`:
+
+    ```bash
+    info:    Executing command vm list
+    + Getting virtual machines
+    data:    ResourceGroupName  Name        ProvisioningState  PowerState      Location  Size
+    data:    -----------------  ----------  -----------------  --------------  --------  --------------
+    data:    DLI0201GROUP       dli0201vm   Succeeded          VM deallocated  eastus    Standard_NC6
+    info:    vm list command OK
+    ```
+
+### Other VM Management commands
+
+You get the basic pattern from above, list your VMs to determine their state, then deallocate, start, stop, restart them as needed. Here are other commands you can use:
+
+1. To Start your Azure vm:
+
+    ```bash
+    azure vm start --resource-group <name>group --name <name>vm
+    ```
+
+1. To Restart your Azure vm
+
+    ```bash
+    azure vm restart --resource-group <name>group --name <name>vm
+    ```
+
+1. To  Stop (but not deallocate) your VM
+
+    > **Note**: As previously explained, stopping a VM will shut the VM down, but keep it's resources (like it's IP Address) reserved.  It will NOT stop the hourly billing for the VM.  If you want to stop the hourly billing you should instead **deallocate** your VM as described above.
+
+    ```bash
+    azure vm stop --resource-group <name>group --name <name>vm
+    ```
+
+1. You can also do all of the above within the Azure Portal.  If you get to the blade for your VM you can manage it's state from there:
+
+    > **Note**: When you "**Stop**" a VM in the portal, you are actually "**Deallocating**" it. 
+
+    ![Manage VM State in the Portal](images/12010-ManageVMStateInPortal.png)
+
+---
+
+<a name="task13"></a>
+
+## Deleting your lab resources from your subscription
+
+Once you are done with the lab and no longer need the resources (VM, VHD, etc) that you created during it, you can delete them from your subscription to completely stop any billing or free credit consumption for them.  
+
+At the very beginning of the lab, we created a resource group, **`<name>group`** and every other resource we created was in that group.  The beauty of that is that now to delete all of the resources, we simply need to delete the group.  Super easy. 
+
+***THIS IS NOT RECOVERABLE, IF YOU DELETE THE RESOURCE GROUP IT, AND ALL OF THE RESOURCES WITHIN, WILL BE DELETED. ONLY DELETE THE GROUP IF YOU KNOW YOU DO NOT NEED IT ANY MORE.  DO NOT DELETE THE GROUP PRIOR TO A WORKSHOP EVENT, YOU WILL NEED THE RESOURCES AT THE EVENT.  ONLY DELETE THE GROUP AFTER THE EVENT IS OVER AND ALL RESOURCES ARE NO LONGER NEEDED***
+
+1. To delete the resource group, and all of the resources you created in this lab, you can simply run:
+
+    ```bash
+    azure group delete <name>group
+    ```
