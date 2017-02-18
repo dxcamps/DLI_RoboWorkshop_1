@@ -853,6 +853,10 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
 
     ![Jupter Bottle Bounding Boxes](images/JupyterBottleBoxes.jpg)
 
+1. At this point, your VM is ready to use for the workshop.  You can return to the Juypter home page at `http://<fqdn>:80` and try out the "**GettingStarted/Getting Started with Deep Learning,ipynb**" and "**ObjectDetection/Object detection.ipynb**" notebooks.  Simply navigate to them to open them, and begin reading and following the instructions within.  It's ok if you don't complete them, they will be covered in the in-person workshop you attend. 
+
+    ![Getting Started and Object Detection Notebooks](images/11010-OtherNotebooks.png)
+
 ---
 
 <a name="task12"></a>
