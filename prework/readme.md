@@ -845,7 +845,7 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
 
 1. The top section verifies that the NVidia GPU is present, and reports details on it:
 
-    ![Verify GPU](images/JupyterVerifyGpu.jpg)
+    ![Verify GPU](images/JupyterVerifyGPU.jpg)
 
 1. The rest of the Test page, loads a picture with some bottles in it, as well as the output of the training data that was generated for the image, then plots boxes around the bottles that the training process found in the image: 
 
