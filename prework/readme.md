@@ -12,7 +12,7 @@ To complete this lab, you will need to have the following items:
 
 1. A personal laptop running Windows, MAC OS X, or Linux and a Web Browser.
 
-1. An active azure subscription that you are willing to use for the lab.  **BE AWARE** the lab has you create N-Series VMs in Azure.  These VMs are special because they include NVidia GPU support and provide an extremely powerful environment for deep learning projects.  However, they are expensive when compared to other less capable VMs.  It is recommended that you use a trial subscription, or a subscription provided to you at a live event for the lab steps.  This will help to ensure that you are not billed for excessive VM utilization.
+1. An active azure subscription that you are willing to use for the lab.  **BE AWARE** the lab has you create N-Series VMs in Azure.  These VMs are special because they include NVIDIA GPU support and provide an extremely powerful environment for deep learning projects.  However, they are expensive when compared to other less capable VMs.  It is recommended that you use a trial subscription, or a subscription provided to you at a live event for the lab steps.  This will help to ensure that you are not billed for excessive VM utilization.
 
 1. Nodejs v6.9.4 or later. You can download the current version of Nodejs from [https://nodejs.org/en/download/](https://nodejs.org/en/download/)
 
@@ -71,7 +71,7 @@ In this workshop, you will be using an Azure Virtual Machine (VM) to complete yo
 
 ### Azure Locations (Data Regions)
 
-An Azure "Location", or "Region". Specifies the location of the Azure Data Center where you want your resources to be created.  The location that you use is very important in this lab because the N-Series Virtual Machines that have NVidia GPUs on them are only available in the "**East US**" or ("**eastus**") data center at this time.  This workshop requires the use of the NVidia GPUs on the N-Series VMs, so we will need to make sure to provision all of our resources in the "**eastus**" data center.  
+An Azure "Location", or "Region". Specifies the location of the Azure Data Center where you want your resources to be created.  The location that you use is very important in this lab because the N-Series Virtual Machines that have NVIDIA GPUs on them are only available in the "**East US**" or ("**eastus**") data center at this time.  This workshop requires the use of the NVIDIA GPUs on the N-Series VMs, so we will need to make sure to provision all of our resources in the "**eastus**" data center.  
 
 > **Note**: The list of data centers where N-Series VMs are available will grow over time.  You can view the current data centers that support them on them "[Products available by region](https://azure.microsoft.com/en-us/regions/services/)" page.  If you choose to use a location other than "**eastus**", you will need to replace all occurrances of "**eastus**" in the instructions below with the name of the location you've chose.
 
@@ -371,7 +371,7 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
 
 1. First, to create your Resource Group, from your system's command prompt or terminal window, issue the following command. Make sure to replace the ***&lt;name&gt;*** place holder in the `<name>group` name with the naming prefix you chose above.
 
-    > **Note**: Recall that we need to create all of our resources in the same "Location" and that because the N-Series NVidia backed GPU Virtual Machines are currently only availalbe in the "**eastus**" region, we want to sepcify that as the location for our storage account.
+    > **Note**: Recall that we need to create all of our resources in the same "Location" and that because the N-Series NVIDIA backed GPU Virtual Machines are currently only availalbe in the "**eastus**" region, we want to sepcify that as the location for our storage account.
 
     > **Note**: Remember also that all the commands, with the proper values for the `<name>` and other place holders can be easily copied from the "**[commands.txt](deploy/commands.txt)**" file and pasted into your command prompt.  This will save you having to type each command, replace the place holders, etc..  For example, the following `azure group create` command with the `<name>` place holder value replaced with your prefix can be found at line 140 in the "**[commands.txt](deploy/commands.txt)**" file.  
 
@@ -847,7 +847,7 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
 
     ![Run All Output](images/JupyterRunAllOutput.jpg)
 
-1. The top section verifies that the NVidia GPU is present, and reports details on it:
+1. The top section verifies that the NVIDIA GPU is present, and reports details on it:
 
     ![Verify GPU](images/JupyterVerifyGPU.jpg)
 
