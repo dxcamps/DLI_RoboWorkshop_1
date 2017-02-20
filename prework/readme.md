@@ -126,7 +126,7 @@ Throughout the remainder of the documentation the syntax samples will use ***dli
 
 ## Cloning the GitHub Repo and opening Commands.txt
 
-You will need to modify the majority of the commands blow to use the ***&lt;name&gt;*** prefix you have chosen.  In addition, a number of the commands shown below are split across multiple lines for readability, but will need to be entered on a single line.  We have simplified this task for you by creating a "**[commands.txt](deploy/commands.txt)**" file in the github repo.  You can open that file, do some global search and replaces on for your specific values, then simply copy and paste the commands from the file into your command prompt one by one as you work through the lab.  This will help keep things easy, reduce typos, and speed things up in general.
+You will need to modify the majority of the commands below to use the ***&lt;name&gt;*** prefix you have chosen.  In addition, a number of the commands shown below are split across multiple lines for readability, but will need to be entered on a single line.  We have simplified this task for you by creating a "**[commands.txt](deploy/commands.txt)**" file in the github repo.  You can open that file, do some global search and replaces of your specific values, then simply copy and paste the commands from the file into your command prompt one by one as you work through the lab.  This will help keep things easy, reduce typos, and speed things up in general.
 
 To do this, you will need to first clone the GitHub repo down to your personal workstation so you can get the file. 
 
@@ -228,7 +228,7 @@ The Azure CLI is a cross platform command line interface that you can use to man
 
 ## Logging into and configuring your Azure Subscription via the Azure CLI
 
-In this steps, you'll login to your Azure subscription from your workstations command line.  There are multiple ways to login to the Azure-CLI.  You can learn about alternat login methods here: [Log in to Azure from the Azure CLI](https://docs.microsoft.com/en-us/azure/xplat-cli-connect) 
+In this steps, you'll login to your Azure subscription from your workstations command line.  There are multiple ways to login to the Azure-CLI.  You can learn about alternate login methods here: [Log in to Azure from the Azure CLI](https://docs.microsoft.com/en-us/azure/xplat-cli-connect) 
 
 We'll be using the "**Azure login with interactive login**" method:
 
@@ -261,6 +261,8 @@ commands and some problems they encounter...`", asking you to participate in azu
         ![Device Login Code](images/01010-DeviceLoginCode.png)
 
     - Then authenticate with the credentials for your Azure Subscription
+
+        > **Note**: If you were given a pre-provisioned set of credentials to use for the workshop, make sure to use those here so that you sign into the proper Azure subscription.
 
         ![Azure Credentials](images/01020-AzureCredentials.png)
 
@@ -335,6 +337,8 @@ commands and some problems they encounter...`", asking you to participate in azu
 
 1. We'll use the Azure-cli to register each one.  Is the following command to register the "**Microsoft.Storage**" resource provider:
 
+    > **Note**: Occasionally the Azure-CLI will timeout when running a command.  This can be caused by a number of external factors.  The cool thing is you can simply re-run the statements if that occurrs.  Even if they succeeded the commands will simply ensure that the desired outcome was achieved.  If you receive timeout errors when running the statements below (or other statements later in the chapter), simply run the statements again.  If the errors are in regards to something else, do your best to understand and resolve the error and try again.
+
     ```bash
     azure provider register Microsoft.Storage
     ```
@@ -369,7 +373,7 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
 
     > **Note**: Recall that we need to create all of our resources in the same "Location" and that because the N-Series NVidia backed GPU Virtual Machines are currently only availalbe in the "**eastus**" region, we want to sepcify that as the location for our storage account.
 
-    > **Note**: Remember also that all the commands, with the proper values for the `<name>` and other place holders can be easily copied from the "**[commands.txt](deploy/commands.txt)**" file and pasted into your command prompt.  This will save you having to type each command, replace the place holders, etc..
+    > **Note**: Remember also that all the commands, with the proper values for the `<name>` and other place holders can be easily copied from the "**[commands.txt](deploy/commands.txt)**" file and pasted into your command prompt.  This will save you having to type each command, replace the place holders, etc..  For example, the following `azure group create` command with the `<name>` place holder value replaced with your prefix can be found at line 140 in the "**[commands.txt](deploy/commands.txt)**" file.  
 
     ```bash
     azure group create <name>group --location "eastus"
@@ -554,7 +558,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
 
 1. The last two files, `parameters.json` and `template.json` are the ones we'll use in this task:
 
-    > **Note**: You should take a view minutes to examine the `template.json` file to get a feel for what it will create.  However ***be careful to not make any changes to template.json***
+    > **Note**: You should take a couple of minutes to examine the `template.json` file to get a feel for what it will create.  However ***be careful to not make any changes to template.json***
 
     - `template.json` (**YOU DO NOT NEED TO MAKE ANY CHANGES IN THIS FILE**) contains the actual ARM template that defines all the resources that will be createad, e.g. The VM, Virtual Network, NIC, IP Address, Firewall Rules, etc.  
     - `parameters.json` contains the values that are needed for the deployment, like the actual name of the VM, the location where it should be deployed, etc.  You'll edit this file and enter the value for your `<name>` prefix.
@@ -597,7 +601,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
     ```
 
 
-1. Use the Azure CLI to deploy the vm using the template:
+1. Use the Azure CLI to deploy the vm using the template (the complete command with placeholders replaced on on a single line is at line 221 in the "**[commands.txt](deploy/commands.txt)**" file:
 
     ```bash
     azure group deployment create
