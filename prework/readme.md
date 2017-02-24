@@ -73,7 +73,7 @@ In this workshop, you will be using an Azure Virtual Machine (VM) to complete yo
 
 An Azure "Location", or "Region". Specifies the location of the Azure Data Center where you want your resources to be created.  The location that you use is very important in this lab because the N-Series Virtual Machines that have NVIDIA GPUs on them are only available in the "**East US**" or ("**eastus**") data center at this time.  This workshop requires the use of the NVIDIA GPUs on the N-Series VMs, so we will need to make sure to provision all of our resources in the "**eastus**" data center.  
 
-> **Note**: The list of data centers where N-Series VMs are available will grow over time.  You can view the current data centers that support them on them "[Products available by region](https://azure.microsoft.com/en-us/regions/services/)" page.  If you choose to use a location other than "**eastus**", you will need to replace all occurrances of "**eastus**" in the instructions below with the name of the location you've chose.
+> **Note**: The list of data centers where N-Series VMs are available will grow over time.  You can view the current data centers that support them on them "[Products available by region](https://azure.microsoft.com/en-us/regions/services/)" page.  If you choose to use a location other than "**eastus**", you will need to replace all occurrances of "**eastus**" in the instructions below with the name of the location you've chosen.
 
 ### Azure Resource Groups
 
@@ -90,13 +90,13 @@ Azure Storage Accounts are a core Azure offering.  They support the storage of d
 
 ### Azure Virtual Machines
 
-Azure Virtual Machines provide an extremely powerful and flexible way to run either Windows or Linux virtual machines in the cloud.  Virtual Machines use Virtual Hard Disks (vhd) files as their "disks".  In this workshop, we will be using a pre-provisioned Virtual Hard Disk that has the following pre-installed:
+Azure Virtual Machines provide an extremely powerful and flexible way to run either Windows or Linux virtual machines in the cloud.  Virtual Machines use Virtual Hard Disks (vhd) files as their "disks".  In this workshop, we will be using a pre-provisioned Virtual Hard Disk image that has the following pre-installed:
 
 - Ubuntu 16.04 LTS
 - DIGITS
 - Jupyter
 
-You will copy that pre-existing vhd over to a storage account in your own subscription, and then use an ARM template to create a Virtual Machine that uses that vhd as it's hard disk.
+You will copy that pre-existing vhd image over to a storage account in your own subscription, and then use an ARM template to create a Virtual Machine based on that image.
 
 In addition to the vhd, your Virtual Machine will also need some additional resources.  These will all be created for you by the ARM template, but it's helpful to understand them.
 
@@ -118,7 +118,7 @@ You will want to replace the "***&lt;name&gt;***" place holder (including the **
 
 Choose a good ***&lt;name&gt;*** now, and make a note of it so you can use it later in the lab.
 
-Throughout the remainder of the documentation the syntax samples will use ***dli0201*** ("dli" being short for Deep Learning Institute and "0201" for January, 31) as a ***&lt;name&gt;*** place holder value.  **DO NOT USE dli0201** for yourself, as it would likely conflict with the resources created while documenting this lab, or with others who lazily use that same name. 
+Throughout the remainder of the documentation the syntax samples will use ***dli0201*** ("dli" being short for Deep Learning Institute and "0201" for February 1st) as a ***&lt;name&gt;*** place holder value.  **DO NOT USE dli0201** for yourself, as it would likely conflict with the resources created while documenting this lab, or with others who lazily use that same name. 
 
 ---
 
@@ -194,7 +194,7 @@ If you are attending a sponsored workshop you should be receiving instructions p
 
 If you are running this prework before the workshop, make sure that it isn't so far in advance of the workshop that the pass may expire before the event date.  Also make sure to shutdown and deallocate (but not delete) the the virtual machine when you are done with the prework so that it doesn't consume the credits availalbe in your subscription.  We will show you how to both automatically (setup by default) as well as manually shutdown and deallocate your vm at the end of this lab.
 
-If you do NOT have access to an Azure Pass, you can create a free Azure Trial subscription at [azure.com/free](http://azure.com/free).  You may have issues provising an NC6 VM on a free trial based on some initial quota restrictions placed on the Free Trial subscriptions, however you can [contact support through the Azure Portal](https://docs.microsoft.com/en-us/azure/azure-supportability/how-to-create-azure-support-request) and request an increase in the number of corse (up to at least 6) as well as access to the "Standard_NC6" VM sku for your subscription.
+If you do NOT have access to an Azure Pass, you can create a free Azure Trial subscription at [azure.com/free](http://azure.com/free).  You may have issues provising an NC6 VM on a free trial based on some initial quota restrictions placed on the Free Trial subscriptions, however you can [contact support through the Azure Portal](https://docs.microsoft.com/en-us/azure/azure-supportability/how-to-create-azure-support-request) and request an increase in the number of cores (up to at least 6) as well as access to the "Standard_NC6" VM sku for your subscription.
 
 > **Note**: The free Azure trial currently grants you a US$200 credit for a period of 30 days.  If either the 30 day limit, or $200 credit is exceeded, your trial resources (except those with free usage) will be shut down.  You will need a credit card to sign up for the trial, but it is used for identification purposes only and you will not be charged UNLESS you choose to go on a pay-as-you go basis.
 
@@ -228,9 +228,7 @@ The Azure CLI is a cross platform command line interface that you can use to man
 
 ## Logging into and configuring your Azure Subscription via the Azure CLI
 
-In this steps, you'll login to your Azure subscription from your workstations command line.  There are multiple ways to login to the Azure-CLI.  You can learn about alternate login methods here: [Log in to Azure from the Azure CLI](https://docs.microsoft.com/en-us/azure/xplat-cli-connect) 
-
-We'll be using the "**Azure login with interactive login**" method:
+In this task, you'll login to your Azure subscription from your workstation's command line.  There are multiple ways to login to the Azure-CLI.  You can learn about alternate login methods here: [Log in to Azure from the Azure CLI](https://docs.microsoft.com/en-us/azure/xplat-cli-connect). We'll be using the "**Azure login with interactive login**" method:
 
 1. From your system's command prompt or terminal, enter the following command to set the azure-cli into "Azure Resource Manager" mode (ARM):
 
@@ -294,7 +292,7 @@ commands and some problems they encounter...`", asking you to participate in azu
         info:    account list command OK
         ```
 
-    - If more than one subscription is listed above, you need to ensure that the subscription you wish to used is set as the "Current" subscription.  To do so, use the following azure-cli command:
+    - If more than one subscription is listed above, you need to ensure that the subscription you wish to be used is set as the "Current" subscription.  To do so, use the following azure-cli command:
 
         ```bash
         azure account set <Your Subscription Name or Subscription Id>
@@ -328,14 +326,14 @@ commands and some problems they encounter...`", asking you to participate in azu
         data:    User name                   : dli2017001@outlook.com
         ```
 
-1. We will be using a number of Azure "**Resource Providers**" in this lab.  Resource Providers enable us to manage specific types of resources in the Azure Platform via the "**Azure Resource Manager**" API that is used by the Azure-cli.  We need to enabled, or "**Register**" each of the providers we will be using before we can use them.  The "**Resource Providers**" we need include:
+1. We will be using a number of Azure "**Resource Providers**" in this lab.  Resource Providers enable us to manage specific types of resources in the Azure Platform via the "**Azure Resource Manager**" API that is used by the Azure-cli.  We need to enable, or "**Register**" each of the providers we will be using before we can use them.  The "**Resource Providers**" we need include:
 
     - "Microsoft.Storage"
     - "Microsoft.Network"
     - "Microsoft.Compute"
     - "Microsoft.DevTestLab"
 
-1. We'll use the Azure-cli to register each one.  Is the following command to register the "**Microsoft.Storage**" resource provider:
+1. We'll use the Azure-cli to register each one.  Use the following command to register the "**Microsoft.Storage**" resource provider:
 
     > **Note**: Occasionally the Azure-CLI will timeout when running a command.  This can be caused by a number of external factors.  The cool thing is you can simply re-run the statements if that occurrs.  Even if they succeeded the commands will simply ensure that the desired outcome was achieved.  If you receive timeout errors when running the statements below (or other statements later in the chapter), simply run the statements again.  If the errors are in regards to something else, do your best to understand and resolve the error and try again.
 
@@ -367,7 +365,7 @@ commands and some problems they encounter...`", asking you to participate in azu
 
 ## Creating the Azure Resource Group, Storage Account, and Container
 
-The Azure Virtual Machine that you will be using for this lab will be based on a copy of a pre-existing Virtual Hard Disk (VHD) that we have created for your use.  The pre-existing VHD has Ubuntu 16.0.4 LTS installed, along with all of the deep learning tools, frameworks, data sets and jupyter notebooks that you will need for the lab.  In this task, you will create an Azure Resource Group, Storage Account, and Blob Container that will hold your copy of the VHD.
+The Azure Virtual Machine that you will be using for this lab will be based on a copy of a pre-existing Virtual Hard Disk (VHD) image that we have created for your use.  The pre-existing VHD image has Ubuntu 16.0.4 LTS installed, along with all of the deep learning tools, frameworks, data sets and jupyter notebooks that you will need for the lab.  In this task, you will create an Azure Resource Group, Storage Account, and Blob Container that will hold your copy of the VHD image.
 
 1. First, to create your Resource Group, from your system's command prompt or terminal window, issue the following command. Make sure to replace the ***&lt;name&gt;*** place holder in the `<name>group` name with the naming prefix you chose above.
 
@@ -430,18 +428,18 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
     ```
 
 
-1. From the output, copy the value of the "key1" key (shown as `xxx......xxx==` above, and replace the `<key1>` place holders in "**[commands.txt](deploy/commands.txt)**" with it (example shown in Notepad, use the editor of your choice).
+1. From the output, copy the value of the "key1" key (shown as "`xxx......xxx==`" above), and replace the `<key1>` place holders in "**[commands.txt](deploy/commands.txt)**" with it (example shown in Notepad, use the editor of your choice).
 
     ![Replace Key1 in Commands.txt with Storage Key](images/06010-SaveStorageKeyToCommandsTxt.png)
 
 1. Next, we'll create the container to store the vhd for our virtual machine:
 
-    > **Note**: This is a SINGLE command wrapped across multiple lines for readability. You need to copy, or type the syntax below as a single line, with the appropriate values for the `--account-name <name>storage`  and  `--account-key xxx...xxx==` values.
+    > **Note**: This is a SINGLE command wrapped across multiple lines for readability. You need to copy, or type the syntax below as a single line, with the appropriate values for the `<name>storage`  and  `<key1>` value placeholders.  It would be easier to just copy the command with your values in place from appx line 160 in "**[commands.txt](deploy/commands.txt)**".
 
     ```bash
     azure storage container create
       --account-name <name>storage
-      --account-key xxx...xxx==
+      --account-key <key1>
       --container vhds
     ```
 
@@ -469,16 +467,16 @@ The Azure Virtual Machine that you will be using for this lab will be based on a
 
 ## Copying the Virtual Hard Disk (VHD) for the Virtual Machine
 
-Now that we have the Azure Resource Group, Storage Account and Blob Container created, we can now copy the pre-existing VHD provided for this workshop.  
+Now that we have the Azure Resource Group, Storage Account and Blob Container created, we can now copy the pre-existing VHD image provided for this workshop.
 
 
 ***COPYING THE PRE-EXISTING VHD FOR THE WORKSHOP TO YOUR STORAGE ACCOUNT COULD TAKE OVER AN HOUR.***
 
-1. To copy the pre-existing VHD from the hosted storage account into the container you just created, use the following command:
+1. To copy the pre-existing VHD image from the hosted storage account into the container you just created, use the following command:
 
     > **Note**: This copy COULD take over an hour to complete.  However, it's also possible that it will complete almost immediately.  This could happen if the storage account you created just coincidentally happened to be on the same set of hardware that the source storage account exists on.  If that is the case, the copy is done as a "shadow" copy and takes no time at all.  In most cases though it has to transfer a 100GB VHD file to a separate set of disks and it just takes time for that to complete.
 
-    > **Note**: The `--source-uri` value points to the location of the pre-created vhd.  It points to a vhd blob named `msftnvidiaimage.vhd`.  These are pre-existing values that need to be entered exactly as shown below.  Do not modify them.  This is the VHD we have created for you that already has Ubnutu 16.04 LTS, Digits, and Jupyter pre-installed.  It is hosted by us in a storage container of our own.
+    > **Note**: The `--source-uri` value points to the location of the pre-created vhd image.  It points to a vhd blob named `msftnvidiaimage.vhd` that we are hosting for your to copy.  These are pre-existing values that need to be entered exactly as shown below.  Do not modify them.  This is the VHD image we have created for you that already has Ubnutu 16.04 LTS, Digits, and Jupyter pre-installed.  It is hosted by us in a storage container of our own.
 
     ```bash
     azure storage blob copy start 
@@ -501,7 +499,7 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
 
 1. The copy could take up to 30-60 minutes or possibly longer (in tests it sometimes ran as long as 60 minutes), you can monitor the progress by repeatedly issuing the following command:
 
-    > **Note**: The `msftnvidia.vhd` blob name is the name of the pre-existing source vhd.  Do not change the name in the command below.
+    > **Note**: The `msftnvidiaimage.vhd` blob name is the name of the pre-existing source vhd image being copied.  Do not change the name in the command below.
 
     ```bash
     azure storage blob copy show
@@ -540,7 +538,7 @@ Now that we have the Azure Resource Group, Storage Account and Blob Container cr
 
 ## Creating the Virtual Machine using the Copied VHD
 
-We are almost ready, the final step is to deploy a new Virtual Machne (VM) to the resource group we created above that uses the VHD we just copied as it's OS Disk.  Turns out that VMs need a bunch of other things as well including Network Interfaces, Virtual Networks, IP Addresses, Firewall Rules, etc.  Rather than have you create each one of these by hand and risk doing something wrong, we will use a pre-configured Azure Resource Manager (ARM) template.  The template file is in the same github repo as the other workshop content so first, we'll need to clone the repo, then we can change into the folder with the deployment script and run the azure-cli command to deploy the vm based on the template. 
+We are almost ready, the final step is to deploy a new Virtual Machne (VM) to the resource group we created above that uses the VHD we just copied the base image for it's OS Disk.  Turns out that VMs need a bunch of other things as well including Network Interfaces, Virtual Networks, IP Addresses, Firewall Rules, etc.  Rather than have you create each one of these by hand and risk doing something wrong, we will use a pre-configured Azure Resource Manager (ARM) template.  The template file is in the same github repo as the other workshop content so first, we'll need to clone the repo, then we can change into the folder with the deployment script and run the azure-cli command to deploy the vm based on the template. 
 
 1. From your system's command prompt or terminal, ensure that you are `preworklab/deploy` directory under the location where you cloned the `DLI_RoboWorkshop_1` repository to:
 
@@ -560,7 +558,7 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
 
     > **Note**: You should take a couple of minutes to examine the `template.json` file to get a feel for what it will create.  However ***be careful to not make any changes to template.json***
 
-    - `template.json` (**YOU DO NOT NEED TO MAKE ANY CHANGES IN THIS FILE**) contains the actual ARM template that defines all the resources that will be createad, e.g. The VM, Virtual Network, NIC, IP Address, Firewall Rules, etc.  
+    - `template.json` (**YOU DO NOT NEED TO MAKE ANY CHANGES IN THIS FILE**) contains the actual ARM template that defines all the resources that will be createad, e.g. The VM, Virtual Network, NIC, IP Address, Firewall Rules, etc.
     - `parameters.json` contains the values that are needed for the deployment, like the actual name of the VM, the location where it should be deployed, etc.  You'll edit this file and enter the value for your `<name>` prefix.
 
 1. Open the `parameters.json` file in the text editor of your choice.  Verify that the location is correct.  Change the "***name_prefix***" parameter's value of `<name>` to the name prefix you chose above, and save your changes.
@@ -694,11 +692,10 @@ We are almost ready, the final step is to deploy a new Virtual Machne (VM) to th
 
 ## Configuring Auto-shutdown on the new VM
 
-FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless you change it, your VM will shutdown automatically at 11:59pm Pacific Standard Time every night.  If you want to change that setting, or disable it, you can complete these steps.
+The VM Template we deployed has Auto-Shutdown enabled by default.  Unless you change it, your VM will shutdown automatically at 11:59pm Pacific Standard Time every night.  If you want to change that setting, or disable it, you can complete these steps.
 
 1. Open the [Azure Portal](https://portal.azure.com) and login with the credentials for your Azure Subscription
-1. Click on the "Resource Groups" icon along the left of the portal, then select the `<name>group` Resource Group you created above.
-1. From the list of resources in the Resource Group, click on your `<name>vm` Virtual Machine to open it's overview blade.
+1. Click on the "Virtual Machines" icon along the left of the portal, then select the `<name>vm` Virtual Machine to open it's overview blade.
 1. From the list of settings along the left, click on "**Auto-shutdown**".  
 1. Then in the "**Auto-shutdown**" blade, configure the option according to your desires.  You can read more about the feature here, [Announcing auto-shutdown for VMs using Azure Resource Manager](https://azure.microsoft.com/en-us/blog/announcing-auto-shutdown-for-vms-using-azure-resource-manager/):
 
@@ -785,7 +782,7 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
     http://<fqdn>:8888
     ```
 
-    You should see a page similaro to the following load in your browser:
+    You should see a page similar to the following load in your browser:
 
     ![Digits Server Home Page](images/DigitsServerHomePage.jpg)
 
@@ -796,7 +793,7 @@ FYI, the VM Template we deployed has Auto-Shutdown enabled by default.  Unless y
 
 ## Staring and Testing Jupyter on your VM
 
-1. ***OPEN A SECOND SSH CONNECTION*** (keep the ssh session with DIGITS running in it open) to your vm (logging in again as `dliuser` with the password `Pwd@234567890`), and again change into the `~/DLI_RoboWorkshop_1/notebooks` folder.
+1. ***OPEN A SECOND SSH CONNECTION TO YOUR AZURE VM*** (keep the ssh session with DIGITS running in it open) to your vm (logging in again as `dliuser` with the password `Pwd@234567890`), and again change into the `~/DLI_RoboWorkshop_1/notebooks` folder.
 
     ```bash
     cd ~/DLI_RoboWorkshop_1/notebooks
@@ -871,7 +868,7 @@ If your VM is not currently doing any processing and you don't need it for some 
 
 ### Deallocating vs Shutting Down (Stopping) your VM
 
-Your Azure Virtual Machine (VM) use a number of resources like CPUs, memory, IP Addresses, etc..  It's those resources that you are being billed for while your VM is running.  As with any computer there are times when you wish to shut the VM down.  The question is, do you want to keep the resources the VM needs (CPUs, memory, IP Addresses) reserved while it is shutdown or not.  If you want to keep those resources reserved even when your VM is shutdown, you can "**stop**" your VM but keep the resources.  Be aware thought that you will continue to be billed for those reserved resources even when your VM is shutdown.  The billing will be the same as if the VM was running.  For example, at the time this is being written, the NC6 VM that we we create in the "East US" region costs $0.90US/Hour.  You will be billed that price regardless if the VM is running or stopped if you have not deallocated the VMs resources
+Your Azure Virtual Machine (VM) uses a number of resources like CPUs, memory, IP Addresses, etc..  It's those resources that you are being billed for while your VM is running.  As with any computer there are times when you wish to shut the VM down.  The question is, do you want to keep the resources the VM needs (CPUs, memory, IP Addresses) reserved while it is shutdown or not.  If you want to keep those resources reserved even when your VM is shutdown, you can "**stop**" your VM but keep the resources.  Be aware though that you will continue to be billed for those reserved resources even when your VM is shutdown.  The billing will be the same as if the VM was running.  For example, at the time this is being written, the NC6 VM that we we create in the "East US" region costs $0.90US/Hour.  You will be billed that price regardless if the VM is running or stopped if you have not deallocated the VMs resources
 
 If, on the other hand, you know you don't need the VM back right away, you can instead "**deallocate**" those resources and release them back into the pool of resources that Azure can assign to other VMs. You will no longer be billed the hourly rate for the VM.  Just be aware that some resources, like your VM's IP Address, will be different when you start the VM back up again.  It's FQDN however will be mapped to the new IP Address so if you connect using the FQDN instead of the IP address everything should be fine.  In production, if having an IP Address change is a problem, you can reserve IP Addresses for your VMs.  Read [IP address types and allocation methods in Azure](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-ip-addresses-overview-arm) to learn more.
 
@@ -959,7 +956,7 @@ You get the basic pattern from above, list your VMs to determine their state, th
 
 Once you are done with the lab and no longer need the resources (VM, VHD, etc) that you created during it, you can delete them from your subscription to completely stop any billing or free credit consumption for them.  
 
-At the very beginning of the lab, we created a resource group, **`<name>group`** and every other resource we created was in that group.  The beauty of that is that now to delete all of the resources, we simply need to delete the group.  Super easy. 
+At the very beginning of the lab, we created a resource group, **`<name>group`** and every other resource we created was placed in that group.  The beauty of that is that now to delete all of the resources, we simply need to delete the group.  Super easy. 
 
 ***THIS IS NOT RECOVERABLE, IF YOU DELETE THE RESOURCE GROUP IT, AND ALL OF THE RESOURCES WITHIN, WILL BE DELETED. ONLY DELETE THE GROUP IF YOU KNOW YOU DO NOT NEED IT ANY MORE.  DO NOT DELETE THE GROUP PRIOR TO A WORKSHOP EVENT, YOU WILL NEED THE RESOURCES AT THE EVENT.  ONLY DELETE THE GROUP AFTER THE EVENT IS OVER AND ALL RESOURCES ARE NO LONGER NEEDED***
 
