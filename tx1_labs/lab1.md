@@ -32,7 +32,6 @@ Output: You should see LED1 light up
     ```
 Output: You should see LED2 light up
 
-
     ```
     ./static_classify.sh nvidia.jpg
     ```
@@ -41,4 +40,4 @@ Output: You should see all LEDs shut off
 Would you know why this happened? 
 The program was not able to classify 'nvidia.jpg' image, therefore no LED will light on.
 
-![Lab 1 commands](/images/lab1Commands.png)
+![Lab 1 commands](/tx1_labs/images/lab1Commands.png)
