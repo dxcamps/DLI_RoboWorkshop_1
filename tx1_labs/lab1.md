@@ -1,6 +1,6 @@
 
 # Lab 1
-The purpose of this lab is to execute static classification commands for a given set of images using 3 LEDs circuit.
+The purpose of this lab is to execute image classification commands for a given set of images using 3 LEDs circuit.
 
 
 1. Open a terminal on the Jetson, Run the following command:
