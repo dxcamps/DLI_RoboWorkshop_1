@@ -41,4 +41,4 @@ Output: You should see all LEDs shut off
 Would you know why this happened? 
 The program was not able to classify 'nvidia.jpg' image, therefore no LED will light on.
 
-![Lab 1 commands](/images/lab1Commands.jpg)
+![Lab 1 commands](/images/lab1Commands.png)
