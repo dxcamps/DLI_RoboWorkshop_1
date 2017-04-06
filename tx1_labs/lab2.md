@@ -22,15 +22,21 @@ The purpose of this lab is to execute live camera classification commands for Je
     ![words file](/tx1_labs/images/words_classes.png)
 
 4. Modify webCamClassify.py and change the object IDs to be identified by the camera such as a water bottle.
+
     a. Open webCamClassify.py file.
+
     b. Edit 'toggleLEDs' function.
-    c. Add class for any object you can present to the live camera in Jetson TX1. Try using “computer mouse” or “water bottle” or “bottle cap”
+
+    c. Add class for any object you can present to the live camera in Jetson TX1. Try using “computer mouse” or “water bottle” or “bottle cap”.
+
+    d. Save the file.
+
 
     Below is a sample code of the edited toggle LEDS method in Python, feel free you select any other class in this function.
     
     ![Toggle LEDs function](/tx1_labs/images/toggleLEDs.png)
 
-5. Re-run 
+5. Re-run webClassify file.
 
     ```
     ./webCamClassify.py
