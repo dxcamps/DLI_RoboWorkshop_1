@@ -24,3 +24,5 @@ this object based on the trained model we have completed on Azure VM in the prep
     ```
 
     You should see a single LED turn on
+
+    ![Lab 3](/tx1_labs/images/lab3.png)
