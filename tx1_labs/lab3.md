@@ -15,9 +15,9 @@ this object based on the trained model we have completed on Azure VM in the prep
     cd bottlenet; tar xzf ~/bottlenet.tgz
     ```
 
-    This simulates downloading model from Azure and deploying
+    This simulates downloading model from Azure and deploying it to Jetson TX1.
 
-4. Run object detection for 'sodagroup.jpg' file by executing the following command:
+4. Run object detection script for the image file 'sodagroup.jpg' by executing the following command:
 
     ```
     ./imageDetect.py sodagroup.jpg
