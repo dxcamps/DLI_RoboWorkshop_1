@@ -9,7 +9,7 @@ this object based on the trained model we have completed on Azure VM in the prep
     cd ~/detection; mkdir bottlenet
     ```
 
-2. We will extract  the trained model in zip file 'bottlenet.tgz' located at the home directory to the 'bottlenet' folder:
+2. We will extract the trained model in a zip file 'bottlenet.tgz' located at the home directory to the 'bottlenet' folder:
 
     ```
     cd bottlenet; tar xzf ~/bottlenet.tgz
